@@ -1,0 +1,1152 @@
+[
+  {
+    "name": "Year",
+    "value": "1995",
+    "key": "0",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "276344",
+        "key": "1",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "211032",
+            "key": "2",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2217",
+                "key": "3"
+              },
+              {
+                "name": "OMFIs",
+                "value": "158189",
+                "key": "4"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "30667",
+                "key": "5"
+              },
+              {
+                "name": "Other residents",
+                "value": "19960",
+                "key": "6"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "65311",
+            "key": "7"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "1996",
+    "key": "8",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "276440",
+        "key": "9",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "215048",
+            "key": "10",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2318",
+                "key": "11"
+              },
+              {
+                "name": "OMFIs",
+                "value": "160798",
+                "key": "12"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "32361",
+                "key": "13"
+              },
+              {
+                "name": "Other residents",
+                "value": "19573",
+                "key": "14"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "61392",
+            "key": "15"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "1997",
+    "key": "16",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "278493",
+        "key": "17",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "213717",
+            "key": "18",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2418",
+                "key": "19"
+              },
+              {
+                "name": "OMFIs",
+                "value": "157935",
+                "key": "20"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "34137",
+                "key": "21"
+              },
+              {
+                "name": "Other residents",
+                "value": "19226",
+                "key": "22"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "64776",
+            "key": "23"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "1998",
+    "key": "24",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "277255",
+        "key": "25",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "206658",
+            "key": "26",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2487",
+                "key": "27"
+              },
+              {
+                "name": "OMFIs",
+                "value": "154526",
+                "key": "28"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "27987",
+                "key": "29"
+              },
+              {
+                "name": "Other residents",
+                "value": "21657",
+                "key": "30"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "70597",
+            "key": "31"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "1999",
+    "key": "32",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "279531",
+        "key": "33",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "193889",
+            "key": "34",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2997",
+                "key": "35"
+              },
+              {
+                "name": "OMFIs",
+                "value": "140213",
+                "key": "36"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "30541",
+                "key": "37"
+              },
+              {
+                "name": "Other residents",
+                "value": "20138",
+                "key": "38"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "85642",
+            "key": "39"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2000",
+    "key": "40",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "280960",
+        "key": "41",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "173341",
+            "key": "42",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "3095",
+                "key": "43"
+              },
+              {
+                "name": "OMFIs",
+                "value": "121906",
+                "key": "44"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "28403",
+                "key": "45"
+              },
+              {
+                "name": "Other residents",
+                "value": "19937",
+                "key": "46"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "107618",
+            "key": "47"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2001",
+    "key": "48",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "286055",
+        "key": "49",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "164094",
+            "key": "50",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "3047",
+                "key": "51"
+              },
+              {
+                "name": "OMFIs",
+                "value": "113210",
+                "key": "52"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "27694",
+                "key": "53"
+              },
+              {
+                "name": "Other residents",
+                "value": "20143",
+                "key": "54"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "121962",
+            "key": "55"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2002",
+    "key": "56",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "288111",
+        "key": "57",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "152388",
+            "key": "58",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2865",
+                "key": "59"
+              },
+              {
+                "name": "OMFIs",
+                "value": "103693",
+                "key": "60"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "26023",
+                "key": "61"
+              },
+              {
+                "name": "Other residents",
+                "value": "19807",
+                "key": "62"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "135722",
+            "key": "63"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2003",
+    "key": "64",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "285867",
+        "key": "65",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "145146",
+            "key": "66",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2863",
+                "key": "67"
+              },
+              {
+                "name": "OMFIs",
+                "value": "98627",
+                "key": "68"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "24985",
+                "key": "69"
+              },
+              {
+                "name": "Other residents",
+                "value": "18671",
+                "key": "70"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "140721",
+            "key": "71"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2004",
+    "key": "72",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "288419",
+        "key": "73",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "143936",
+            "key": "74",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "2853",
+                "key": "75"
+              },
+              {
+                "name": "OMFIs",
+                "value": "95650",
+                "key": "76"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "26122",
+                "key": "77"
+              },
+              {
+                "name": "Other residents",
+                "value": "19311",
+                "key": "78"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "144482",
+            "key": "79"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2005",
+    "key": "80",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "294975",
+        "key": "81",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "144219",
+            "key": "82",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "3220",
+                "key": "83"
+              },
+              {
+                "name": "OMFIs",
+                "value": "94113",
+                "key": "84"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "27510",
+                "key": "85"
+              },
+              {
+                "name": "Other residents",
+                "value": "19376",
+                "key": "86"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "150757",
+            "key": "87"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2006",
+    "key": "88",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "297495",
+        "key": "89",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "142840",
+            "key": "90",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "3459",
+                "key": "91"
+              },
+              {
+                "name": "OMFIs",
+                "value": "92208",
+                "key": "92"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "28819",
+                "key": "93"
+              },
+              {
+                "name": "Other residents",
+                "value": "18353",
+                "key": "94"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "154655",
+            "key": "95"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2007",
+    "key": "96",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "300064",
+        "key": "97",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "128375",
+            "key": "98",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "4584",
+                "key": "99"
+              },
+              {
+                "name": "OMFIs",
+                "value": "77186",
+                "key": "100"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "28857",
+                "key": "101"
+              },
+              {
+                "name": "Other residents",
+                "value": "17747",
+                "key": "102"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "171689",
+            "key": "103"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2008",
+    "key": "104",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "327683",
+        "key": "105",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "136614",
+            "key": "106",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "4891",
+                "key": "107"
+              },
+              {
+                "name": "OMFIs",
+                "value": "80039",
+                "key": "108"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "32836",
+                "key": "109"
+              },
+              {
+                "name": "Other residents",
+                "value": "18849",
+                "key": "110"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "191069",
+            "key": "111"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2009",
+    "key": "112",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "347224",
+        "key": "113",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "153875",
+            "key": "114",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "5163",
+                "key": "115"
+              },
+              {
+                "name": "OMFIs",
+                "value": "85293",
+                "key": "116"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "43801",
+                "key": "117"
+              },
+              {
+                "name": "Other residents",
+                "value": "19618",
+                "key": "118"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "193349",
+            "key": "119"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2010",
+    "key": "120",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "364132",
+        "key": "121",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "167381",
+            "key": "122",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "6319",
+                "key": "123"
+              },
+              {
+                "name": "OMFIs",
+                "value": "92237",
+                "key": "124"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "49635",
+                "key": "125"
+              },
+              {
+                "name": "Other residents",
+                "value": "19190",
+                "key": "126"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "196752",
+            "key": "127"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2011",
+    "key": "128",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "389107",
+        "key": "129",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "208678",
+            "key": "130",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "7437",
+                "key": "131"
+              },
+              {
+                "name": "OMFIs",
+                "value": "105518",
+                "key": "132"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "70343",
+                "key": "133"
+              },
+              {
+                "name": "Other residents",
+                "value": "25379",
+                "key": "134"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "180429",
+            "key": "135"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2012",
+    "key": "136",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "404752",
+        "key": "137",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "217575",
+            "key": "138",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "8365",
+                "key": "139"
+              },
+              {
+                "name": "OMFIs",
+                "value": "108511",
+                "key": "140"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "77634",
+                "key": "141"
+              },
+              {
+                "name": "Other residents",
+                "value": "23066",
+                "key": "142"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "187177",
+            "key": "143"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2013",
+    "key": "144",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "414432",
+        "key": "145",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "210662",
+            "key": "146",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "8320",
+                "key": "147"
+              },
+              {
+                "name": "OMFIs",
+                "value": "103447",
+                "key": "148"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "76035",
+                "key": "149"
+              },
+              {
+                "name": "Other residents",
+                "value": "22860",
+                "key": "150"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "203771",
+            "key": "151"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2014",
+    "key": "152",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "431159",
+        "key": "153",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "197043",
+            "key": "154",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "7059",
+                "key": "155"
+              },
+              {
+                "name": "OMFIs",
+                "value": "91137",
+                "key": "156"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "77634",
+                "key": "157"
+              },
+              {
+                "name": "Other residents",
+                "value": "21213",
+                "key": "158"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "234116",
+            "key": "159"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2015",
+    "key": "160",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "438233",
+        "key": "161",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "204026",
+            "key": "162",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "19161",
+                "key": "163"
+              },
+              {
+                "name": "OMFIs",
+                "value": "88138",
+                "key": "164"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "75230",
+                "key": "165"
+              },
+              {
+                "name": "Other residents",
+                "value": "21497",
+                "key": "166"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "234207",
+            "key": "167"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2016",
+    "key": "168",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "451327",
+        "key": "169",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "209180",
+            "key": "170",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "37252",
+                "key": "171"
+              },
+              {
+                "name": "OMFIs",
+                "value": "82127",
+                "key": "172"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "70726",
+                "key": "173"
+              },
+              {
+                "name": "Other residents",
+                "value": "19076",
+                "key": "174"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "242147",
+            "key": "175"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2017",
+    "key": "176",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "453828",
+        "key": "177",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "218752",
+            "key": "178",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "55468",
+                "key": "179"
+              },
+              {
+                "name": "OMFIs",
+                "value": "76121",
+                "key": "180"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "69445",
+                "key": "181"
+              },
+              {
+                "name": "Other residents",
+                "value": "17718",
+                "key": "182"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "235076",
+            "key": "183"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2018",
+    "key": "184",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "459061",
+        "key": "185",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "215577",
+            "key": "186",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "59848",
+                "key": "187"
+              },
+              {
+                "name": "OMFIs",
+                "value": "71650",
+                "key": "188"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "66560",
+                "key": "189"
+              },
+              {
+                "name": "Other residents",
+                "value": "17519",
+                "key": "190"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "243484",
+            "key": "191"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Year",
+    "value": "2019",
+    "key": "192",
+    "children": [
+      {
+        "name": "TOTAL",
+        "value": "467160",
+        "key": "193",
+        "children": [
+          {
+            "name": "Residents",
+            "value": "206880",
+            "key": "194",
+            "children": [
+              {
+                "name": "Central bank",
+                "value": "59922",
+                "key": "195"
+              },
+              {
+                "name": "OMFIs",
+                "value": "64496",
+                "key": "196"
+              },
+              {
+                "name": "Other financial institutions",
+                "value": "65638",
+                "key": "197"
+              },
+              {
+                "name": "Other residents",
+                "value": "16823",
+                "key": "198"
+              }
+            ]
+          },
+          {
+            "name": "Non-residents",
+            "value": "260280",
+            "key": "199"
+          }
+        ]
+      }
+    ]
+  }
+]
