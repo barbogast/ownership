@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Space, Switch, Table } from "antd";
+import React from "react";
+import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { DataType } from "./types";
 
