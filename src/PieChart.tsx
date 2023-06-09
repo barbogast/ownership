@@ -16,7 +16,10 @@ const Chart: React.FC<Props> = ({ data }) => {
   return (
     <PieChart width={400} height={400}>
       <Pie
-        data={data.children?.map((x) => ({ ...x, value: parseInt(x.value) }))}
+        data={data.children?.map((x) => ({
+          label: x.name,
+          value: parseInt(x.value),
+        }))}
         dataKey="value"
         cx="50%"
         cy="50%"

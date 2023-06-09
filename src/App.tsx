@@ -2,7 +2,7 @@ import { useState } from "react";
 import DataTable from "./DataTable";
 import { DataType } from "./types";
 import { Col, Row } from "antd";
-import Chart from "./Chart";
+import PieChart from "./PieChart";
 
 import data from "../data/data.json";
 
@@ -16,7 +16,7 @@ function App() {
       </Col>
       <Col span={12}>
         {selected.map((data) => (
-          <Chart data={data} />
+          <PieChart data={data} />
         ))}
       </Col>
     </Row>
