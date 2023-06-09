@@ -19,17 +19,19 @@ const columns: ColumnsType<DataType> = [
 
 type Props = {
   data: DataType[];
-  setSelected: (id: DataType) => void;
+  setSelected: (id: DataType[]) => void;
 };
 
 const MyTable: React.FC<Props> = ({ setSelected, data }) => {
   return (
     <>
-      <Table
+      <Table<DataType>
         columns={columns}
         rowSelection={{
-          type: "radio",
-          onSelect: setSelected,
+          type: "checkbox",
+          onChange: (_, selectedDataSets) => {
+            setSelected(selectedDataSets);
+          },
           checkStrictly: true,
         }}
         dataSource={data}
