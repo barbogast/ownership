@@ -4,3 +4,9 @@ export type DataType = {
   value: string;
   children?: DataType[];
 };
+
+export type BarChartTableDataType = {
+  name: string;
+  key: string;
+  children?: BarChartTableDataType[];
+};
