@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "convert-csv": "npx ts-node --esm convertCsv.ts"
+    "convert-csv": "(cd data && npx ts-node --esm convertCsv.ts)"
   },
   "dependencies": {
     "@types/lodash": "^4.14.195",
