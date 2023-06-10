@@ -21,12 +21,10 @@ const data: BarChartTableDataType[] = [
   {
     key: "total",
     name: "Total",
-    expanded: true,
     children: [
       {
         key: "residents",
         name: "Residents",
-        expanded: true,
         children: [
           {
             key: "centralBank",
