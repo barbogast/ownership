@@ -1,4 +1,5 @@
-import { Route, Router } from "wouter";
+import { Route, Router, useLocation } from "wouter";
+import { useLocationProperty, navigate } from "wouter/use-location";
 
 import CreateDatabase from "./CreateDatebase";
 import Ownership from "./ownership/Index";
@@ -8,8 +9,19 @@ import Query from "./query/Query";
 import Report from "./report/Report";
 
 function App() {
+  // returns the current hash location in a normalized form
+  // (excluding the leading '#' symbol)
+  const hashLocation = () => window.location.hash.replace(/^#/, "") || "/";
+
+  const hashNavigate = (to: string) => navigate("#" + to);
+
+  const useHashLocation = (): [string, (to: string) => void] => {
+    const location = useLocationProperty(hashLocation);
+    return [location, hashNavigate];
+  };
+
   return (
-    <Router base="/ownership">
+    <Router hook={useHashLocation} base="/ownership">
       <Db>
         <Route path="/">
           <MainMenu></MainMenu>
