@@ -11,7 +11,9 @@ function App() {
   return (
     <Router base="/ownership">
       <Db>
-        <Route path="/"></Route>
+        <Route path="/">
+          <MainMenu></MainMenu>
+        </Route>
         <Route
           path="/ownership"
           component={() => (

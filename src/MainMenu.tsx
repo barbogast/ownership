@@ -38,7 +38,7 @@ const databases = {
 };
 
 type Props = {
-  children: ReactElement | ReactElement[];
+  children: ReactElement | ReactElement[] | null;
 };
 const MainMenu: React.FC<Props> = ({ children }) => {
   const queryStore = useQueryStore();
