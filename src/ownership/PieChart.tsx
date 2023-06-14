@@ -1,6 +1,6 @@
 import React from "react";
 import { PieChart, Pie } from "recharts";
-import { DataType } from "./types";
+import { DataType } from "../types";
 
 type Props = {
   data: DataType;

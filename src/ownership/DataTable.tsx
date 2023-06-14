@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DataType } from "./types";
+import { DataType } from "../types";
 
 const columns: ColumnsType<DataType> = [
   {

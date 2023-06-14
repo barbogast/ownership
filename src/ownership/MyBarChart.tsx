@@ -8,7 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { BarChartTableDataType, DataType } from "./types";
+import { BarChartTableDataType, DataType } from "../types";
 import BarChartTable from "./BarChartTable";
 import { useState } from "react";
 
