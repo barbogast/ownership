@@ -33,7 +33,10 @@ export const Db: React.FC<{ children: ReactElement[] | ReactElement }> = ({
       // see ../craco.config.js
       try {
         const SQL = await initSqlJs({
-          locateFile: () => "/node_modules/sql.js/dist/sql-wasm.wasm?init",
+          locateFile: () =>
+            window.location.host.startsWith("localhost")
+              ? "/node_modules/sql.js/dist/sql-wasm.wasm?init"
+              : "sql-wasm.wasm?init",
         });
 
         const res = await fetch("/database.sqlite");

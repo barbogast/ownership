@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "cp node_modules/sql.js/dist/sql-wasm.wasm public && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "convert-csv": "(cd data && npx ts-node --esm convertCsv.ts)"
