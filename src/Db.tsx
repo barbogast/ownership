@@ -20,6 +20,9 @@ export const DbContext = createContext<DbContextValue>({
   error: undefined,
 });
 
+const isLocal = window.location.host.startsWith("localhost");
+const basePath = "/ownership";
+
 export const Db: React.FC<{ children: ReactElement[] | ReactElement }> = ({
   children,
 }) => {
@@ -34,12 +37,14 @@ export const Db: React.FC<{ children: ReactElement[] | ReactElement }> = ({
       try {
         const SQL = await initSqlJs({
           locateFile: () =>
-            window.location.host.startsWith("localhost")
+            isLocal
               ? "/node_modules/sql.js/dist/sql-wasm.wasm?init"
-              : "sql-wasm.wasm?init",
+              : basePath + "/sql-wasm.wasm?init",
         });
 
-        const res = await fetch("/database.sqlite");
+        const res = await fetch(
+          isLocal ? "/database.sqlite" : basePath + "/database.sqlite"
+        );
         const buf = await res.arrayBuffer();
         setDb(new SQL.Database(new Uint8Array(buf)));
       } catch (err) {
