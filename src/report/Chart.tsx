@@ -16,8 +16,7 @@ type Props = {
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   const db = useDb();
 
-  const { id, label, sqlStatement, transformCode, chartType } =
-    useQuery(queryId);
+  const { id, sqlStatement, transformCode, chartType } = useQuery(queryId);
   console.log("render chart", queryId, sqlStatement);
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);

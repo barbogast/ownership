@@ -45,7 +45,7 @@ const ChartBlock = createReactBlockSpec({
 
 // Creates a slash menu item for inserting an image block.
 const insertImage = new ReactSlashMenuItem<
-  DefaultBlockSchema & { image: typeof ChartBlock }
+  DefaultBlockSchema & { dataDisplay: typeof ChartBlock }
 >(
   "Insert Chart",
   (editor) => {
