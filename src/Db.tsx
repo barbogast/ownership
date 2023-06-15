@@ -20,7 +20,7 @@ export const DbContext = createContext<DbContextValue>({
   error: undefined,
 });
 
-const isLocal = window.location.host.startsWith("localhost");
+const isLocal = window.location.host.startsWith("127.0.0.1");
 const basePath = "/ownership";
 
 export const Db: React.FC<{ children: ReactElement[] | ReactElement }> = ({
