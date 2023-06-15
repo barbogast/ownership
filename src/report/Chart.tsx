@@ -4,8 +4,8 @@ import { Table } from "antd";
 import { useDb, QueryExecResult } from "../Db";
 import { useQuery } from "../query/queryStore";
 import { DataType } from "../types";
-import QueryPieChart from "../query/QueryPieChart";
-import QueryBarChart from "../query/QueryBarChart";
+import QueryPieChart from "../display/QueryPieChart";
+import QueryBarChart from "../display/QueryBarChart";
 import { Link } from "wouter";
 
 type Props = {

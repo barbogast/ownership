@@ -1,10 +1,10 @@
 import { Select } from "antd";
 import { updateChartType, useQuery } from "../queryStore";
-import QueryTable from "../QueryTable";
 import { QueryExecResult } from "../../Db";
 import { queryExecResultToObjects } from "../utils";
-import QueryBarChart from "../QueryBarChart";
-import QueryPieChart from "../QueryPieChart";
+import QueryTable from "../../display/QueryTable";
+import QueryBarChart from "../../display/QueryBarChart";
+import QueryPieChart from "../../display/QueryPieChart";
 
 type Props = {
   queryId: string;
