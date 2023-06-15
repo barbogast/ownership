@@ -1,4 +1,4 @@
-import { Route, Router, useLocation } from "wouter";
+import { Route, Router } from "wouter";
 import { useLocationProperty, navigate } from "wouter/use-location";
 
 import CreateDatabase from "./CreateDatebase";
@@ -24,7 +24,7 @@ function App() {
     <Router hook={useHashLocation} base="/ownership">
       <Db>
         <Route path="/">
-          <MainMenu></MainMenu>
+          <MainMenu />
         </Route>
         <Route
           path="/ownership"

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
 
 import { useDb, QueryExecResult } from "../Db";
 import { useQuery } from "../query/queryStore";
-import { DataType } from "../types";
 import PieChartDisplay from "../display/PieChartDisplay";
 import BarChartDisplay from "../display/BarChartDisplay";
 import { Link } from "wouter";
