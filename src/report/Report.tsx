@@ -92,7 +92,6 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
     onEditorContentChange: (editor) =>
       updateBlocks(reportId, editor.topLevelBlocks),
   });
-  console.log(JSON.stringify(blocks));
 
   return (
     <ReadOnly readOnly={readOnly}>
