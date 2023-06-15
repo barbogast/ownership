@@ -13,7 +13,7 @@ import {
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
-import Chart from "./Chart";
+import ReportDisplay from "./ReportDisplay";
 import { updateBlocks, updateLabel, useReport } from "./reportStore";
 import { ReadOnly, useReadOnly } from "../ReadonlyContext";
 import { Input } from "antd";
@@ -37,7 +37,7 @@ const ChartBlock = createReactBlockSpec({
           flexDirection: "column",
         }}
       >
-        <Chart queryId={block.props.queryId} showEditLink={!readOnly} />
+        <ReportDisplay queryId={block.props.queryId} showEditLink={!readOnly} />
         <InlineContent />
       </div>
     );
