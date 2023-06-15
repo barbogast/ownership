@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Collapse } from "antd";
+import { Table, Collapse, Button, Select } from "antd";
 
 import { useDb, QueryExecResult } from "../Db";
 import QueryResult from "../QueryResult";
@@ -104,7 +104,9 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           />
           <br />
           <br />
-          <button onClick={runQuery}>Run query</button>
+          <Button type="primary" onClick={runQuery}>
+            Run query
+          </Button>
           {progress.queried && (
             <div className={css.codedisplay}>
               <pre>
@@ -147,9 +149,12 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                 className={css.codeinput}
               />
               <br />
-              <button onClick={() => runPostProcess(queryResults)}>
+              <Button
+                type="primary"
+                onClick={() => runPostProcess(queryResults)}
+              >
                 Transform
-              </button>
+              </Button>
               <br />
             </>
           )}
@@ -173,16 +178,18 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           : "disabled",
       children: (
         <>
-          <select
+          <Select
             value={chartType}
-            onChange={(event) =>
-              updateChartType(queryId, event.target.value as ChartType)
-            }
-          >
-            <option value="barChart">Bar chart</option>
-            <option value="pieChart">Pie chart</option>
-            <option value="table">Table</option>
-          </select>
+            onChange={(value) => updateChartType(queryId, value)}
+            options={[
+              { value: "barChart", label: "Bar chart" },
+              { value: "pieChart", label: "Pie chart" },
+              { value: "table", label: "Table" },
+            ]}
+            style={{ width: 120 }}
+          />
+          <br />
+          <br />
           {chartType === "table" && (
             <Table<DataType>
               columns={[
