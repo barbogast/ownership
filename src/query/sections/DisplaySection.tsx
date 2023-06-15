@@ -2,9 +2,9 @@ import { Select } from "antd";
 import { updateChartType, useQuery } from "../queryStore";
 import { QueryExecResult } from "../../Db";
 import { queryExecResultToObjects } from "../utils";
-import QueryTable from "../../display/QueryTable";
-import QueryBarChart from "../../display/QueryBarChart";
-import QueryPieChart from "../../display/QueryPieChart";
+import TableDisplay from "../../display/TableDisplay";
+import BarChartDisplay from "../../display/BarChartDisplay";
+import PieChartDisplay from "../../display/PieChartDisplay";
 
 type Props = {
   queryId: string;
@@ -36,7 +36,7 @@ const DisplaySection: React.FC<Props> = ({
 
       {chartType === "table" &&
         (transformCode ? (
-          <QueryTable
+          <TableDisplay
             columns={
               postProcessResult.length ? Object.keys(postProcessResult[0]) : []
             }
@@ -44,7 +44,7 @@ const DisplaySection: React.FC<Props> = ({
           />
         ) : (
           queryResults.map((queryResult, i) => (
-            <QueryTable
+            <TableDisplay
               columns={queryResult.columns}
               values={queryExecResultToObjects(queryResult)}
               key={i}
@@ -54,12 +54,12 @@ const DisplaySection: React.FC<Props> = ({
 
       {chartType === "barChart" &&
         queryResults.map((queryResult, i) => (
-          <QueryBarChart queryResult={queryResult} key={i} />
+          <BarChartDisplay queryResult={queryResult} key={i} />
         ))}
 
       {chartType === "pieChart" &&
         queryResults.map((queryResult, i) => (
-          <QueryPieChart queryResult={queryResult} key={i} />
+          <PieChartDisplay queryResult={queryResult} key={i} />
         ))}
     </>
   );

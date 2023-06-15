@@ -4,7 +4,7 @@ import { QueryExecResult } from "../Db";
 import { COLORS } from "../constants";
 
 type Props = { queryResult: QueryExecResult };
-const QueryPieChart: React.FC<Props> = ({ queryResult }) => {
+const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
   const { columns, values } = queryResult;
   return (
     <PieChart width={600} height={400}>
@@ -55,4 +55,4 @@ const QueryPieChart: React.FC<Props> = ({ queryResult }) => {
   );
 };
 
-export default QueryPieChart;
+export default PieChartDisplay;

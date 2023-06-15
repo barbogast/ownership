@@ -4,7 +4,7 @@ import { QueryExecResult } from "../Db";
 import { COLORS } from "../constants";
 
 type Props = { queryResult: QueryExecResult };
-const QueryBarChart: React.FC<Props> = ({ queryResult }) => {
+const BarChartDisplay: React.FC<Props> = ({ queryResult }) => {
   const { columns, values } = queryResult;
   return (
     <BarChart
@@ -44,4 +44,4 @@ const QueryBarChart: React.FC<Props> = ({ queryResult }) => {
   );
 };
 
-export default QueryBarChart;
+export default BarChartDisplay;

@@ -4,8 +4,8 @@ import { Table } from "antd";
 import { useDb, QueryExecResult } from "../Db";
 import { useQuery } from "../query/queryStore";
 import { DataType } from "../types";
-import QueryPieChart from "../display/QueryPieChart";
-import QueryBarChart from "../display/QueryBarChart";
+import PieChartDisplay from "../display/PieChartDisplay";
+import BarChartDisplay from "../display/BarChartDisplay";
 import { Link } from "wouter";
 
 type Props = {
@@ -82,12 +82,12 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
       )}
       {chartType === "barChart" &&
         queryResults.map((queryResult, i) => (
-          <QueryBarChart queryResult={queryResult} key={i} />
+          <BarChartDisplay queryResult={queryResult} key={i} />
         ))}
 
       {chartType === "pieChart" &&
         queryResults.map((queryResult, i) => (
-          <QueryPieChart queryResult={queryResult} key={i} />
+          <PieChartDisplay queryResult={queryResult} key={i} />
         ))}
       {showEditLink && (
         <div style={{ textAlign: "right" }}>
