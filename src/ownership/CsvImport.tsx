@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import slugify from "slugify";
 import { useDb, Database, QueryExecResult } from "../Db";
-import QueryResult from "../QueryResult";
+import QueryResult from "./QueryResult";
 import {
   BarChart,
   Bar,
