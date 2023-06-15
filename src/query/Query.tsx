@@ -1,43 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Collapse, Button, Select, Input } from "antd";
+import { Collapse, Input } from "antd";
 
 import { useDb, QueryExecResult } from "../Db";
-import QueryResult from "../QueryResult";
-import {
-  updateChartType,
-  updateLabel,
-  updateSqlStatement,
-  updateTransformCode,
-  useQuery,
-} from "./queryStore";
-import QueryPieChart from "./QueryPieChart";
-import QueryBarChart from "./QueryBarChart";
-import css from "./query.module.css";
-import QueryTable from "./QueryTable";
+import { updateLabel, useQuery } from "./queryStore";
+import QuerySection from "./sections/QuerySection";
+import TransformSection from "./sections/TransformSection";
+import DisplaySection from "./sections/DisplaySection";
+
+type Panels = "query" | "transform" | "visualize";
 
 type Progress = {
   queried?: boolean;
   postProcessed?: boolean;
 };
 
-type Panels = "query" | "transform" | "visualize";
-
 type Props = {
   params: { queryId: string };
 };
-
-const queryExecResultToObjects = (queryResult: QueryExecResult) =>
-  queryResult.values.map((row, i) => ({
-    ...Object.fromEntries(queryResult.columns.map((k, i) => [k, row[i]])),
-    key: i,
-  }));
 
 const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const db = useDb();
   const [activePanel, setActivePanel] = useState<Panels>("query");
   const [progress, setProgress] = useState<Progress>({});
 
-  const { label, sqlStatement, transformCode, chartType } = useQuery(queryId);
+  const { label, sqlStatement, transformCode } = useQuery(queryId);
 
   const [enableTransform, setEnableTransform] = useState<boolean>(
     Boolean(transformCode)
@@ -75,8 +61,6 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     }
   };
 
-  console.log(postProcessResult);
-
   useEffect(() => {
     if (!db || !sqlStatement) {
       return;
@@ -93,40 +77,17 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     // Run this hook only once after the component mounted and the DB was initialised
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db]);
-  console.log(progress, activePanel);
 
   const items = [
     {
       key: "query",
       label: "Data Selection",
       children: (
-        <>
-          SQL:{" "}
-          <Input
-            value={sqlStatement}
-            onChange={(event) =>
-              updateSqlStatement(queryId, event.target.value)
-            }
-            style={{ width: 500 }}
-          />
-          <br />
-          <br />
-          <Button type="primary" onClick={runQuery}>
-            Run query
-          </Button>
-          {progress.queried && (
-            <div className={css.codedisplay}>
-              <pre>
-                {
-                  // results contains one object per select statement in the query
-                  queryResults.map(({ columns, values }, i) => (
-                    <QueryResult key={i} columns={columns} values={values} />
-                  ))
-                }
-              </pre>
-            </div>
-          )}
-        </>
+        <QuerySection
+          queryId={queryId}
+          runQuery={runQuery}
+          queryResults={queryResults}
+        />
       ),
     },
     {
@@ -144,36 +105,12 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
       ),
       collapsible: progress.queried ? undefined : "disabled",
       children: (
-        <>
-          {enableTransform && (
-            <>
-              <br />
-              <textarea
-                value={transformCode}
-                onChange={(event) =>
-                  updateTransformCode(queryId, event.target.value)
-                }
-                className={css.codeinput}
-              />
-              <br />
-              <Button
-                type="primary"
-                onClick={() => runPostProcess(queryResults)}
-              >
-                Transform
-              </Button>
-              <br />
-            </>
-          )}
-          {progress.postProcessed && (
-            <div className={css.codedisplay}>
-              <pre>
-                {/* results contains one object per select statement in the query */}
-                {JSON.stringify(postProcessResult, null, 2)}
-              </pre>
-            </div>
-          )}
-        </>
+        <TransformSection
+          queryId={queryId}
+          queryResults={queryResults}
+          runPostProcess={runPostProcess}
+          postProcessResult={postProcessResult}
+        />
       ),
     } as const,
     {
@@ -184,50 +121,11 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           ? undefined
           : "disabled",
       children: (
-        <>
-          <Select
-            value={chartType}
-            onChange={(value) => updateChartType(queryId, value)}
-            options={[
-              { value: "barChart", label: "Bar chart" },
-              { value: "pieChart", label: "Pie chart" },
-              { value: "table", label: "Table" },
-            ]}
-            style={{ width: 120 }}
-          />
-          <br />
-          <br />
-
-          {chartType === "table" &&
-            (enableTransform ? (
-              <QueryTable
-                columns={
-                  postProcessResult.length
-                    ? Object.keys(postProcessResult[0])
-                    : []
-                }
-                values={postProcessResult}
-              />
-            ) : (
-              queryResults.map((queryResult, i) => (
-                <QueryTable
-                  columns={queryResult.columns}
-                  values={queryExecResultToObjects(queryResult)}
-                  key={i}
-                />
-              ))
-            ))}
-
-          {chartType === "barChart" &&
-            queryResults.map((queryResult, i) => (
-              <QueryBarChart queryResult={queryResult} key={i} />
-            ))}
-
-          {chartType === "pieChart" &&
-            queryResults.map((queryResult, i) => (
-              <QueryPieChart queryResult={queryResult} key={i} />
-            ))}
-        </>
+        <DisplaySection
+          queryId={queryId}
+          queryResults={queryResults}
+          postProcessResult={postProcessResult}
+        />
       ),
     } as const,
   ];
