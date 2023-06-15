@@ -2,7 +2,7 @@ import { Input, Button } from "antd";
 import QueryResult from "../../QueryResult";
 import { updateSqlStatement, useQuery } from "./../queryStore";
 import { QueryExecResult } from "../../Db";
-import css from "./query.module.css";
+import css from "../query.module.css";
 
 type Props = {
   queryId: string;
