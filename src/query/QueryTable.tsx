@@ -6,6 +6,18 @@ type Props = {
   values: DataType[];
 };
 
+const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
+  arr: T[],
+  level: number
+): T[] =>
+  arr.map((obj, i) => ({
+    ...obj,
+    key: `row-${level}-${i}`,
+    ...("children" in obj && Array.isArray(obj.children)
+      ? { children: recursivelyAddKeyProp(obj.children, level + 1) }
+      : {}),
+  }));
+
 const QueryTable: React.FC<Props> = ({ columns, values }) => {
   return (
     <Table<DataType>
@@ -28,7 +40,7 @@ const QueryTable: React.FC<Props> = ({ columns, values }) => {
           : undefined
       }
       // @ts-expect To fix this DataType would need to be build dynamically from queryResult.columns
-      dataSource={values}
+      dataSource={recursivelyAddKeyProp(values, 1)}
     />
   );
 };
