@@ -17,30 +17,21 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   const db = useDb();
 
   const { id, sqlStatement, transformCode, chartType } = useQuery(queryId);
-  console.log("render chart", queryId, sqlStatement);
-
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
-  console.log("queryResults", queryResults);
-
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
-    console.log("useEffect", Boolean(db));
     if (!db || !sqlStatement) {
       return;
     }
-    console.log("useeefffect", 1);
 
     try {
-      console.log("useeefffect", 2);
       let result = db!.exec(sqlStatement);
       if (!result.length) {
         // DB query most probably resulted in an error
         return;
       }
-      console.log("useeefffect", 3);
       if (transformCode) {
-        console.log("useeefffect", 4);
         const func = new Function("queryResult", transformCode);
         result = func(result);
       }
