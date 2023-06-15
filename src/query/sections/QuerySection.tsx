@@ -1,4 +1,4 @@
-import { Input, Button } from "antd";
+import { Input, Button, Col, Row } from "antd";
 import { updateSqlStatement, useQuery } from "./../queryStore";
 import { QueryExecResult } from "../../Db";
 import TableDisplay from "../../display/TableDisplay";
@@ -14,26 +14,33 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   const { sqlStatement } = useQuery(queryId);
 
   return (
-    <>
-      SQL:{" "}
-      <Input
-        value={sqlStatement}
-        onChange={(event) => updateSqlStatement(queryId, event.target.value)}
-        style={{ width: 500 }}
-      />
-      <br />
-      <br />
-      <Button type="primary" onClick={runQuery}>
-        Run query
-      </Button>
-      {queryResults.map((queryResult, i) => (
-        <TableDisplay
-          columns={queryResult.columns}
-          values={queryExecResultToObjects(queryResult)}
-          key={i}
+    <Row>
+      <Col span={12}>
+        SQL:
+        <br />
+        <Input.TextArea
+          value={sqlStatement}
+          onChange={(event) => updateSqlStatement(queryId, event.target.value)}
+          style={{ width: 500 }}
+          rows={5}
+          styles={{ textarea: { fontFamily: "monospace" } }}
         />
-      ))}
-    </>
+        <br />
+        <br />
+        <Button type="primary" onClick={runQuery}>
+          Run query
+        </Button>
+      </Col>
+      <Col span={12}>
+        {queryResults.map((queryResult, i) => (
+          <TableDisplay
+            columns={queryResult.columns}
+            values={queryExecResultToObjects(queryResult)}
+            key={i}
+          />
+        ))}
+      </Col>
+    </Row>
   );
 };
 

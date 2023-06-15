@@ -21,6 +21,7 @@ const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
 const QueryTable: React.FC<Props> = ({ columns, values }) => {
   return (
     <Table<DataType>
+      scroll={{ x: true }}
       columns={columns
         .filter((col) => col !== "children")
         .map((col) => ({
