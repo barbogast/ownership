@@ -114,7 +114,7 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
         <br />
         {readOnly ? (
           <a
-            href={`${window.location.protocol}//${window.location.host}/ownership/report/edit/${id}`}
+            href={`${window.location.protocol}//${window.location.host}/ownership/#/report/edit/${id}`}
             target="_blank"
           >
             Edit this report
@@ -122,7 +122,7 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
         ) : (
           <>
             <a
-              href={`${window.location.protocol}//${window.location.host}/ownership/report/view/${id}`}
+              href={`${window.location.protocol}//${window.location.host}/ownership/#/report/view/${id}`}
               target="_blank"
             >
               <button>Preview</button>
