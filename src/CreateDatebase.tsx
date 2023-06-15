@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import slugify from "slugify";
 import { useDb, Database } from "./Db";
+import { parse } from "csv-parse/browser/esm";
 
 const log = (msg: string, category: "sql") => {
   console.log(category, ": ", msg);
@@ -45,7 +46,7 @@ const initialValues = DEBUG
       query: "",
     };
 
-const guessType = (rows: string[][], headerIndex: number) => {
+const guessType = (rows: CsvRecords, headerIndex: number) => {
   const value = rows[1][headerIndex];
   if (String(parseInt(value)) === value) {
     return "integer";
@@ -64,6 +65,7 @@ const guessType = (rows: string[][], headerIndex: number) => {
 };
 
 type ColumnType = "integer" | "real" | "text";
+type CsvRecords = string[][];
 
 type ColumnDefinition = {
   csvName: string;
@@ -72,16 +74,14 @@ type ColumnDefinition = {
   type: "integer" | "real" | "text";
 };
 
-const analyzeCsvHeader = (csvText: string): ColumnDefinition[] => {
-  const rows = csvText.split("\n").map((row) => row.split("\t"));
-
-  const columns = rows[0].map(
+const analyzeCsvHeader = (records: CsvRecords): ColumnDefinition[] => {
+  const columns = records[0].map(
     (name, index) =>
       ({
         csvName: name,
         dbName: slugify(name, "_").toLowerCase().replace("-", "_"),
         csvIndex: index,
-        type: guessType(rows, index),
+        type: guessType(records, index),
       } as const)
   );
   return columns;
@@ -104,10 +104,9 @@ const insertIntoTable = (
   db: Database,
   tableName: string,
   columns: ColumnDefinition[],
-  csvText: string
+  records: CsvRecords
 ) => {
-  const rows = csvText.split("\n").map((row) => row.split("\t"));
-  for (const row of rows.slice(1)) {
+  for (const row of records.slice(1)) {
     const insertStmt = `insert into ${tableName} (${columns.map(
       (col) => col.dbName
     )}) values (${row.join(", ")})`;
@@ -122,31 +121,44 @@ type Progress = {
   queried?: boolean;
 };
 
-const CsvImport: React.FC = () => {
+const CreateDatabase: React.FC = () => {
   const db = useDb();
   const [progress, setProgress] = useState<Progress>({});
   const [csvText, setCsvText] = useState(initialValues.csv);
+  const [csvRecords, setCsvRecords] = useState<CsvRecords>([]);
   const [tableName, setTableName] = useState(initialValues.tableName);
   const [columns, setColumns] = useState<ColumnDefinition[]>([]);
 
   const [error, setError] = useState<Error>();
 
   const parseCsv = () => {
-    try {
-      setError(undefined);
-      setColumns(analyzeCsvHeader(csvText));
-      setProgress({ parsed: true });
-    } catch (err) {
-      console.error(err);
-      setError(err as Error);
-    }
+    const f = async () => {
+      try {
+        const records: CsvRecords = await new Promise((resolve, reject) =>
+          parse(csvText, { delimiter: "\t" }, (err, records) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(records);
+            }
+          })
+        );
+        setColumns(analyzeCsvHeader(records));
+        setCsvRecords(records);
+        setProgress({ parsed: true });
+      } catch (err) {
+        console.error(err);
+        setError(err as Error);
+      }
+    };
+    f();
   };
 
   const insertTable = () => {
     try {
       setError(undefined);
       createTable(db!, tableName, columns);
-      insertIntoTable(db!, tableName, columns, csvText);
+      insertIntoTable(db!, tableName, columns, csvRecords);
       setProgress({ parsed: true, imported: true });
     } catch (err) {
       console.error(err);
@@ -218,4 +230,4 @@ const CsvImport: React.FC = () => {
   );
 };
 
-export default CsvImport;
+export default CreateDatabase;
