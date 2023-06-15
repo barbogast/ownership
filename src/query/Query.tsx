@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Collapse, Button, Select } from "antd";
+import { Collapse, Button, Select } from "antd";
 
 import { useDb, QueryExecResult } from "../Db";
 import QueryResult from "../QueryResult";
@@ -10,11 +10,11 @@ import {
   updateTransformCode,
   useQuery,
 } from "./queryStore";
-import { DataType } from "../types";
 import QueryPieChart from "./QueryPieChart";
 import QueryBarChart from "./QueryBarChart";
 import css from "./query.module.css";
 import QueryTable from "./QueryTable";
+import QueryTable2 from "./QueryTable2";
 
 type Progress = {
   queried?: boolean;
@@ -22,7 +22,6 @@ type Progress = {
 };
 
 type Panels = "query" | "transform" | "visualize";
-type ChartType = "table" | "barChart" | "pieChart";
 
 type Props = {
   params: { queryId: string };
@@ -186,12 +185,17 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
               { value: "barChart", label: "Bar chart" },
               { value: "pieChart", label: "Pie chart" },
               { value: "table", label: "Table" },
+              { value: "table2", label: "Table 2" },
             ]}
             style={{ width: 120 }}
           />
           <br />
           <br />
-          {chartType === "table" && <QueryTable data={postProcessResult} />}
+          {chartType === "table" &&
+            queryResults.map((queryResult, i) => (
+              <QueryTable queryResult={queryResult} key={i} />
+            ))}
+          {chartType === "table2" && <QueryTable2 data={postProcessResult} />}
           {chartType === "barChart" &&
             queryResults.map((queryResult, i) => (
               <QueryBarChart queryResult={queryResult} key={i} />
