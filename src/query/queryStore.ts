@@ -9,6 +9,7 @@ type Query = {
   id: string;
   label: string;
   sqlStatement: string;
+  enableTransform: boolean;
   transformCode: string;
   chartType?: ChartType;
 };
@@ -51,6 +52,7 @@ const initialState: QueryState = {
       id: "tableofownershipdetails",
       label: "Debt ownership: Details",
       sqlStatement: "select * from aaa",
+      enableTransform: true,
       transformCode: code,
       chartType: "table",
     },
@@ -59,6 +61,7 @@ const initialState: QueryState = {
       label: "Debt ownership: Distribution",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
+      enableTransform: false,
       transformCode: "",
       chartType: "pieChart",
     },
@@ -67,6 +70,7 @@ const initialState: QueryState = {
       label: "Debt ownership: Time",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
+      enableTransform: false,
       transformCode: "",
       chartType: "barChart",
     },
@@ -97,6 +101,7 @@ export const addQuery = () => {
       id,
       label: "New query",
       sqlStatement: "",
+      enableTransform: false,
       transformCode: "",
     };
   });
@@ -111,6 +116,11 @@ export const updateLabel = (queryId: string, label: string) =>
 export const updateSqlStatement = (queryId: string, statement: string) =>
   useQueryStore.setState((state) => {
     state.queries[queryId].sqlStatement = statement;
+  });
+
+export const updateEnableTransform = (queryId: string, enable: boolean) =>
+  useQueryStore.setState((state) => {
+    state.queries[queryId].enableTransform = enable;
   });
 
 export const updateTransformCode = (queryId: string, code: string) =>

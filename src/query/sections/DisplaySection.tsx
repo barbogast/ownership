@@ -17,7 +17,7 @@ const DisplaySection: React.FC<Props> = ({
   postProcessResult,
   queryResults,
 }) => {
-  const { chartType, transformCode } = useQuery(queryId);
+  const { chartType, enableTransform } = useQuery(queryId);
 
   return (
     <>
@@ -35,7 +35,7 @@ const DisplaySection: React.FC<Props> = ({
       <br />
 
       {chartType === "table" &&
-        (transformCode ? (
+        (enableTransform ? (
           <TableDisplay
             columns={
               postProcessResult.length ? Object.keys(postProcessResult[0]) : []

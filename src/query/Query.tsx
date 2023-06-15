@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Collapse, Input } from "antd";
 
 import { useDb, QueryExecResult } from "../Db";
-import { updateLabel, useQuery } from "./queryStore";
+import { updateEnableTransform, updateLabel, useQuery } from "./queryStore";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
@@ -23,11 +23,8 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const [activePanel, setActivePanel] = useState<Panels>("query");
   const [progress, setProgress] = useState<Progress>({});
 
-  const { label, sqlStatement, transformCode } = useQuery(queryId);
-
-  const [enableTransform, setEnableTransform] = useState<boolean>(
-    Boolean(transformCode)
-  );
+  const { label, sqlStatement, enableTransform, transformCode } =
+    useQuery(queryId);
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [postProcessResult, setPostProcessResult] = useState([]);
@@ -97,7 +94,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           <input
             type="checkbox"
             checked={enableTransform}
-            onChange={() => setEnableTransform((state) => !state)}
+            onChange={() => updateEnableTransform(queryId, !enableTransform)}
           />
           {"   "}
           Optional: Data Transformation
@@ -146,7 +143,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           onChange={(expandedPanels) => {
             const expandedPanelsTyped = expandedPanels as Panels[];
             if (expandedPanelsTyped.includes("transform")) {
-              setEnableTransform(true);
+              updateEnableTransform(queryId, true);
             }
             setActivePanel(expandedPanelsTyped.slice(-1)[0]);
           }}

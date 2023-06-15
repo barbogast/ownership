@@ -18,7 +18,8 @@ type Props = {
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   const db = useDb();
 
-  const { id, sqlStatement, transformCode, chartType } = useQuery(queryId);
+  const { id, sqlStatement, transformCode, chartType, enableTransform } =
+    useQuery(queryId);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<
     Record<string, unknown>[]
@@ -36,7 +37,7 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
         // DB query most probably resulted in an error
         return;
       }
-      if (transformCode) {
+      if (enableTransform) {
         const func = new Function("queryResult", transformCode);
         const transformResult = func(result);
         setTransformResult(transformResult);
@@ -56,7 +57,7 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
 
       {chartType === "table" &&
-        (transformResult.length ? (
+        (enableTransform ? (
           <TableDisplay
             columns={
               transformResult.length ? Object.keys(transformResult[0]) : []
