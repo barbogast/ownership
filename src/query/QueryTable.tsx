@@ -1,31 +1,34 @@
 import { Table } from "antd";
-import { DataType } from "../types";
-import { QueryExecResult } from "../Db";
 
+type DataType = Record<string, unknown>;
 type Props = {
-  queryResult: QueryExecResult;
+  columns: string[];
+  values: DataType[];
 };
 
-const QueryTable: React.FC<Props> = ({ queryResult }) => {
+const QueryTable: React.FC<Props> = ({ columns, values }) => {
   return (
     <Table<DataType>
-      columns={queryResult.columns.map((col) => ({
-        title: col,
-        dataIndex: col,
-        key: col,
-      }))}
-      rowSelection={{
-        type: "checkbox",
-        // onChange: (_, selectedDataSets) => {
-        //   setSelected(selectedDataSets);
-        // },
-        checkStrictly: true,
-      }}
+      columns={columns
+        .filter((col) => col !== "children")
+        .map((col) => ({
+          title: col,
+          dataIndex: col,
+          key: col,
+        }))}
+      rowSelection={
+        columns.includes("children")
+          ? {
+              type: "checkbox",
+              // onChange: (_, selectedDataSets) => {
+              //   setSelected(selectedDataSets);
+              // },
+              checkStrictly: true,
+            }
+          : undefined
+      }
       // @ts-expect To fix this DataType would need to be build dynamically from queryResult.columns
-      dataSource={queryResult.values.map((row, i) => ({
-        ...Object.fromEntries(queryResult.columns.map((k, i) => [k, row[i]])),
-        key: i,
-      }))}
+      dataSource={values}
     />
   );
 };

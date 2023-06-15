@@ -14,7 +14,6 @@ import QueryPieChart from "./QueryPieChart";
 import QueryBarChart from "./QueryBarChart";
 import css from "./query.module.css";
 import QueryTable from "./QueryTable";
-import QueryTable2 from "./QueryTable2";
 
 type Progress = {
   queried?: boolean;
@@ -26,6 +25,12 @@ type Panels = "query" | "transform" | "visualize";
 type Props = {
   params: { queryId: string };
 };
+
+const queryExecResultToObjects = (queryResult: QueryExecResult) =>
+  queryResult.values.map((row, i) => ({
+    ...Object.fromEntries(queryResult.columns.map((k, i) => [k, row[i]])),
+    key: i,
+  }));
 
 const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const db = useDb();
@@ -69,6 +74,8 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
       setError(err as Error);
     }
   };
+
+  console.log(postProcessResult);
 
   useEffect(() => {
     if (!db || !sqlStatement) {
@@ -185,17 +192,32 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
               { value: "barChart", label: "Bar chart" },
               { value: "pieChart", label: "Pie chart" },
               { value: "table", label: "Table" },
-              { value: "table2", label: "Table 2" },
             ]}
             style={{ width: 120 }}
           />
           <br />
           <br />
+
           {chartType === "table" &&
-            queryResults.map((queryResult, i) => (
-              <QueryTable queryResult={queryResult} key={i} />
+            (enableTransform ? (
+              <QueryTable
+                columns={
+                  postProcessResult.length
+                    ? Object.keys(postProcessResult[0])
+                    : []
+                }
+                values={postProcessResult}
+              />
+            ) : (
+              queryResults.map((queryResult, i) => (
+                <QueryTable
+                  columns={queryResult.columns}
+                  values={queryExecResultToObjects(queryResult)}
+                  key={i}
+                />
+              ))
             ))}
-          {chartType === "table2" && <QueryTable2 data={postProcessResult} />}
+
           {chartType === "barChart" &&
             queryResults.map((queryResult, i) => (
               <QueryBarChart queryResult={queryResult} key={i} />

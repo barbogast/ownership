@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 
-type ChartType = "table" | "table2" | "barChart" | "pieChart";
+type ChartType = "table" | "barChart" | "pieChart";
 
 type Query = {
   id: string;
