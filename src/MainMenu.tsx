@@ -91,8 +91,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     },
     {
       key: `ownership`,
-      label: `Ownership (old)`,
-      children: [],
+      label: <Link href="/ownership">Ownership (old)</Link>,
     },
   ];
 
