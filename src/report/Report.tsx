@@ -16,6 +16,7 @@ import "@blocknote/core/style.css";
 import Chart from "./Chart";
 import { updateBlocks, updateLabel, useReport } from "./reportStore";
 import { ReadOnly, useReadOnly } from "../ReadonlyContext";
+import { Input } from "antd";
 
 const ChartBlock = createReactBlockSpec({
   type: "dataDisplay",
@@ -98,8 +99,8 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
       <>
         {!readOnly && (
           <>
-            Label:{" "}
-            <input
+            <Input
+              addonBefore="Label"
               value={label}
               onChange={(event) => updateLabel(reportId, event.target.value)}
             />

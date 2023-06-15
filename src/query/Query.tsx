@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Collapse, Button, Select } from "antd";
+import { Collapse, Button, Select, Input } from "antd";
 
 import { useDb, QueryExecResult } from "../Db";
 import QueryResult from "../QueryResult";
@@ -102,7 +102,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
       children: (
         <>
           SQL:{" "}
-          <input
+          <Input
             value={sqlStatement}
             onChange={(event) =>
               updateSqlStatement(queryId, event.target.value)
@@ -235,8 +235,8 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
       <>
-        Label:{" "}
-        <input
+        <Input
+          addonBefore="Label"
           value={label}
           onChange={(event) => updateLabel(queryId, event.target.value)}
           style={{ width: 500 }}
