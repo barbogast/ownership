@@ -8,7 +8,8 @@
     "build": "cp node_modules/sql.js/dist/sql-wasm.wasm public && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "convert-csv": "(cd data && npx ts-node --esm convertCsv.ts)"
+    "convert-csv": "(cd data && npx ts-node --esm convertCsv.ts)",
+    "convert-csv2": "(cd data && npx ts-node --esm convertCsv2.ts)"
   },
   "dependencies": {
     "@blocknote/core": "^0.8.0",
