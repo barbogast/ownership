@@ -95,15 +95,6 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     },
   ];
 
-  // const databases = [
-  //   { title: "Outstanding debt Europe 1995 - 2019" },
-  //   { title: "Temperature Measurements Canada and Alaska" },
-  // ];
-
-  // const queries = [
-  //   // title:
-  // ];
-
   return (
     <Layout
       style={{
