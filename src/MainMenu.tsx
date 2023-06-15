@@ -107,7 +107,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   return (
     <Layout
       style={{
-        padding: "24px 0",
+        padding: "16px 0",
         background: colorBgContainer,
       }}
     >
@@ -115,7 +115,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         style={{
           background: colorBgContainer,
         }}
-        width={400}
+        width={300}
       >
         <Menu
           mode="inline"
