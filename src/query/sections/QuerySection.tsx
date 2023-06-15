@@ -1,8 +1,8 @@
 import { Input, Button } from "antd";
-import QueryResult from "../../QueryResult";
 import { updateSqlStatement, useQuery } from "./../queryStore";
 import { QueryExecResult } from "../../Db";
-import css from "../query.module.css";
+import TableDisplay from "../../display/TableDisplay";
+import { queryExecResultToObjects } from "../utils";
 
 type Props = {
   queryId: string;
@@ -26,18 +26,13 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
       <Button type="primary" onClick={runQuery}>
         Run query
       </Button>
-      {queryResults.length ? (
-        <div className={css.codedisplay}>
-          <pre>
-            {
-              // results contains one object per select statement in the query
-              queryResults.map(({ columns, values }, i) => (
-                <QueryResult key={i} columns={columns} values={values} />
-              ))
-            }
-          </pre>
-        </div>
-      ) : null}
+      {queryResults.map((queryResult, i) => (
+        <TableDisplay
+          columns={queryResult.columns}
+          values={queryExecResultToObjects(queryResult)}
+          key={i}
+        />
+      ))}
     </>
   );
 };
