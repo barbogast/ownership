@@ -7,6 +7,8 @@ import { DataType } from "../types";
 import PieChartDisplay from "../display/PieChartDisplay";
 import BarChartDisplay from "../display/BarChartDisplay";
 import { Link } from "wouter";
+import TableDisplay from "../display/TableDisplay";
+import { queryExecResultToObjects } from "../query/utils";
 
 type Props = {
   queryId: string;
@@ -18,6 +20,9 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
 
   const { id, sqlStatement, transformCode, chartType } = useQuery(queryId);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
+  const [transformResult, setTransformResult] = useState<
+    Record<string, unknown>[]
+  >([]);
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
@@ -26,16 +31,18 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
     }
 
     try {
-      let result = db!.exec(sqlStatement);
+      const result = db!.exec(sqlStatement);
       if (!result.length) {
         // DB query most probably resulted in an error
         return;
       }
       if (transformCode) {
         const func = new Function("queryResult", transformCode);
-        result = func(result);
+        const transformResult = func(result);
+        setTransformResult(transformResult);
+      } else {
+        setQueryResults(result);
       }
-      setQueryResults(result);
     } catch (err) {
       console.log(error);
       setError(err as Error);
@@ -47,30 +54,25 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   return (
     <>
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
-      {chartType === "table" && (
-        <Table<DataType>
-          columns={[
-            {
-              title: "Name",
-              dataIndex: "name",
-              key: "name",
-            },
-            {
-              title: "Value",
-              dataIndex: "value",
-              key: "value",
-            },
-          ]}
-          rowSelection={{
-            type: "checkbox",
-            // onChange: (_, selectedDataSets) => {
-            //   setSelected(selectedDataSets);
-            // },
-            checkStrictly: true,
-          }}
-          //   dataSource={postProcessResult}
-        />
-      )}
+
+      {chartType === "table" &&
+        (transformResult.length ? (
+          <TableDisplay
+            columns={
+              transformResult.length ? Object.keys(transformResult[0]) : []
+            }
+            values={transformResult}
+          />
+        ) : (
+          queryResults.map((queryResult, i) => (
+            <TableDisplay
+              columns={queryResult.columns}
+              values={queryExecResultToObjects(queryResult)}
+              key={i}
+            />
+          ))
+        ))}
+
       {chartType === "barChart" &&
         queryResults.map((queryResult, i) => (
           <BarChartDisplay queryResult={queryResult} key={i} />
@@ -80,6 +82,7 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
         queryResults.map((queryResult, i) => (
           <PieChartDisplay queryResult={queryResult} key={i} />
         ))}
+
       {showEditLink && (
         <div style={{ textAlign: "right" }}>
           <Link href={`/query/${id}`}>
