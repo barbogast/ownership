@@ -14,6 +14,7 @@ import { DataType } from "../types";
 import QueryPieChart from "./QueryPieChart";
 import QueryBarChart from "./QueryBarChart";
 import css from "./query.module.css";
+import QueryTable from "./QueryTable";
 
 type Progress = {
   queried?: boolean;
@@ -190,30 +191,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           />
           <br />
           <br />
-          {chartType === "table" && (
-            <Table<DataType>
-              columns={[
-                {
-                  title: "Name",
-                  dataIndex: "name",
-                  key: "name",
-                },
-                {
-                  title: "Value",
-                  dataIndex: "value",
-                  key: "value",
-                },
-              ]}
-              rowSelection={{
-                type: "checkbox",
-                // onChange: (_, selectedDataSets) => {
-                //   setSelected(selectedDataSets);
-                // },
-                checkStrictly: true,
-              }}
-              dataSource={postProcessResult}
-            />
-          )}
+          {chartType === "table" && <QueryTable data={postProcessResult} />}
           {chartType === "barChart" &&
             queryResults.map((queryResult, i) => (
               <QueryBarChart queryResult={queryResult} key={i} />
