@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import { parse } from "csv-parse/sync";
+import { stringify } from "csv-stringify/sync";
 
 /*
 This CSV:
@@ -38,9 +39,25 @@ Reconstruct the 4th column (Residents):
 // copied into the output csv unchanged
 const NUMBER_OF_STATIC_COLUMNS = 2;
 
+const parseFile = (fileName: string) => {
+  const input = fs.readFileSync(`csv/${fileName}`, "utf-8");
+
+  // Windows and old Macos versions use \r\n as line separator. Let's remove \r to not get confused
+  const cleaned = input.replace(/\r/g, "");
+
+  const records = parse(cleaned, { delimiter: "," }) as string[][];
+
+  const [headerRow, ...valueRows] = records;
+  const staticHeaders = headerRow.slice(0, NUMBER_OF_STATIC_COLUMNS);
+  const valueHeaders = headerRow.slice(NUMBER_OF_STATIC_COLUMNS);
+  return { valueRows, staticHeaders, valueHeaders };
+};
+
 // Calculate the header with the most levels by splitting each header by \n and taking the highest length
-const getNumberOfCategories = (valueHeaders: string[]) =>
-  Math.max(...valueHeaders.map((header) => header.split("\n").length));
+const getNumberOfCategories = (fileName: string) => {
+  const { valueHeaders } = parseFile(fileName);
+  return Math.max(...valueHeaders.map((header) => header.split("\n").length));
+};
 
 const getColumnIndicesToDrop = (
   valueHeaders: string[],
@@ -81,32 +98,19 @@ const getNewHeaders = (numberOfCategories: number, staticHeaders: string[]) => {
 const writeCsv = (result: string[][]) => {
   fs.writeFileSync(
     "output.csv",
-    result
-      .map((row) => row.map((v) => (v === undefined ? '""' : v)).join("\t"))
-      .join("\n"),
+    stringify(result, { delimiter: "\t", quoted: true, quoted_empty: true }),
     "utf-8"
   );
 };
 
 const processFile = (
-  result: string[][],
   fileName: string,
-  addHeader: boolean
+  addHeader: boolean,
+  numberOfCategories: number
 ) => {
   console.log("Processing", fileName);
-  const input = fs.readFileSync(`csv/${fileName}`, "utf-8");
-
-  // Windows and old Macos versions use \r\n as line separator. Let's remove \r to not get confused
-  const cleaned = input.replace(/\r/g, "");
-
-  const records = parse(cleaned, { delimiter: "," }) as string[][];
-
-  const [headerRow, ...valueRows] = records;
-
-  const staticHeaders = headerRow.slice(0, NUMBER_OF_STATIC_COLUMNS);
-  const valueHeaders = headerRow.slice(NUMBER_OF_STATIC_COLUMNS);
-
-  const numberOfCategories = getNumberOfCategories(valueHeaders);
+  const { valueRows, staticHeaders, valueHeaders } = parseFile(fileName);
+  const result: string[][] = [];
 
   // We need to drop all columnns which are just sums of other columns
   const columnIndecesToDrop = getColumnIndicesToDrop(
@@ -135,9 +139,11 @@ const processFile = (
       result.push(entry);
     }
   }
+  return result;
 };
 
-const result: string[][] = [];
-processFile(result, "finnland.csv", true);
-processFile(result, "belgium.csv", false);
-writeCsv(result);
+const file = ["finnland.csv", "belgium.csv"];
+const numberOfCategories = Math.max(...file.map(getNumberOfCategories));
+writeCsv(
+  file.flatMap((fileName) => processFile(fileName, true, numberOfCategories))
+);
