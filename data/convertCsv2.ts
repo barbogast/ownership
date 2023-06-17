@@ -147,7 +147,7 @@ const processFile = (
         entry.push(categories[i]);
       }
 
-      entry.push(value);
+      entry.push(value.replace(",", "")); // Remove thousand seperator
       result.push(entry);
     }
   }
