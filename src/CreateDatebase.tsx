@@ -109,7 +109,12 @@ const insertIntoTable = (
   for (const row of records.slice(1)) {
     const insertStmt = `insert into ${tableName} (${columns.map(
       (col) => col.dbName
-    )}) values (${row.join(", ")})`;
+    )}) values (${row
+      .map((value, i) => (columns[i].type === "text" ? `"${value}"` : value))
+      .map((value, i) =>
+        columns[i].type === "real" ? `"${value.replace(",", ".")}"` : value
+      )
+      .join(", ")})`;
     log(insertStmt, "sql");
     db.exec(insertStmt);
   }
