@@ -95,6 +95,18 @@ const getNewHeaders = (numberOfCategories: number, staticHeaders: string[]) => {
   return newHeaders;
 };
 
+const convert_year = (input: string) => {
+  const [year, quarter] = input.split("_");
+  const month =
+    {
+      1: "01",
+      2: "04",
+      3: "07",
+      4: "10",
+    }[quarter] || "01";
+  return `${year}-${month}-01`;
+};
+
 const writeCsv = (result: string[][]) => {
   fs.writeFileSync(
     "output.csv",
@@ -130,7 +142,7 @@ const processFile = (
       const header = valueHeaders[index];
       const categories = header.split("\n");
 
-      const entry = [country, year];
+      const entry = [country, convert_year(year)];
       for (let i = 0; i < numberOfCategories; i++) {
         entry.push(categories[i]);
       }
