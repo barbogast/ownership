@@ -86,7 +86,8 @@ const getColumnIndicesToDrop = (
   return columnIndecesToDrop;
 };
 
-const getNewHeaders = (numberOfCategories: number, staticHeaders: string[]) => {
+const getNewHeaders = (fileName: string, numberOfCategories: number) => {
+  const { staticHeaders } = parseFile(fileName);
   const newHeaders = ([] as string[]).concat(staticHeaders);
   for (let i = 0; i < numberOfCategories; i++) {
     newHeaders.push(`category_${i + 1}`);
@@ -115,11 +116,7 @@ const writeCsv = (result: string[][]) => {
   );
 };
 
-const processFile = (
-  fileName: string,
-  addHeader: boolean,
-  numberOfCategories: number
-) => {
+const processFile = (fileName: string, numberOfCategories: number) => {
   console.log("Processing", fileName);
   const { valueRows, staticHeaders, valueHeaders } = parseFile(fileName);
   const result: string[][] = [];
@@ -129,10 +126,6 @@ const processFile = (
     valueHeaders,
     staticHeaders
   );
-
-  if (addHeader) {
-    result.push(getNewHeaders(numberOfCategories, staticHeaders));
-  }
 
   for (const [country, year, ...values] of valueRows) {
     for (const [index, value] of values.entries()) {
@@ -154,8 +147,10 @@ const processFile = (
   return result;
 };
 
-const file = ["finnland.csv", "belgium.csv"];
-const numberOfCategories = Math.max(...file.map(getNumberOfCategories));
-writeCsv(
-  file.flatMap((fileName) => processFile(fileName, true, numberOfCategories))
+const files = ["finnland.csv", "belgium.csv"];
+
+const numberOfCategories = Math.max(...files.map(getNumberOfCategories));
+const data = [getNewHeaders(files[0], numberOfCategories)].concat(
+  files.flatMap((fileName) => processFile(fileName, numberOfCategories))
 );
+writeCsv(data);
