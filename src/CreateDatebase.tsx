@@ -52,11 +52,10 @@ const guessType = (rows: CsvRecords, headerIndex: number) => {
     return "integer";
   }
 
-  const maybeFloat = value.replace(",", "."); // Fix decimal separator
   if (
-    String(parseFloat(maybeFloat)) ===
+    String(parseFloat(value)) ===
     // parseFloat(111.0) will result in "111"
-    maybeFloat.replace(".0", "")
+    value.replace(".0", "")
   ) {
     return "real";
   }
@@ -111,9 +110,6 @@ const insertIntoTable = (
       (col) => col.dbName
     )}) values (${row
       .map((value, i) => (columns[i].type === "text" ? `"${value}"` : value))
-      .map((value, i) =>
-        columns[i].type === "real" ? `"${value.replace(",", ".")}"` : value
-      )
       .join(", ")})`;
     log(insertStmt, "sql");
     db.exec(insertStmt);
