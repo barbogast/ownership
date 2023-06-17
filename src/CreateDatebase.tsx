@@ -208,7 +208,13 @@ const CreateDatabase: React.FC = () => {
               <select
                 value={col.type}
                 onChange={(event) => {
-                  col.type = event.target.value as ColumnType;
+                  setColumns((state) =>
+                    state.map((c, i2) =>
+                      i === i2
+                        ? { ...c, type: event.target.value as ColumnType }
+                        : c
+                    )
+                  );
                 }}
               >
                 <option value="integer">Integer</option>
