@@ -105,14 +105,16 @@ const insertIntoTable = (
   columns: ColumnDefinition[],
   records: CsvRecords
 ) => {
+  const insertStmt = `insert into ${tableName} (${columns.map(
+    (col) => col.dbName
+  )}) values (${columns.map((col) => ":" + col.dbName).join(", ")})`;
+  log(insertStmt, "sql");
+
+  const preparedStatement = db.prepare(insertStmt);
   for (const row of records.slice(1)) {
-    const insertStmt = `insert into ${tableName} (${columns.map(
-      (col) => col.dbName
-    )}) values (${row
-      .map((value, i) => (columns[i].type === "text" ? `"${value}"` : value))
-      .join(", ")})`;
-    log(insertStmt, "sql");
-    db.exec(insertStmt);
+    preparedStatement.run(
+      Object.fromEntries(columns.map((k, i) => [k.dbName, row[i]]))
+    );
   }
 };
 
