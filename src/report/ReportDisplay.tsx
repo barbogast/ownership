@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { useDb, QueryExecResult } from "../Db";
+import { QueryExecResult } from "../Db";
 import { useQuery } from "../query/queryStore";
 import PieChartDisplay from "../display/PieChartDisplay";
 import BarChartDisplay from "../display/BarChartDisplay";
 import { Link } from "wouter";
 import TableDisplay from "../display/TableDisplay";
 import { queryExecResultToObjects } from "../query/utils";
+import { useDatabase } from "../dbStore";
 
 type Props = {
   queryId: string;
@@ -14,7 +15,8 @@ type Props = {
 };
 
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
-  const db = useDb();
+  console.log("asdfasf");
+  const db = useDatabase("database.sqlite", true);
 
   const { id, sqlStatement, transformCode, chartType, enableTransform } =
     useQuery(queryId);
@@ -25,12 +27,12 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
-    if (!db || !sqlStatement) {
+    if (db.status !== "loaded" || !sqlStatement) {
       return;
     }
 
     try {
-      const result = db!.exec(sqlStatement);
+      const result = db.db.exec(sqlStatement);
       if (!result.length) {
         // DB query most probably resulted in an error
         return;

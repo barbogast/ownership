@@ -6,7 +6,6 @@ import PieChart from "./PieChart";
 
 import data from "../../data/data.json";
 import MyBarChart from "./MyBarChart";
-import { Db } from "../Db";
 
 function App() {
   const [selected, setSelected] = useState<DataType[]>([]);
@@ -15,12 +14,10 @@ function App() {
     <>
       <Row>{/* <Editor /> */}</Row>
       <Row>
-        <Db>
-          <Col span={24}>
-            {/* <CsvImport /> */}
-            {/* <SQLRepl /> */}
-          </Col>
-        </Db>
+        <Col span={24}>
+          {/* <CsvImport /> */}
+          {/* <SQLRepl /> */}
+        </Col>
       </Row>
       <Row></Row>
       <Row>

@@ -1,6 +1,7 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
-import { useDb, Database, QueryExecResult } from "../Db";
+import { v4 as uuidv4 } from "uuid";
+import { Database, QueryExecResult } from "../Db";
 import QueryResult from "./QueryResult";
 import {
   BarChart,
@@ -14,6 +15,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { useDatabase } from "../dbStore";
 
 const log = (msg: string, category: "sql") => {
   console.log(category, ": ", msg);
@@ -149,7 +151,8 @@ type Progress = {
 type ChartType = "barChart" | "pieChart";
 
 const CsvImport: React.FC = () => {
-  const db = useDb();
+  const id = useMemo(uuidv4, []);
+  const db = useDatabase(id, false);
   const [progress, setProgress] = useState<Progress>({});
   const [csvText, setCsvText] = useState(initialValues.csv);
   const [tableName, setTableName] = useState(initialValues.tableName);
@@ -171,10 +174,11 @@ const CsvImport: React.FC = () => {
   };
 
   const insertTable = () => {
+    if (db.status !== "loaded") throw new Error();
     try {
       setError(undefined);
-      createTable(db!, tableName, columns);
-      insertIntoTable(db!, tableName, columns, csvText);
+      createTable(db.db, tableName, columns);
+      insertIntoTable(db.db, tableName, columns, csvText);
       setProgress({ parsed: true, imported: true });
     } catch (err) {
       setError(err as Error);
@@ -182,9 +186,10 @@ const CsvImport: React.FC = () => {
   };
 
   const runQuery = () => {
+    if (db.status !== "loaded") throw new Error();
     try {
       setError(undefined);
-      setQueryResult(db!.exec(query));
+      setQueryResult(db.db.exec(query));
       setProgress({ parsed: true, imported: true, queried: true });
     } catch (err) {
       setError(err as Error);

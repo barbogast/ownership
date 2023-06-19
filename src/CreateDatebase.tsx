@@ -1,11 +1,10 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
-import { useDb, Database } from "./Db";
+import { v4 as uuidv4 } from "uuid";
+import { Database } from "./Db";
 import { parse } from "csv-parse/browser/esm";
-
-const log = (msg: string, category: "sql") => {
-  console.log(category, ": ", msg);
-};
+import { logger } from "./utils";
+import { useDatabase } from "./dbStore";
 
 const DEBUG = true;
 const initialValues = DEBUG
@@ -95,7 +94,7 @@ const createTable = (
     create table ${tableName} (${columns.map(
     (col) => `${col.dbName} ${col.type}`
   )})`;
-  log(createTableStatement, "sql");
+  logger("sql", createTableStatement);
   db.exec(createTableStatement);
 };
 
@@ -108,7 +107,7 @@ const insertIntoTable = (
   const insertStmt = `insert into ${tableName} (${columns.map(
     (col) => col.dbName
   )}) values (${columns.map((col) => ":" + col.dbName).join(", ")})`;
-  log(insertStmt, "sql");
+  logger("sql", insertStmt);
 
   const preparedStatement = db.prepare(insertStmt);
   for (const row of records.slice(1)) {
@@ -134,7 +133,9 @@ type Progress = {
 };
 
 const CreateDatabase: React.FC = () => {
-  const db = useDb();
+  const id = useMemo(uuidv4, []);
+  const db = useDatabase(id, false);
+
   const [progress, setProgress] = useState<Progress>({});
   const [csvText, setCsvText] = useState(initialValues.csv);
   const [csvRecords, setCsvRecords] = useState<CsvRecords>([]);
@@ -169,11 +170,12 @@ const CreateDatabase: React.FC = () => {
   };
 
   const insertTable = () => {
+    if (db.status !== "loaded") throw new Error();
     try {
       console.time("insertTable()");
       setError(undefined);
-      createTable(db!, tableName, columns);
-      insertIntoTable(db!, tableName, columns, csvRecords);
+      createTable(db.db, tableName, columns);
+      insertIntoTable(db.db, tableName, columns, csvRecords);
       setProgress({ parsed: true, imported: true });
       console.timeEnd("insertTable()");
     } catch (err) {
@@ -183,7 +185,8 @@ const CreateDatabase: React.FC = () => {
   };
 
   const downloadDatabase = () => {
-    downloadFile(db!.export(), "application/x-sqlite3", "database.sqlite");
+    if (db.status !== "loaded") throw new Error();
+    downloadFile(db.db.export(), "application/x-sqlite3", "database.sqlite");
   };
 
   const downloadImportFile = () => {

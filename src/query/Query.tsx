@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Collapse, Input } from "antd";
 
-import { useDb, QueryExecResult } from "../Db";
+import { QueryExecResult } from "../Db";
 import { updateEnableTransform, updateLabel, useQuery } from "./queryStore";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
+import { useDatabase } from "../dbStore";
 
 type Panels = "query" | "transform" | "visualize";
 
@@ -19,7 +20,7 @@ type Props = {
 };
 
 const Query: React.FC<Props> = ({ params: { queryId } }) => {
-  const db = useDb();
+  const db = useDatabase("database.sqlite", true);
   const [activePanel, setActivePanel] = useState<Panels>("query");
   const [progress, setProgress] = useState<Progress>({});
 
@@ -32,9 +33,11 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const [error, setError] = useState<Error>();
 
   const runQuery = (): QueryExecResult[] => {
+    if (db.status !== "loaded") throw new Error();
+
     try {
       setError(undefined);
-      const results = db!.exec(sqlStatement);
+      const results = db.db.exec(sqlStatement);
       setQueryResults(results);
       setProgress({ queried: true });
       return results;
@@ -59,7 +62,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   };
 
   useEffect(() => {
-    if (!db || !sqlStatement) {
+    if (db.status !== "loaded" || !sqlStatement) {
       return;
     }
     const results = runQuery();
