@@ -184,6 +184,18 @@ const CreateDatabase: React.FC = () => {
     link.click();
   };
 
+  const downloadImportFile = () => {
+    const manifest = { manifestVersion: 1, columnDefinitions: columns };
+    const importFile = "#" + JSON.stringify(manifest) + "\n" + csvText;
+    // https://stackoverflow.com/a/37340749
+    const blob = new Blob([importFile], { type: "application/csv" });
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    const fileName = "database-import.csv";
+    link.download = fileName;
+    link.click();
+  };
+
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
       <textarea
@@ -237,6 +249,11 @@ const CreateDatabase: React.FC = () => {
       )}
       {progress.imported && (
         <button onClick={downloadDatabase}>Download database</button>
+      )}
+      {progress.imported && (
+        <button onClick={downloadImportFile}>
+          Download database import file
+        </button>
       )}
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>;
     </div>
