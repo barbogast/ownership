@@ -118,6 +118,15 @@ const insertIntoTable = (
   }
 };
 
+const downloadFile = (data: BlobPart, mimeType: string, fileName: string) => {
+  // https://stackoverflow.com/a/37340749
+  const blob = new Blob([data], { type: mimeType });
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click();
+};
+
 type Progress = {
   parsed?: boolean;
   imported?: boolean;
@@ -174,26 +183,13 @@ const CreateDatabase: React.FC = () => {
   };
 
   const downloadDatabase = () => {
-    const data = db!.export();
-    // https://stackoverflow.com/a/37340749
-    const blob = new Blob([data], { type: "application/x-sqlite3" });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    const fileName = "sqlitedb";
-    link.download = fileName;
-    link.click();
+    downloadFile(db!.export(), "application/x-sqlite3", "database.sqlite");
   };
 
   const downloadImportFile = () => {
     const manifest = { manifestVersion: 1, columnDefinitions: columns };
-    const importFile = "#" + JSON.stringify(manifest) + "\n" + csvText;
-    // https://stackoverflow.com/a/37340749
-    const blob = new Blob([importFile], { type: "application/csv" });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    const fileName = "database-import.csv";
-    link.download = fileName;
-    link.click();
+    const fileContent = "#" + JSON.stringify(manifest) + "\n" + csvText;
+    downloadFile(fileContent, "application/csv", "database-import.csv");
   };
 
   return (
