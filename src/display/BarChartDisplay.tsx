@@ -11,7 +11,7 @@ const BarChartDisplay: React.FC<Props> = ({ queryResult }) => {
       width={500}
       height={300}
       data={values.map((row) =>
-        columns.slice(1).reduce(
+        columns.reduce(
           (data, col, index) => ({
             ...data,
             [col]: row[index],
@@ -32,14 +32,16 @@ const BarChartDisplay: React.FC<Props> = ({ queryResult }) => {
       <YAxis />
       <Tooltip />
       <Legend />
-      {columns.map((col, i) => (
-        <Bar
-          key={i}
-          dataKey={col}
-          stackId="a"
-          fill={COLORS[i % COLORS.length]}
-        />
-      ))}
+      {columns
+        .filter((col) => col !== "label")
+        .map((col, i) => (
+          <Bar
+            key={i}
+            dataKey={col}
+            stackId="a"
+            fill={COLORS[i % COLORS.length]}
+          />
+        ))}
     </BarChart>
   );
 };
