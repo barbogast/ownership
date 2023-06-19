@@ -1,6 +1,6 @@
 import { Select } from "antd";
 import { updateChartType, useQuery } from "../queryStore";
-import { QueryExecResult } from "../../Db";
+import { QueryExecResult } from "../../dbStore";
 import { queryExecResultToObjects } from "../utils";
 import TableDisplay from "../../display/TableDisplay";
 import BarChartDisplay from "../../display/BarChartDisplay";

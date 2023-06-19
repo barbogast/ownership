@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { QueryExecResult } from "../Db";
+import { QueryExecResult } from "../dbStore";
 import { useQuery } from "../query/queryStore";
 import PieChartDisplay from "../display/PieChartDisplay";
 import BarChartDisplay from "../display/BarChartDisplay";

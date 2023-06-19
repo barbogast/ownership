@@ -1,4 +1,4 @@
-import { QueryExecResult } from "../Db";
+import { QueryExecResult } from "../dbStore";
 
 export const queryExecResultToObjects = (queryResult: QueryExecResult) =>
   queryResult.values.map((row, i) => ({

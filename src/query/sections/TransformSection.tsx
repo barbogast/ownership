@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { useQuery, updateTransformCode } from "../queryStore";
-import { QueryExecResult } from "../../Db";
+import { QueryExecResult } from "../../dbStore";
 import css from "../query.module.css";
 
 type Props = {

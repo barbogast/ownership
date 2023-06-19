@@ -1,10 +1,9 @@
 import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
-import { Database } from "./Db";
 import { parse } from "csv-parse/browser/esm";
 import { logger } from "./utils";
-import { useDatabase } from "./dbStore";
+import { useDatabase, Database } from "./dbStore";
 
 const DEBUG = true;
 const initialValues = DEBUG

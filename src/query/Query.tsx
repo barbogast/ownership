@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Collapse, Input } from "antd";
 
-import { QueryExecResult } from "../Db";
 import { updateEnableTransform, updateLabel, useQuery } from "./queryStore";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
-import { useDatabase } from "../dbStore";
+import { useDatabase, QueryExecResult } from "../dbStore";
 
 type Panels = "query" | "transform" | "visualize";
 

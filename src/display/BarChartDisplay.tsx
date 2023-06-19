@@ -1,6 +1,6 @@
 import { Tooltip } from "antd";
 import { BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar } from "recharts";
-import { QueryExecResult } from "../Db";
+import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
 
 type Props = { queryResult: QueryExecResult };

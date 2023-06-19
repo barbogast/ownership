@@ -3,6 +3,8 @@ import { immer } from "zustand/middleware/immer";
 import initSqlJs, { Database } from "sql.js";
 import { logger } from "./utils";
 
+export type { Database, QueryExecResult } from "sql.js";
+
 // Note: key may be a
 // - fileName in case the DB was populated from a file or a
 // - UUID if it was created blank

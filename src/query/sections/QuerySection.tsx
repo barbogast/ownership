@@ -1,6 +1,6 @@
 import { Input, Button, Col, Row } from "antd";
 import { updateSqlStatement, useQuery } from "./../queryStore";
-import { QueryExecResult } from "../../Db";
+import { QueryExecResult } from "../../dbStore";
 import TableDisplay from "../../display/TableDisplay";
 import { queryExecResultToObjects } from "../utils";
 

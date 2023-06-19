@@ -1,4 +1,4 @@
-import { QueryExecResult } from "../Db";
+import { QueryExecResult } from "../dbStore";
 
 type ResultTableProps = QueryExecResult;
 

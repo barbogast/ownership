@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Cell, Pie, PieChart } from "recharts";
 import { Alert, Select } from "antd";
-import { QueryExecResult } from "../Db";
+import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
 
 type Orientation = "row" | "column";

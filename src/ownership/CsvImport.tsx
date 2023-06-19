@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
-import { Database, QueryExecResult } from "../Db";
+import { Database, QueryExecResult } from "../dbStore";
 import QueryResult from "./QueryResult";
 import {
   BarChart,
