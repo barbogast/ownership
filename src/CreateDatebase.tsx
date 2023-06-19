@@ -135,6 +135,7 @@ const CreateDatabase: React.FC = () => {
   const parseCsv = () => {
     const f = async () => {
       try {
+        console.time("parseCsv()");
         const records: CsvRecords = await new Promise((resolve, reject) =>
           parse(csvText, { delimiter: "\t" }, (err, records) => {
             if (err) {
@@ -147,6 +148,7 @@ const CreateDatabase: React.FC = () => {
         setColumns(analyzeCsvHeader(records));
         setCsvRecords(records);
         setProgress({ parsed: true });
+        console.timeEnd("parseCsv()");
       } catch (err) {
         console.error(err);
         setError(err as Error);
@@ -157,10 +159,12 @@ const CreateDatabase: React.FC = () => {
 
   const insertTable = () => {
     try {
+      console.time("insertTable()");
       setError(undefined);
       createTable(db!, tableName, columns);
       insertIntoTable(db!, tableName, columns, csvRecords);
       setProgress({ parsed: true, imported: true });
+      console.timeEnd("insertTable()");
     } catch (err) {
       console.error(err);
       setError(err as Error);
