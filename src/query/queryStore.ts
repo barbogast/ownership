@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
+import { deepCopy, escapeRegExp, getNewLabel } from "../utils";
 
 type ChartType = "table" | "barChart" | "pieChart";
 
@@ -145,42 +146,28 @@ export const addQuery = () => {
   return id;
 };
 
-// Returns the label appended with " (1)" if there already is a query with the same
-// label, like "My Query (1)"
-// If there already are queries with a number appended, the returned number will be
-// incremented.
-const getNewLabel = (oldLabel: string) => {
-  const existingQueries = Object.values(useQueryStore.getState().queries);
-
-  const re = new RegExp(`^${oldLabel}( \\((\\d)\\))?$`);
-  let sameLabelFound = false;
-  const existingNumbers = [];
-  for (const existingQuery of existingQueries) {
-    const match = re.exec(existingQuery.label);
-    if (match) {
-      sameLabelFound = true;
-      const number = match[2];
-      if (number) {
-        existingNumbers.push(parseInt(number));
-      }
-    }
-  }
-
-  if (sameLabelFound) {
-    const newNumber = existingNumbers.length
-      ? Math.max(...existingNumbers) + 1
-      : 1;
-    return `${oldLabel} (${newNumber})`;
-  } else {
-    return oldLabel;
-  }
-};
-
 export const importQuery = (query: Query) => {
   const id = uuidv4();
-  const label = getNewLabel(query.label);
+  const existingLabels = Object.values(useQueryStore.getState().queries).map(
+    (q) => q.label
+  );
+  const label = getNewLabel(existingLabels, query.label);
   useQueryStore.setState((state) => {
     state.queries[id] = { ...query, id, label };
+  });
+  return id;
+};
+
+export const duplicate = (queryId: string) => {
+  const sourceQuery = useQueryStore.getState().queries[queryId];
+  const id = uuidv4();
+  const existingLabels = Object.values(useQueryStore.getState().queries).map(
+    (q) => q.label
+  );
+  const label = getNewLabel(existingLabels, sourceQuery.label);
+
+  useQueryStore.setState((state) => {
+    state.queries[id] = { ...deepCopy(sourceQuery), id, label };
   });
   return id;
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Collapse, Input, Row } from "antd";
 
 import {
+  duplicate,
   remove,
   updateEnableTransform,
   updateLabel,
@@ -88,6 +89,11 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     if (removed) {
       setLocation("/");
     }
+  };
+
+  const duplicateQuery = () => {
+    const id = duplicate(queryId);
+    setLocation(`/query/${id}`);
   };
 
   useEffect(() => {
@@ -183,6 +189,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           </Col>
           <Col span={12} style={{ textAlign: "right" }}>
             <Button onClick={removeQuery}>Delete...</Button>{" "}
+            <Button onClick={duplicateQuery}>Duplicate</Button>{" "}
             <Button onClick={exportQuery}>Export</Button>
           </Col>
         </Row>
