@@ -2,7 +2,7 @@ import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
 import { parse } from "csv-parse/browser/esm";
-import { logger } from "./utils";
+import { downloadFile, logger } from "./utils";
 import { useDatabase, Database } from "./dbStore";
 
 const DEBUG = true;
@@ -114,15 +114,6 @@ const insertIntoTable = (
     preparedStatement.reset();
   }
   preparedStatement.free();
-};
-
-const downloadFile = (data: BlobPart, mimeType: string, fileName: string) => {
-  // https://stackoverflow.com/a/37340749
-  const blob = new Blob([data], { type: mimeType });
-  const link = document.createElement("a");
-  link.href = window.URL.createObjectURL(blob);
-  link.download = fileName;
-  link.click();
 };
 
 type Progress = {
