@@ -48,8 +48,6 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
           value: row[valueColumnIndex],
         }));
 
-  console.log(chartData);
-
   return (
     <>
       {values.length > 1 && (
