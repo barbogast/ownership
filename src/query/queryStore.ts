@@ -113,6 +113,53 @@ export const addQuery = () => {
   return id;
 };
 
+export const importQuery = (query: Query) => {
+  const id = uuidv4();
+  const existingQueries = Object.values(useQueryStore.getState().queries);
+
+  // See if there is already a label with the same name, or with the same name and a number
+  // like "My query (1)"
+  const re = new RegExp(`^${query.label}( \\((\\d)\\))?$`);
+  let sameLabelFound = false;
+  const existingNumbers = [];
+  for (const existingQuery of existingQueries) {
+    const match = re.exec(existingQuery.label);
+    if (match) {
+      sameLabelFound = true;
+      const number = match[2];
+      if (number) {
+        existingNumbers.push(parseInt(number));
+      }
+    }
+  }
+
+  let label: string;
+  if (sameLabelFound) {
+    const newNumber = existingNumbers.length
+      ? Math.max(...existingNumbers) + 1
+      : 1;
+    label = `${query.label} (${newNumber})`;
+  } else {
+    label = query.label;
+  }
+
+  useQueryStore.setState((state) => {
+    state.queries[id] = { ...query, id, label };
+  });
+  return id;
+};
+
+export const remove = (queryId: string) => {
+  const query = useQueryStore.getState().queries[queryId];
+  const answer = confirm(`Are you sure to delete the query "${query.label}"?`);
+  if (answer === true) {
+    useQueryStore.setState((state) => {
+      delete state.queries[queryId];
+    });
+    return true;
+  }
+  return false;
+};
 export const updateLabel = (queryId: string, label: string) =>
   useQueryStore.setState((state) => {
     state.queries[queryId].label = label;

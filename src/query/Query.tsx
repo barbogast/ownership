@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Collapse, Input } from "antd";
+import { Button, Col, Collapse, Input, Row } from "antd";
 
-import { updateEnableTransform, updateLabel, useQuery } from "./queryStore";
+import {
+  remove,
+  updateEnableTransform,
+  updateLabel,
+  useQuery,
+} from "./queryStore";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
 import { QueryExecResult, initializeDb, MyDatabase } from "../dbStore";
+import { downloadFile } from "../utils";
+import { useLocation } from "wouter";
 
 type Panels = "query" | "transform" | "visualize";
 
@@ -21,16 +28,18 @@ type Props = {
 const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const [activePanel, setActivePanel] = useState<Panels>("query");
   const [progress, setProgress] = useState<Progress>({});
+  const [, setLocation] = useLocation();
 
   const [db, setDb] = useState<MyDatabase>({ status: "loading", key: "" });
 
+  const query = useQuery(queryId);
   const {
     label,
     databaseFileName,
     sqlStatement,
     enableTransform,
     transformCode,
-  } = useQuery(queryId);
+  } = query;
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [postProcessResult, setPostProcessResult] = useState([]);
@@ -63,6 +72,21 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     } catch (err) {
       console.error(err);
       setError(err as Error);
+    }
+  };
+
+  const exportQuery = () => {
+    downloadFile(
+      JSON.stringify(query),
+      "application/json",
+      `query_${query.id}.json`
+    );
+  };
+
+  const removeQuery = () => {
+    const removed = remove(queryId);
+    if (removed) {
+      setLocation("/");
     }
   };
 
@@ -148,12 +172,20 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
       <>
-        <Input
-          addonBefore="Label"
-          value={label}
-          onChange={(event) => updateLabel(queryId, event.target.value)}
-          style={{ width: 500 }}
-        />
+        <Row>
+          <Col span={12}>
+            <Input
+              addonBefore="Label"
+              value={label}
+              onChange={(event) => updateLabel(queryId, event.target.value)}
+              style={{ width: 500 }}
+            />
+          </Col>
+          <Col span={12} style={{ textAlign: "right" }}>
+            <Button onClick={removeQuery}>Delete...</Button>{" "}
+            <Button onClick={exportQuery}>Export</Button>
+          </Col>
+        </Row>
         <br /> <br />
         <Collapse
           items={items}

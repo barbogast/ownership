@@ -2,7 +2,11 @@ import { Layout, Menu, theme } from "antd";
 import { ReactElement } from "react";
 import { Link, useLocation } from "wouter";
 
-import useQueryStore, { addQuery } from "./query/queryStore";
+import useQueryStore, {
+  Query,
+  addQuery,
+  importQuery,
+} from "./query/queryStore";
 import useReportStore, { addReport } from "./report/reportStore";
 
 const databases = {
@@ -59,6 +63,14 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           const id = addQuery();
           setLocation("/query/" + id);
         }
+
+        if (key === "import-query") {
+          const queryStr = prompt("Paste content of exported file");
+          if (queryStr) {
+            const id = importQuery(JSON.parse(queryStr) as Query);
+            setLocation("/query/" + id);
+          }
+        }
       },
       children: Object.values(queryStore.queries)
         .map((query): { key: string; label: ReactElement | string } => ({
@@ -68,6 +80,10 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         .concat({
           key: "new-query",
           label: "+ Create new query",
+        })
+        .concat({
+          key: "import-query",
+          label: "+ Import query",
         }),
     },
     {
