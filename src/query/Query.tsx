@@ -5,7 +5,7 @@ import { updateEnableTransform, updateLabel, useQuery } from "./queryStore";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
-import { useDatabase, QueryExecResult } from "../dbStore";
+import { QueryExecResult, initializeDb, MyDatabase } from "../dbStore";
 
 type Panels = "query" | "transform" | "visualize";
 
@@ -19,12 +19,18 @@ type Props = {
 };
 
 const Query: React.FC<Props> = ({ params: { queryId } }) => {
-  const db = useDatabase("database.sqlite", true);
   const [activePanel, setActivePanel] = useState<Panels>("query");
   const [progress, setProgress] = useState<Progress>({});
 
-  const { label, sqlStatement, enableTransform, transformCode } =
-    useQuery(queryId);
+  const [db, setDb] = useState<MyDatabase>({ status: "loading", key: "" });
+
+  const {
+    label,
+    databaseFileName,
+    sqlStatement,
+    enableTransform,
+    transformCode,
+  } = useQuery(queryId);
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [postProcessResult, setPostProcessResult] = useState([]);
@@ -61,6 +67,16 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   };
 
   useEffect(() => {
+    const func = async () => {
+      if (databaseFileName) {
+        const db = await initializeDb(databaseFileName, true);
+        setDb(db);
+      }
+    };
+    func();
+  }, [databaseFileName]);
+
+  useEffect(() => {
     if (db.status !== "loaded" || !sqlStatement) {
       return;
     }
@@ -75,7 +91,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     setActivePanel("visualize");
     // Run this hook only once after the component mounted and the DB was initialised
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db]);
+  }, [db.status]);
 
   const items = [
     {

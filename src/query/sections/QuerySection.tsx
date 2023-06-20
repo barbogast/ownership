@@ -1,5 +1,9 @@
-import { Input, Button, Col, Row } from "antd";
-import { updateSqlStatement, useQuery } from "./../queryStore";
+import { Input, Button, Col, Row, Select } from "antd";
+import {
+  updateDatabaseFileName,
+  updateSqlStatement,
+  useQuery,
+} from "./../queryStore";
 import { QueryExecResult } from "../../dbStore";
 import TableDisplay from "../../display/TableDisplay";
 import { queryExecResultToObjects } from "../utils";
@@ -10,12 +14,21 @@ type Props = {
   queryResults: QueryExecResult[];
 };
 
+const files = ["database.sqlite", "database2.sqlite"];
 const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
-  const { sqlStatement } = useQuery(queryId);
+  const { databaseFileName, sqlStatement } = useQuery(queryId);
 
   return (
     <Row>
       <Col span={12}>
+        <Select
+          value={databaseFileName}
+          onChange={(value) => updateDatabaseFileName(queryId, value)}
+          options={files.map((f) => ({ value: f, label: f }))}
+          style={{ width: 250 }}
+          placeholder="Select database..."
+        />
+        <br />
         SQL:
         <br />
         <Input.TextArea

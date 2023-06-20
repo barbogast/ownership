@@ -9,7 +9,7 @@ export type { Database, QueryExecResult } from "sql.js";
 // - fileName in case the DB was populated from a file or a
 // - UUID if it was created blank
 
-type MyDatabase =
+export type MyDatabase =
   | {
       key: string;
       status: "loading";
@@ -52,9 +52,9 @@ const init = async () => {
   return SQL;
 };
 
-const initializeFromFile = async (key: string, keyIsFileName: boolean) => {
+export const initializeDb = async (key: string, keyIsFileName: boolean) => {
   logger("database", "initializeFromFile", { key });
-
+  let myDb: MyDatabase;
   try {
     const SQL = await init();
 
@@ -67,22 +67,15 @@ const initializeFromFile = async (key: string, keyIsFileName: boolean) => {
       db = new SQL.Database();
     }
 
-    useDatabaseStore.setState((state) => {
-      state.databases[key] = {
-        ...state.databases[key],
-        status: "loaded",
-        db,
-      };
-    });
+    myDb = { key, status: "loaded", db };
   } catch (err) {
-    useDatabaseStore.setState((state) => {
-      state.databases[key] = {
-        ...state.databases[key],
-        error: err as Error,
-        status: "error",
-      };
-    });
+    myDb = { key, error: err as Error, status: "error" };
   }
+
+  useDatabaseStore.setState((state) => {
+    state.databases[key] = myDb;
+  });
+  return myDb;
 };
 
 export const useDatabase = (key: string, keyIsFileName: boolean) => {
@@ -93,7 +86,7 @@ export const useDatabase = (key: string, keyIsFileName: boolean) => {
     useDatabaseStore.setState((state) => {
       state.databases[key] = db as MyDatabase;
     });
-    initializeFromFile(key, keyIsFileName).catch(console.error);
+    initializeDb(key, keyIsFileName).catch(console.error);
   }
   return db;
 };

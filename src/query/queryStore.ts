@@ -8,6 +8,7 @@ type ChartType = "table" | "barChart" | "pieChart";
 type Query = {
   id: string;
   label: string;
+  databaseFileName: string;
   sqlStatement: string;
   enableTransform: boolean;
   transformCode: string;
@@ -51,6 +52,7 @@ const initialState: QueryState = {
     tableofownershipdetails: {
       id: "tableofownershipdetails",
       label: "Debt ownership: Details",
+      databaseFileName: "database.sqlite",
       sqlStatement: "select * from aaa",
       enableTransform: true,
       transformCode: code,
@@ -59,6 +61,7 @@ const initialState: QueryState = {
     tableofownershipdistribution: {
       id: "tableofownershipdistribution",
       label: "Debt ownership: Distribution",
+      databaseFileName: "database.sqlite",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
       enableTransform: false,
@@ -68,6 +71,7 @@ const initialState: QueryState = {
     tableofownershiptime: {
       id: "tableofownershiptime",
       label: "Debt ownership: Time",
+      databaseFileName: "database.sqlite",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
       enableTransform: false,
@@ -100,6 +104,7 @@ export const addQuery = () => {
     state.queries[id] = {
       id,
       label: "New query",
+      databaseFileName: "",
       sqlStatement: "",
       enableTransform: false,
       transformCode: "",
@@ -111,6 +116,14 @@ export const addQuery = () => {
 export const updateLabel = (queryId: string, label: string) =>
   useQueryStore.setState((state) => {
     state.queries[queryId].label = label;
+  });
+
+export const updateDatabaseFileName = (
+  queryId: string,
+  databaseFileName: string
+) =>
+  useQueryStore.setState((state) => {
+    state.queries[queryId].databaseFileName = databaseFileName;
   });
 
 export const updateSqlStatement = (queryId: string, statement: string) =>
