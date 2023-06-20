@@ -145,13 +145,14 @@ export const addQuery = () => {
   return id;
 };
 
-export const importQuery = (query: Query) => {
-  const id = uuidv4();
+// Returns the label appended with " (1)" if there already is a query with the same
+// label, like "My Query (1)"
+// If there already are queries with a number appended, the returned number will be
+// incremented.
+const getNewLabel = (oldLabel: string) => {
   const existingQueries = Object.values(useQueryStore.getState().queries);
 
-  // See if there is already a label with the same name, or with the same name and a number
-  // like "My query (1)"
-  const re = new RegExp(`^${query.label}( \\((\\d)\\))?$`);
+  const re = new RegExp(`^${oldLabel}( \\((\\d)\\))?$`);
   let sameLabelFound = false;
   const existingNumbers = [];
   for (const existingQuery of existingQueries) {
@@ -165,16 +166,19 @@ export const importQuery = (query: Query) => {
     }
   }
 
-  let label: string;
   if (sameLabelFound) {
     const newNumber = existingNumbers.length
       ? Math.max(...existingNumbers) + 1
       : 1;
-    label = `${query.label} (${newNumber})`;
+    return `${oldLabel} (${newNumber})`;
   } else {
-    label = query.label;
+    return oldLabel;
   }
+};
 
+export const importQuery = (query: Query) => {
+  const id = uuidv4();
+  const label = getNewLabel(query.label);
   useQueryStore.setState((state) => {
     state.queries[id] = { ...query, id, label };
   });
