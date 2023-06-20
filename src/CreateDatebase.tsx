@@ -105,15 +105,15 @@ const insertIntoTable = (
 ) => {
   const insertStmt = `insert into ${tableName} (${columns.map(
     (col) => col.dbName
-  )}) values (${columns.map((col) => ":" + col.dbName).join(", ")})`;
+  )}) values (${columns.map(() => "?")})`;
   logger("sql", insertStmt);
 
   const preparedStatement = db.prepare(insertStmt);
   for (const row of records.slice(1)) {
-    preparedStatement.run(
-      Object.fromEntries(columns.map((k, i) => [k.dbName, row[i]]))
-    );
+    preparedStatement.run(row.map((v) => (v === "" ? null : v)));
+    preparedStatement.reset();
   }
+  preparedStatement.free();
 };
 
 const downloadFile = (data: BlobPart, mimeType: string, fileName: string) => {
