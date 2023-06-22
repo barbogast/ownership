@@ -8,3 +8,5 @@ export const COLORS = [
   "purple",
   "orange",
 ];
+
+export const databaseFiles = ["database.sqlite", "database2.sqlite"];

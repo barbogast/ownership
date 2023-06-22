@@ -6,6 +6,7 @@ import Ownership from "./ownership/Index";
 import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
+import DatabaseDisplay from "./DatabaseDisplay";
 
 function App() {
   // returns the current hash location in a normalized form
@@ -25,6 +26,7 @@ function App() {
         <Route path="/"></Route>
         <Route path="/ownership" component={Ownership} />
         <Route path="/new-database" component={CreateDatabase}></Route>
+        <Route path="/db/:fileName" component={DatabaseDisplay}></Route>
         <Route
           path="/query/:queryId"
           component={(props) => (

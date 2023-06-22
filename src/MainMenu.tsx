@@ -8,38 +8,7 @@ import useQueryStore, {
   importQuery,
 } from "./query/queryStore";
 import useReportStore, { addReport } from "./report/reportStore";
-
-const databases = {
-  key: `databases`,
-  label: `Databases`,
-  children: [
-    {
-      key: `database-1`,
-      label: `Outstanding debt Europe 1995 - 2019`,
-      title: `Outstanding debt Europe 1995 - 2019`,
-      children: [
-        {
-          key: `table-1`,
-          label: "table1",
-        },
-        { key: `table-2`, label: `table2` },
-      ],
-    },
-    {
-      key: `database-2`,
-      label: "Temperature Measurements Canada and Alaska",
-      title: `Temperature Measurements Canada and Alaska`,
-      children: [
-        { key: `table-3`, label: `table1` },
-        { key: `table-4`, label: `table2` },
-      ],
-    },
-    {
-      key: "new-database",
-      label: <Link href="/new-database">+ Create new database</Link>,
-    },
-  ],
-};
+import { databaseFiles } from "./constants";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -54,7 +23,14 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   } = theme.useToken();
 
   const items = [
-    databases,
+    {
+      key: `databases`,
+      label: `Databases`,
+      children: databaseFiles.map((fileName) => ({
+        key: `/db/${fileName}`,
+        label: <Link href={`/db/${fileName}`}>{fileName}</Link>,
+      })),
+    },
     {
       key: `queries`,
       label: `Queries`,
