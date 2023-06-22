@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { Input, Button, Col, Row, Select } from "antd";
+import { TextAreaRef } from "antd/es/input/TextArea";
 import {
   updateDatabaseFileName,
   updateSqlStatement,
@@ -11,12 +13,14 @@ import { databaseFiles } from "../../constants";
 
 type Props = {
   queryId: string;
-  runQuery: () => void;
+  runQuery: (stmt?: string) => void;
   queryResults: QueryExecResult[];
 };
 
 const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   const { databaseFileName, sqlStatement } = useQuery(queryId);
+
+  const textAreaRef = useRef<TextAreaRef>(null);
 
   return (
     <Row>
@@ -37,10 +41,25 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
           style={{ width: 500 }}
           rows={5}
           styles={{ textarea: { fontFamily: "monospace" } }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && event.ctrlKey) {
+              const cursorStart =
+                textAreaRef.current!.resizableTextArea!.textArea.selectionStart;
+              const cursorEnd =
+                textAreaRef.current!.resizableTextArea!.textArea.selectionEnd;
+
+              runQuery(
+                cursorStart !== cursorEnd
+                  ? sqlStatement.substring(cursorStart, cursorEnd)
+                  : undefined
+              );
+            }
+          }}
+          ref={textAreaRef}
         />
         <br />
         <br />
-        <Button type="primary" onClick={runQuery}>
+        <Button type="primary" onClick={() => runQuery()}>
           Run query
         </Button>
       </Col>

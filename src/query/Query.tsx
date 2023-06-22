@@ -47,12 +47,12 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
 
   const [error, setError] = useState<Error>();
 
-  const runQuery = (): QueryExecResult[] => {
+  const runQuery = (statement?: string): QueryExecResult[] => {
     if (db.status !== "loaded") throw new Error();
 
     try {
       setError(undefined);
-      const results = db.db.exec(sqlStatement);
+      const results = db.db.exec(statement || sqlStatement);
       setQueryResults(results);
       setProgress({ queried: true });
       return results;
