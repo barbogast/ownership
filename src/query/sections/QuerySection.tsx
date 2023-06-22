@@ -22,6 +22,19 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
 
   const textAreaRef = useRef<TextAreaRef>(null);
 
+  const run = () => {
+    const cursorStart =
+      textAreaRef.current!.resizableTextArea!.textArea.selectionStart;
+    const cursorEnd =
+      textAreaRef.current!.resizableTextArea!.textArea.selectionEnd;
+
+    runQuery(
+      cursorStart !== cursorEnd
+        ? sqlStatement.substring(cursorStart, cursorEnd)
+        : undefined
+    );
+  };
+
   return (
     <Row>
       <Col span={12}>
@@ -43,23 +56,14 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
           styles={{ textarea: { fontFamily: "monospace" } }}
           onKeyDown={(event) => {
             if (event.key === "Enter" && event.ctrlKey) {
-              const cursorStart =
-                textAreaRef.current!.resizableTextArea!.textArea.selectionStart;
-              const cursorEnd =
-                textAreaRef.current!.resizableTextArea!.textArea.selectionEnd;
-
-              runQuery(
-                cursorStart !== cursorEnd
-                  ? sqlStatement.substring(cursorStart, cursorEnd)
-                  : undefined
-              );
+              run();
             }
           }}
           ref={textAreaRef}
         />
         <br />
         <br />
-        <Button type="primary" onClick={() => runQuery()}>
+        <Button type="primary" onClick={run}>
           Run query
         </Button>
       </Col>
