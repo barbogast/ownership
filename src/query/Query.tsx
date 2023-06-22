@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Collapse, Input, Row } from "antd";
+import * as dayjs from "dayjs";
 
 import {
   duplicate,
@@ -80,7 +81,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     downloadFile(
       JSON.stringify(query),
       "application/json",
-      `query_${query.id}.json`
+      `query_${query.id}_${dayjs().format("YYYY-MM-DD_HH:mm:ss")}.json`
     );
   };
 
