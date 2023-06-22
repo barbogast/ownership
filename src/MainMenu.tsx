@@ -26,10 +26,15 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     {
       key: `databases`,
       label: `Databases`,
-      children: databaseFiles.map((fileName) => ({
-        key: `/db/${fileName}`,
-        label: <Link href={`/db/${fileName}`}>{fileName}</Link>,
-      })),
+      children: databaseFiles
+        .map((fileName) => ({
+          key: `/db/${fileName}`,
+          label: <Link to={`/db/${fileName}`}>{fileName}</Link>,
+        }))
+        .concat({
+          key: "new-database",
+          label: <Link href="/new-database">+ Create new database</Link>,
+        }),
     },
     {
       key: `queries`,
