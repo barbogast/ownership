@@ -22,9 +22,7 @@ function App() {
   return (
     <Router hook={useHashLocation} base="/ownership">
       <MainMenu>
-        <Route path="/">
-          <MainMenu />
-        </Route>
+        <Route path="/"></Route>
         <Route path="/ownership" component={Ownership} />
         <Route path="/new-database" component={CreateDatabase}></Route>
         <Route
