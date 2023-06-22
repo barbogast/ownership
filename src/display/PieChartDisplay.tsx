@@ -3,6 +3,7 @@ import { Cell, Pie, PieChart } from "recharts";
 import { Alert, Select } from "antd";
 import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
+import { SqlValue } from "sql.js";
 
 type Orientation = "row" | "column";
 
@@ -33,13 +34,21 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
     defaults.labelColumnIndex
   );
 
+  const [dataRowIndex, setdataRowIndex] = useState(0);
+
   const chartData =
     dataOrientation === "row"
-      ? values[0].map((value, i) => ({
-          label: `${columns[i]}: ${value}`,
-          key: i,
-          value: value,
-        }))
+      ? values[dataRowIndex]
+          .map((v, i) => [v, i] as [SqlValue, number])
+          .filter(([, i]) => i !== labelColumnIndex)
+          .map(([value, i]) => ({
+            label: `${columns[i]}: ${
+              // TODO: in case of number columns it should display 0 instead of ""
+              value === undefined || value === null ? "" : value
+            }`,
+            key: i,
+            value: value,
+          }))
       : values.map((row, i) => ({
           key: i,
           label: `${row[labelColumnIndex]}: ${row[
@@ -50,14 +59,6 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
 
   return (
     <>
-      {values.length > 1 && (
-        <Alert
-          message="Warning: Your query result contains more than 1 row. The chart is displayed based on the first row."
-          type="warning"
-          showIcon
-          closable
-        />
-      )}
       Orientation of data:{" "}
       <Select
         value={dataOrientation}
@@ -66,6 +67,18 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
           { value: "column", label: "Values are in one column" },
           { value: "row", label: "Values are in one row" },
         ]}
+        style={{ width: 220 }}
+      />
+      <br />
+      <br />
+      Column containing labels:
+      <Select
+        value={labelColumnIndex}
+        onChange={setLabelColumnIndex}
+        options={columns.map((col, index) => ({
+          value: index,
+          label: col,
+        }))}
         style={{ width: 220 }}
       />
       <br />
@@ -82,13 +95,18 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
             style={{ width: 220 }}
           />
           <br />
-          Column containing labels:
+        </>
+      )}
+      {dataOrientation === "row" && (
+        <>
+          <br />
+          Row to display:{" "}
           <Select
-            value={labelColumnIndex}
-            onChange={setLabelColumnIndex}
-            options={columns.map((col, index) => ({
-              value: index,
-              label: col,
+            value={dataRowIndex}
+            onChange={setdataRowIndex}
+            options={values.map((row, i) => ({
+              value: i,
+              label: `Row ${i + 1}: "${row[labelColumnIndex]}"`,
             }))}
             style={{ width: 220 }}
           />
