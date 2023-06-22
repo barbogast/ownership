@@ -42,6 +42,7 @@ const QueryTable: React.FC<Props> = ({ columns, values }) => {
       }
       // @ts-expect To fix this DataType would need to be build dynamically from queryResult.columns
       dataSource={recursivelyAddKeyProp(values, 1)}
+      size="small"
     />
   );
 };
