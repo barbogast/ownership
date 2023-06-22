@@ -5,6 +5,7 @@ import { queryExecResultToObjects } from "../utils";
 import TableDisplay from "../../display/TableDisplay";
 import BarChartDisplay from "../../display/BarChartDisplay";
 import PieChartDisplay from "../../display/PieChartDisplay";
+import LineChartDisplay from "../../display/LineChartDisplay";
 
 type Props = {
   queryId: string;
@@ -27,6 +28,7 @@ const DisplaySection: React.FC<Props> = ({
         options={[
           { value: "barChart", label: "Bar chart" },
           { value: "pieChart", label: "Pie chart" },
+          { value: "lineChart", label: "Line chart" },
           { value: "table", label: "Table" },
         ]}
         style={{ width: 120 }}
@@ -60,6 +62,11 @@ const DisplaySection: React.FC<Props> = ({
       {chartType === "pieChart" &&
         queryResults.map((queryResult, i) => (
           <PieChartDisplay queryResult={queryResult} key={i} />
+        ))}
+
+      {chartType === "lineChart" &&
+        queryResults.map((queryResult, i) => (
+          <LineChartDisplay queryResult={queryResult} key={i} />
         ))}
     </>
   );

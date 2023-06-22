@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
-import { deepCopy, escapeRegExp, getNewLabel } from "../utils";
+import { deepCopy, getNewLabel } from "../utils";
 
-type ChartType = "table" | "barChart" | "pieChart";
+type ChartType = "table" | "barChart" | "pieChart" | "lineChart";
 
 export type Query = {
   id: string;
