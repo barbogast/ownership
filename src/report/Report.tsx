@@ -17,6 +17,7 @@ import ReportDisplay from "./ReportDisplay";
 import { updateBlocks, updateLabel, useReport } from "./reportStore";
 import { ReadOnly, useReadOnly } from "../ReadonlyContext";
 import { Input } from "antd";
+import useQueryStore from "../query/queryStore";
 
 const ChartBlock = createReactBlockSpec({
   type: "dataDisplay",
@@ -27,7 +28,10 @@ const ChartBlock = createReactBlockSpec({
     },
   },
   containsInlineContent: true,
-  render: ({ block }) => {
+  render: ({ block, editor }): React.ReactElement => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const queries = Object.values(useQueryStore().queries);
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const readOnly = useReadOnly();
     return (
@@ -37,7 +41,27 @@ const ChartBlock = createReactBlockSpec({
           flexDirection: "column",
         }}
       >
-        <ReportDisplay queryId={block.props.queryId} showEditLink={!readOnly} />
+        {!readOnly && (
+          <select
+            value={block.props.queryId}
+            onChange={(event) =>
+              editor.updateBlock(block.id, {
+                ...block,
+                props: { ...block.props, queryId: event.target.value },
+              })
+            }
+          >
+            {queries.map((q) => (
+              <option value={q.id}>{q.label}</option>
+            ))}
+          </select>
+        )}
+        {block.props.queryId && (
+          <ReportDisplay
+            queryId={block.props.queryId}
+            showEditLink={!readOnly}
+          />
+        )}
         <InlineContent />
       </div>
     );
@@ -50,16 +74,12 @@ const insertImage = new ReactSlashMenuItem<
 >(
   "Insert Chart",
   (editor) => {
-    const queryId: string | null = prompt("Enter chart id");
-    if (queryId === null) {
-      return;
-    }
     editor.insertBlocks(
       [
         {
           type: "dataDisplay",
           props: {
-            queryId,
+            queryId: "",
           },
         },
       ],
@@ -67,7 +87,7 @@ const insertImage = new ReactSlashMenuItem<
       "after"
     );
   },
-  ["image", "img", "picture", "media"],
+  ["chart", "query", "picture", "media"],
   "Media",
   <p>XXX </p>,
   "Insert a chart"
