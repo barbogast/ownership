@@ -1,6 +1,7 @@
 import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
+import { Input, Button, Col, Row, Select } from "antd";
 import { parse } from "csv-parse/browser/esm";
 import { downloadFile, logger } from "./utils";
 import { useDatabase, Database } from "./dbStore";
@@ -187,64 +188,95 @@ const CreateDatabase: React.FC = () => {
 
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
-      <textarea
+      <Input.TextArea
         value={csvText}
         onChange={(event) => setCsvText(event.target.value)}
-        style={{ width: "100%", height: "300px" }}
+        styles={{ textarea: { fontFamily: "monospace" } }}
+        rows={20}
       />
       <br />
-      <button onClick={parseCsv}>Parse</button>
+      <br />
+      <Button onClick={parseCsv} type="primary">
+        Parse
+      </Button>
       <br />
       <br />
       {progress.parsed && (
         <>
-          Table name:{" "}
-          <input
+          <Input
+            addonBefore="Table name"
             value={tableName}
             onChange={(event) => setTableName(event.target.value)}
           />
           <br />
+          <br />
+          <br />
+          <Row>
+            <Col span={8}>
+              <strong>Column name in CSV</strong>
+            </Col>
+            <Col span={8}>
+              <strong>Column name in database</strong>
+            </Col>
+            <Col span={8}>
+              <strong>Data type in database</strong>
+            </Col>
+          </Row>
+          <br />
           {columns.map((col, i) => (
-            <Fragment key={col.dbName + i}>
-              {col.csvName}
-              <input
-                value={col.dbName}
-                onChange={(event) => {
-                  col.dbName = event.target.value;
-                }}
-              />
-              <select
-                value={col.type}
-                onChange={(event) => {
-                  setColumns((state) =>
-                    state.map((c, i2) =>
-                      i === i2
-                        ? { ...c, type: event.target.value as ColumnType }
-                        : c
-                    )
-                  );
-                }}
-              >
-                <option value="integer">Integer</option>
-                <option value="real">Real</option>
-                <option value="text">Text</option>
-              </select>
+            <Row key={col.dbName + i}>
+              <Col span={8}>{col.csvName}</Col>
+              <Col span={8}>
+                <Input
+                  value={col.dbName}
+                  onChange={(event) => {
+                    col.dbName = event.target.value;
+                  }}
+                  style={{ width: 250 }}
+                />
+              </Col>
+              <Col span={8}>
+                <Select
+                  value={col.type}
+                  onChange={(value) => {
+                    setColumns((state) =>
+                      state.map((c, i2) =>
+                        i === i2 ? { ...c, type: value } : c
+                      )
+                    );
+                  }}
+                  style={{ width: 250 }}
+                >
+                  <option value="integer">Integer</option>
+                  <option value="real">Real</option>
+                  <option value="text">Text</option>
+                </Select>
+              </Col>
               <br />
-            </Fragment>
+              <br />
+              <br />
+            </Row>
           ))}
-          <button onClick={insertTable}>Import into DB</button>
+          <Button onClick={insertTable} type="primary">
+            Import into DB
+          </Button>
           <br />
         </>
       )}
+      <br />
+      <br />
+
       {progress.imported && (
-        <button onClick={downloadDatabase}>Download database</button>
+        <Button onClick={downloadDatabase}>Download database</Button>
       )}
+      <br />
+      <br />
       {progress.imported && (
-        <button onClick={downloadImportFile}>
+        <Button onClick={downloadImportFile}>
           Download database import file
-        </button>
+        </Button>
       )}
-      <pre style={{ color: "red" }}>{(error || "").toString()}</pre>;
+      <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
     </div>
   );
 };
