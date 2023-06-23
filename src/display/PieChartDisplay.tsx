@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Cell, Pie, PieChart } from "recharts";
-import { Alert, Select } from "antd";
+import { Select } from "antd";
 import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
 import { SqlValue } from "sql.js";
+import { useReadOnly } from "../ReadonlyContext";
 
 type Orientation = "row" | "column";
 
 type Props = { queryResult: QueryExecResult };
 const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
+  const readOnly = useReadOnly();
   const { columns, values } = queryResult;
 
   const defaults =
@@ -59,35 +61,24 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
 
   return (
     <>
-      Orientation of data:{" "}
-      <Select
-        value={dataOrientation}
-        onChange={setDataOrientation}
-        options={[
-          { value: "column", label: "Values are in one column" },
-          { value: "row", label: "Values are in one row" },
-        ]}
-        style={{ width: 220 }}
-      />
-      <br />
-      <br />
-      Column containing labels:
-      <Select
-        value={labelColumnIndex}
-        onChange={setLabelColumnIndex}
-        options={columns.map((col, index) => ({
-          value: index,
-          label: col,
-        }))}
-        style={{ width: 220 }}
-      />
-      <br />
-      {dataOrientation === "column" && (
+      {readOnly && (
         <>
-          Column containing data:
+          Orientation of data:{" "}
           <Select
-            value={valueColumnIndex}
-            onChange={setValueColumnIndex}
+            value={dataOrientation}
+            onChange={setDataOrientation}
+            options={[
+              { value: "column", label: "Values are in one column" },
+              { value: "row", label: "Values are in one row" },
+            ]}
+            style={{ width: 220 }}
+          />
+          <br />
+          <br />
+          Column containing labels:
+          <Select
+            value={labelColumnIndex}
+            onChange={setLabelColumnIndex}
             options={columns.map((col, index) => ({
               value: index,
               label: col,
@@ -95,24 +86,39 @@ const PieChartDisplay: React.FC<Props> = ({ queryResult }) => {
             style={{ width: 220 }}
           />
           <br />
+          {dataOrientation === "column" && (
+            <>
+              Column containing data:
+              <Select
+                value={valueColumnIndex}
+                onChange={setValueColumnIndex}
+                options={columns.map((col, index) => ({
+                  value: index,
+                  label: col,
+                }))}
+                style={{ width: 220 }}
+              />
+              <br />
+            </>
+          )}
+          {dataOrientation === "row" && (
+            <>
+              <br />
+              Row to display:{" "}
+              <Select
+                value={dataRowIndex}
+                onChange={setdataRowIndex}
+                options={values.map((row, i) => ({
+                  value: i,
+                  label: `Row ${i + 1}: "${row[labelColumnIndex]}"`,
+                }))}
+                style={{ width: 220 }}
+              />
+            </>
+          )}
         </>
       )}
-      {dataOrientation === "row" && (
-        <>
-          <br />
-          Row to display:{" "}
-          <Select
-            value={dataRowIndex}
-            onChange={setdataRowIndex}
-            options={values.map((row, i) => ({
-              value: i,
-              label: `Row ${i + 1}: "${row[labelColumnIndex]}"`,
-            }))}
-            style={{ width: 220 }}
-          />
-        </>
-      )}
-      <PieChart width={600} height={400}>
+      <PieChart width={300} height={220}>
         <Pie
           data={chartData}
           dataKey="value"
