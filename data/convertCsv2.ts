@@ -37,10 +37,10 @@ Reconstruct the 4th column (Residents):
 
 // This is the number of columns counting from the left which should be
 // copied into the output csv unchanged
-const NUMBER_OF_STATIC_COLUMNS = 2;
+const NUMBER_OF_STATIC_COLUMNS = 1;
 
-const parseFile = (fileName: string) => {
-  const input = fs.readFileSync(`csv/${fileName}`, "utf-8");
+const parseFile = (folder: string, fileName: string) => {
+  const input = fs.readFileSync(`${folder}/${fileName}`, "utf-8");
 
   // Windows and old Macos versions use \r\n as line separator. Let's remove \r to not get confused
   const cleaned = input.replace(/\r/g, "");
@@ -54,8 +54,8 @@ const parseFile = (fileName: string) => {
 };
 
 // Calculate the header with the most levels by splitting each header by \n and taking the highest length
-const getNumberOfCategories = (fileName: string) => {
-  const { valueHeaders } = parseFile(fileName);
+const getNumberOfCategories = (folder: string, fileName: string) => {
+  const { valueHeaders } = parseFile(folder, fileName);
   return Math.max(...valueHeaders.map((header) => header.split("\n").length));
 };
 
@@ -86,9 +86,13 @@ const getColumnIndicesToDrop = (
   return columnIndecesToDrop;
 };
 
-const getNewHeaders = (fileName: string, numberOfCategories: number) => {
-  const { staticHeaders } = parseFile(fileName);
-  const newHeaders = ([] as string[]).concat(staticHeaders);
+const getNewHeaders = (
+  folder: string,
+  fileName: string,
+  numberOfCategories: number
+) => {
+  const { staticHeaders } = parseFile(folder, fileName);
+  const newHeaders = (["country"] as string[]).concat(staticHeaders);
   for (let i = 0; i < numberOfCategories; i++) {
     newHeaders.push(`category_${i + 1}`);
   }
@@ -116,9 +120,17 @@ const writeCsv = (result: string[][]) => {
   );
 };
 
-const processFile = (fileName: string, numberOfCategories: number) => {
+const processFile = (
+  folder: string,
+  fileName: string,
+  numberOfCategories: number
+) => {
   console.log("Processing", fileName);
-  const { valueRows, staticHeaders, valueHeaders } = parseFile(fileName);
+  const country = fileName.split(" - ")[1].split(".")[0];
+  const { valueRows, staticHeaders, valueHeaders } = parseFile(
+    folder,
+    fileName
+  );
   const result: string[][] = [];
 
   // We need to drop all columnns which are just sums of other columns
@@ -127,7 +139,7 @@ const processFile = (fileName: string, numberOfCategories: number) => {
     staticHeaders
   );
 
-  for (const [country, year, ...values] of valueRows) {
+  for (const [year, ...values] of valueRows) {
     for (const [index, value] of values.entries()) {
       if (columnIndecesToDrop[index]) {
         continue;
@@ -147,10 +159,13 @@ const processFile = (fileName: string, numberOfCategories: number) => {
   return result;
 };
 
-const files = ["finnland.csv", "belgium.csv"];
+const folder = "csv2";
+const files = fs.readdirSync(folder);
 
-const numberOfCategories = Math.max(...files.map(getNumberOfCategories));
-const data = [getNewHeaders(files[0], numberOfCategories)].concat(
-  files.flatMap((fileName) => processFile(fileName, numberOfCategories))
+const numberOfCategories = Math.max(
+  ...files.map((f) => getNumberOfCategories(folder, f))
+);
+const data = [getNewHeaders(folder, files[0], numberOfCategories)].concat(
+  files.flatMap((fileName) => processFile(folder, fileName, numberOfCategories))
 );
 writeCsv(data);
