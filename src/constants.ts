@@ -1,5 +1,4 @@
 export const COLORS = [
-  "yellow",
   "red",
   "blue",
   "green",
@@ -7,6 +6,11 @@ export const COLORS = [
   "grey",
   "purple",
   "orange",
+  "yellow",
 ];
 
-export const databaseFiles = ["database.sqlite", "database2.sqlite"];
+export const databaseFiles = [
+  "database.sqlite",
+  "database2.sqlite",
+  "database3.sqlite",
+];
