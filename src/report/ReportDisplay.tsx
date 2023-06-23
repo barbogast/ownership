@@ -53,6 +53,7 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
       setError(err as Error);
     }
   }, [db, transformCode, sqlStatement, enableTransform]);
+
   return (
     <>
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
