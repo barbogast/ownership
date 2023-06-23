@@ -42,10 +42,8 @@ const useReportStore = create(
 
 export default useReportStore;
 
-export const useReport = (id: string) => {
-  console.log("useReport", id);
-  return useReportStore((state) => state.reports[id]);
-};
+export const useReport = (id: string) =>
+  useReportStore((state) => state.reports[id]);
 
 export const addReport = () => {
   const id = uuidv4();
