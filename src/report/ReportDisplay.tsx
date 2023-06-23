@@ -8,6 +8,7 @@ import { Link } from "wouter";
 import TableDisplay from "../display/TableDisplay";
 import { queryExecResultToObjects } from "../query/utils";
 import { useDatabase } from "../dbStore";
+import LineChartDisplay from "../display/LineChartDisplay";
 
 type Props = {
   queryId: string;
@@ -15,11 +16,15 @@ type Props = {
 };
 
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
-  console.log("asdfasf");
-  const db = useDatabase("database.sqlite", true);
-
-  const { id, sqlStatement, transformCode, chartType, enableTransform } =
-    useQuery(queryId);
+  const {
+    id,
+    databaseFileName,
+    sqlStatement,
+    transformCode,
+    chartType,
+    enableTransform,
+  } = useQuery(queryId);
+  const db = useDatabase(databaseFileName, true);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<
     Record<string, unknown>[]
@@ -45,19 +50,15 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
         setQueryResults(result);
       }
     } catch (err) {
-      console.log(error);
       setError(err as Error);
     }
-    // Run this hook only once after the component mounted and the DB was initialised
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db]);
-
+  }, [db, transformCode, sqlStatement, enableTransform]);
   return (
     <>
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
 
       {chartType === "table" &&
-        (enableTransform ? (
+        (enableTransform && transformResult ? (
           <TableDisplay
             columns={
               transformResult.length ? Object.keys(transformResult[0]) : []
@@ -82,6 +83,11 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
       {chartType === "pieChart" &&
         queryResults.map((queryResult, i) => (
           <PieChartDisplay queryResult={queryResult} key={i} />
+        ))}
+
+      {chartType === "lineChart" &&
+        queryResults.map((queryResult, i) => (
+          <LineChartDisplay queryResult={queryResult} key={i} />
         ))}
 
       {showEditLink && (
