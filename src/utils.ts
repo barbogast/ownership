@@ -1,3 +1,5 @@
+import { COLORS } from "./constants";
+
 export const logger = (
   category: "sql" | "database",
   msg: string,
@@ -62,4 +64,9 @@ export const getNewLabel = (existingLabels: string[], oldLabel: string) => {
   } else {
     return oldLabel;
   }
+};
+
+export const getColor = (index: number) => {
+  console.log(COLORS[COLORS.length % index], index, COLORS.length % index);
+  return COLORS[index % COLORS.length];
 };

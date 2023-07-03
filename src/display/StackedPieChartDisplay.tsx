@@ -14,7 +14,7 @@ type Props = {
   transformResult: TransformResult;
   transformConfig: TransformConfig;
 };
-const PieChartDisplay: React.FC<Props> = ({
+const StackedPieChart: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
@@ -133,4 +133,4 @@ const PieChartDisplay: React.FC<Props> = ({
   );
 };
 
-export default PieChartDisplay;
+export default StackedPieChart;

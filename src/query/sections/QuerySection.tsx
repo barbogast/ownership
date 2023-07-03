@@ -70,8 +70,7 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
       <Col span={12}>
         {queryResults.map((queryResult, i) => (
           <TableDisplay
-            columns={queryResult.columns}
-            values={queryExecResultToObjects(queryResult)}
+            transformResult={queryExecResultToObjects(queryResult)}
             key={i}
           />
         ))}

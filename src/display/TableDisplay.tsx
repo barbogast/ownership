@@ -1,10 +1,7 @@
 import { Table } from "antd";
+import { ChartProps } from "../types";
 
 type DataType = Record<string, unknown>;
-type Props = {
-  columns: string[];
-  values: DataType[];
-};
 
 const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
   arr: T[],
@@ -18,19 +15,19 @@ const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
       : {}),
   }));
 
-const QueryTable: React.FC<Props> = ({ columns, values }) => {
+const QueryTable: React.FC<Pick<ChartProps, "transformResult">> = ({
+  transformResult,
+}) => {
   return (
     <Table<DataType>
       scroll={{ x: true }}
-      columns={columns
-        .filter((col) => col !== "children")
-        .map((col) => ({
-          title: col,
-          dataIndex: col,
-          key: col,
-        }))}
+      columns={Object.keys(transformResult[0]).map((col) => ({
+        title: col,
+        dataIndex: col,
+        key: col,
+      }))}
       rowSelection={
-        columns.includes("children")
+        "children" in transformResult[0]
           ? {
               type: "checkbox",
               // onChange: (_, selectedDataSets) => {
@@ -41,8 +38,9 @@ const QueryTable: React.FC<Props> = ({ columns, values }) => {
           : undefined
       }
       // @ts-expect To fix this DataType would need to be build dynamically from queryResult.columns
-      dataSource={recursivelyAddKeyProp(values, 1)}
+      dataSource={recursivelyAddKeyProp(transformResult, 1)}
       size="small"
+      bordered
     />
   );
 };

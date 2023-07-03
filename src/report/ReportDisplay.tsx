@@ -16,14 +16,8 @@ type Props = {
 };
 
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
-  const {
-    id,
-    databaseFileName,
-    sqlStatement,
-    transformCode,
-    chartType,
-    enableTransform,
-  } = useQuery(queryId);
+  const { id, databaseFileName, sqlStatement, transformCode, chartType } =
+    useQuery(queryId);
   const db = useDatabase(databaseFileName, true);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<
@@ -52,7 +46,7 @@ const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
     } catch (err) {
       setError(err as Error);
     }
-  }, [db, transformCode, sqlStatement, enableTransform]);
+  }, [db, transformCode, sqlStatement]);
 
   return (
     <>

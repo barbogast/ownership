@@ -1,19 +1,45 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import {
+  persist,
+  createJSONStorage,
+  PersistOptions,
+  devtools,
+} from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { deepCopy, getNewLabel } from "../utils";
 
-type ChartType = "table" | "barChart" | "pieChart" | "lineChart";
+export type ChartType =
+  | "table"
+  | "barChart"
+  | "stackedBarChart"
+  | "pieChart"
+  | "stackedPieChart"
+  | "lineChart";
+
+export const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
+
+export type TransformType = "config" | "code";
+export type DataOrientation = "row" | "column";
+
+export type TransformConfig = {
+  dataOrientation: DataOrientation;
+  selectedColumns: string[];
+  labelColumn: string;
+  dataRowIndex: number;
+  isSingleDataset: boolean;
+};
 
 export type Query = {
   id: string;
   label: string;
   databaseFileName: string;
   sqlStatement: string;
-  enableTransform: boolean;
+  // enableTransform: boolean;
   transformCode: string;
   chartType?: ChartType;
+  transformType: TransformType;
+  transformConfig: TransformConfig;
 };
 
 type QueryState = {
@@ -71,58 +97,93 @@ const data = Array(maxLength).fill().map((_, i) => ({
 return data
 `;
 
+const getDefaults = () => ({
+  transformType: "config" as const,
+  transformConfig: {
+    dataOrientation: "row" as const,
+    selectedColumns: [],
+    labelColumn: "",
+    dataRowIndex: 0,
+    isSingleDataset: false,
+  },
+});
+
 const initialState: QueryState = {
   queries: {
     tableofownershipdetails: {
+      ...getDefaults(),
       id: "tableofownershipdetails",
       label: "Debt ownership: Details",
       databaseFileName: "database.sqlite",
       sqlStatement: "select * from aaa",
-      enableTransform: true,
+      // enableTransform: true,
+      transformType: "code",
       transformCode: code1,
       chartType: "table",
     },
     tableofownershipdistribution: {
+      ...getDefaults(),
       id: "tableofownershipdistribution",
       label: "Debt ownership: Distribution",
       databaseFileName: "database.sqlite",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
-      enableTransform: false,
+      // enableTransform: false,
       transformCode: "",
       chartType: "pieChart",
     },
     tableofownershiptime: {
+      ...getDefaults(),
       id: "tableofownershiptime",
       label: "Debt ownership: Time",
       databaseFileName: "database.sqlite",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
-      enableTransform: false,
+      // enableTransform: false,
       transformCode: "",
       chartType: "barChart",
     },
     categoryanalysis: {
+      ...getDefaults(),
       id: "categoryanalysis",
       label: "Category Analysis",
       databaseFileName: "database2.sqlite",
       sqlStatement: query,
-      enableTransform: true,
+      // enableTransform: true,
       transformCode: code2,
+      transformType: "code",
       chartType: "table",
     },
   },
 };
 
-const persistConfig = {
+const persistConfig: PersistOptions<QueryState> = {
   name: "queries",
   storage: createJSONStorage(() => localStorage),
+  version: 2,
+  migrate: (unknownState, version) => {
+    const state = unknownState as QueryState;
+    Object.keys(state.queries).forEach((id) => {
+      state.queries[id] = {
+        ...getDefaults(),
+        ...state.queries[id],
+      };
+    });
+
+    Object.keys(state.queries).forEach((id) => {
+      state.queries[id].transformConfig.selectedColumns =
+        state.queries[id].transformConfig.selectedColumns || [];
+    });
+    return state as QueryState;
+  },
 };
 
 const useQueryStore = create(
-  persist(
-    immer<QueryState>(() => initialState),
-    persistConfig
+  devtools(
+    persist(
+      immer<QueryState>(() => initialState),
+      persistConfig
+    )
   )
 );
 
@@ -135,12 +196,13 @@ export const addQuery = () => {
   const id = uuidv4();
   useQueryStore.setState((state) => {
     state.queries[id] = {
+      ...getDefaults(),
       id,
       label: "New query",
       databaseFileName: "",
       sqlStatement: "",
-      enableTransform: false,
-      transformCode: "",
+      // enableTransform: false,
+      transformCode: "return queryResult",
     };
   });
   return id;
@@ -153,7 +215,7 @@ export const importQuery = (query: Query) => {
   );
   const label = getNewLabel(existingLabels, query.label);
   useQueryStore.setState((state) => {
-    state.queries[id] = { ...query, id, label };
+    state.queries[id] = { ...getDefaults(), ...query, id, label };
   });
   return id;
 };
@@ -201,10 +263,10 @@ export const updateSqlStatement = (queryId: string, statement: string) =>
     state.queries[queryId].sqlStatement = statement;
   });
 
-export const updateEnableTransform = (queryId: string, enable: boolean) =>
-  useQueryStore.setState((state) => {
-    state.queries[queryId].enableTransform = enable;
-  });
+// export const updateEnableTransform = (queryId: string, enable: boolean) =>
+//   useQueryStore.setState((state) => {
+//     state.queries[queryId].enableTransform = enable;
+//   });
 
 export const updateTransformCode = (queryId: string, code: string) =>
   useQueryStore.setState((state) => {
@@ -214,4 +276,17 @@ export const updateTransformCode = (queryId: string, code: string) =>
 export const updateChartType = (queryId: string, chartType: ChartType) =>
   useQueryStore.setState((state) => {
     state.queries[queryId].chartType = chartType;
+  });
+
+export const updateDataOrientation = (
+  queryId: string,
+  orientation: DataOrientation
+) =>
+  useQueryStore.setState((state) => {
+    state.queries[queryId].transformConfig.dataOrientation = orientation;
+  });
+
+export const updateIsSingleDataset = (queryId: string, value: boolean) =>
+  useQueryStore.setState((state) => {
+    state.queries[queryId].transformConfig.isSingleDataset = value;
   });

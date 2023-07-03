@@ -12,29 +12,38 @@ import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
 import { Select } from "antd";
 import { useState } from "react";
+import { TransformResult } from "../types";
+import { TransformConfig } from "../query/queryStore";
 
-type Props = { queryResult: QueryExecResult };
-const LineChartDisplay: React.FC<Props> = ({ queryResult }) => {
-  const { columns, values } = queryResult;
-  const [xAxisColumn, setXAxisColumn] = useState<string>(columns[0]);
+type Props = {
+  transformResult: TransformResult;
+  transformConfig: TransformConfig;
+};
+const LineChartDisplay: React.FC<Props> = ({
+  transformResult,
+  transformConfig,
+}) => {
+  // const { columns, values } = queryResult;
+  // const [xAxisColumn, setXAxisColumn] = useState<string>(columns[0]);
 
   return (
     <>
       X axis:{" "}
-      <Select
+      {/* <Select
         value={xAxisColumn}
         onChange={setXAxisColumn}
         options={columns.map((c) => ({ label: c, value: c }))}
         style={{ width: 120 }}
-      />
+      /> */}
       <br />
       <br />
       <LineChart
         width={500}
         height={300}
-        data={values.map((row) =>
-          Object.fromEntries(row.map((v, i) => [columns[i], v]))
-        )}
+        // data={values.map((row) =>
+        //   Object.fromEntries(row.map((v, i) => [columns[i], v]))
+        // )}
+        data={transformResult}
         margin={{
           top: 5,
           right: 30,
@@ -43,12 +52,17 @@ const LineChartDisplay: React.FC<Props> = ({ queryResult }) => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={xAxisColumn} />
+        <XAxis dataKey={transformConfig.labelColumn} />
         <YAxis />
         <Tooltip />
         <Legend />
-        {columns
+        {/* {columns
           .filter((c) => c !== xAxisColumn)
+          .map((c, i) => (
+            <Line key={i} type="monotone" dataKey={c} stroke={COLORS[i]} />
+          ))} */}
+        {Object.keys(transformResult[0])
+          .filter((c) => transformConfig.selectedColumns.indexOf(c) !== -1)
           .map((c, i) => (
             <Line key={i} type="monotone" dataKey={c} stroke={COLORS[i]} />
           ))}

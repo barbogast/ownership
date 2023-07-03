@@ -1,47 +1,22 @@
-import { Tooltip } from "antd";
-import { BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar } from "recharts";
-import { QueryExecResult } from "../dbStore";
-import { COLORS } from "../constants";
+import { BarChart, Bar, Legend, Tooltip, YAxis, XAxis, Cell } from "recharts";
 
-type Props = { queryResult: QueryExecResult };
-const BarChartDisplay: React.FC<Props> = ({ queryResult }) => {
-  const { columns, values } = queryResult;
+import { ChartProps } from "../types";
+import { getColor } from "../utils";
+
+const BarChartDisplay: React.FC<Pick<ChartProps, "transformResult">> = ({
+  transformResult,
+}) => {
   return (
-    <BarChart
-      width={500}
-      height={300}
-      data={values.map((row) =>
-        columns.reduce(
-          (data, col, index) => ({
-            ...data,
-            [col]: row[index],
-            name: row[0],
-          }),
-          {}
-        )
-      )}
-      margin={{
-        top: 20,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
+    <BarChart width={500} height={250} data={transformResult}>
+      <Bar dataKey="value">
+        {transformResult.map((_, i) => (
+          <Cell fill={getColor(i)} key={i} />
+        ))}
+      </Bar>
+
       <XAxis dataKey="name" />
       <YAxis />
       <Tooltip />
-      <Legend />
-      {columns
-        .filter((col) => col !== "label")
-        .map((col, i) => (
-          <Bar
-            key={i}
-            dataKey={col}
-            stackId="a"
-            fill={COLORS[i % COLORS.length]}
-          />
-        ))}
     </BarChart>
   );
 };
