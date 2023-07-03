@@ -39,6 +39,22 @@ Reconstruct the 4th column (Residents):
 // copied into the output csv unchanged
 const NUMBER_OF_STATIC_COLUMNS = 1;
 
+// Harmonize category names
+const HEADER_MAPPING: Record<string, string>[] = [
+  {}, // level 1
+  {
+    // level 2
+    Domestic: "Residents",
+    "Domestic residents": "Residents",
+    "	Domestic resident": "Residents",
+    "Rest of the World": "Non-residents",
+    "Rest of the world": "Non-residents",
+    "Foreign  and  international": "Non-residents", // Yeah, the csv has weird double blanks
+  },
+  {}, // level 3
+  {}, // level 4
+];
+
 const parseFile = (folder: string, fileName: string) => {
   const input = fs.readFileSync(`${folder}/${fileName}`, "utf-8");
 
@@ -145,7 +161,9 @@ const processFile = (
         continue;
       }
       const header = valueHeaders[index];
-      const categories = header.split("\n");
+      const categories = header
+        .split("\n")
+        .map((h, i) => HEADER_MAPPING[i][h] || h);
 
       const entry = [country, convert_year(year)];
       for (let i = 0; i < numberOfCategories; i++) {
