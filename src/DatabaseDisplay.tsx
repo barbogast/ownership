@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDatabase, QueryExecResult } from "./dbStore";
 import TableDisplay from "./display/TableDisplay";
-import { queryExecResultToObjects } from "./query/utils";
+import { rowsToObjects } from "./transform";
 
 type Props = {
   params: {
@@ -38,10 +38,7 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
       {queryResults.map((queryResult, i) => (
-        <TableDisplay
-          transformResult={queryExecResultToObjects(queryResult)}
-          key={i}
-        />
+        <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
       ))}
     </div>
   );

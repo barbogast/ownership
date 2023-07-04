@@ -8,8 +8,8 @@ import {
 } from "./../queryStore";
 import { QueryExecResult } from "../../dbStore";
 import TableDisplay from "../../display/TableDisplay";
-import { queryExecResultToObjects } from "../utils";
 import { databaseFiles } from "../../constants";
+import { rowsToObjects } from "../../transform";
 
 type Props = {
   queryId: string;
@@ -69,10 +69,7 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
       </Col>
       <Col span={12}>
         {queryResults.map((queryResult, i) => (
-          <TableDisplay
-            transformResult={queryExecResultToObjects(queryResult)}
-            key={i}
-          />
+          <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
         ))}
       </Col>
     </Row>
