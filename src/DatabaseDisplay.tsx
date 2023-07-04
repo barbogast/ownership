@@ -39,8 +39,7 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
     <div style={{ display: "block", flexDirection: "column" }}>
       {queryResults.map((queryResult, i) => (
         <TableDisplay
-          columns={queryResult.columns}
-          values={queryExecResultToObjects(queryResult)}
+          transformResult={queryExecResultToObjects(queryResult)}
           key={i}
         />
       ))}

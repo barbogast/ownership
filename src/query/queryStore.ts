@@ -35,7 +35,6 @@ export type Query = {
   label: string;
   databaseFileName: string;
   sqlStatement: string;
-  // enableTransform: boolean;
   transformCode: string;
   chartType?: ChartType;
   transformType: TransformType;
@@ -116,7 +115,6 @@ const initialState: QueryState = {
       label: "Debt ownership: Details",
       databaseFileName: "database.sqlite",
       sqlStatement: "select * from aaa",
-      // enableTransform: true,
       transformType: "code",
       transformCode: code1,
       chartType: "table",
@@ -128,7 +126,6 @@ const initialState: QueryState = {
       databaseFileName: "database.sqlite",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
-      // enableTransform: false,
       transformCode: "",
       chartType: "pieChart",
     },
@@ -139,7 +136,6 @@ const initialState: QueryState = {
       databaseFileName: "database.sqlite",
       sqlStatement:
         "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
-      // enableTransform: false,
       transformCode: "",
       chartType: "barChart",
     },
@@ -149,7 +145,6 @@ const initialState: QueryState = {
       label: "Category Analysis",
       databaseFileName: "database2.sqlite",
       sqlStatement: query,
-      // enableTransform: true,
       transformCode: code2,
       transformType: "code",
       chartType: "table",
@@ -161,7 +156,7 @@ const persistConfig: PersistOptions<QueryState> = {
   name: "queries",
   storage: createJSONStorage(() => localStorage),
   version: 2,
-  migrate: (unknownState, version) => {
+  migrate: (unknownState) => {
     const state = unknownState as QueryState;
     Object.keys(state.queries).forEach((id) => {
       state.queries[id] = {

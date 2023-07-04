@@ -8,10 +8,7 @@ import {
   Legend,
 } from "recharts";
 
-import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
-import { Select } from "antd";
-import { useState } from "react";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
 
@@ -23,26 +20,13 @@ const LineChartDisplay: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
-  // const { columns, values } = queryResult;
-  // const [xAxisColumn, setXAxisColumn] = useState<string>(columns[0]);
-
   return (
     <>
-      X axis:{" "}
-      {/* <Select
-        value={xAxisColumn}
-        onChange={setXAxisColumn}
-        options={columns.map((c) => ({ label: c, value: c }))}
-        style={{ width: 120 }}
-      /> */}
-      <br />
+      X axis: <br />
       <br />
       <LineChart
         width={500}
         height={300}
-        // data={values.map((row) =>
-        //   Object.fromEntries(row.map((v, i) => [columns[i], v]))
-        // )}
         data={transformResult}
         margin={{
           top: 5,
@@ -56,11 +40,7 @@ const LineChartDisplay: React.FC<Props> = ({
         <YAxis />
         <Tooltip />
         <Legend />
-        {/* {columns
-          .filter((c) => c !== xAxisColumn)
-          .map((c, i) => (
-            <Line key={i} type="monotone" dataKey={c} stroke={COLORS[i]} />
-          ))} */}
+
         {Object.keys(transformResult[0])
           .filter((c) => transformConfig.selectedColumns.indexOf(c) !== -1)
           .map((c, i) => (

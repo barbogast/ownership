@@ -24,12 +24,12 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
 
   const run = () => {
     const cursorStart =
-      textAreaRef.current!.resizableTextArea!.textArea.selectionStart;
+      textAreaRef.current?.resizableTextArea?.textArea.selectionStart;
     const cursorEnd =
-      textAreaRef.current!.resizableTextArea!.textArea.selectionEnd;
+      textAreaRef.current?.resizableTextArea?.textArea.selectionEnd;
 
     runQuery(
-      cursorStart !== cursorEnd
+      cursorStart && cursorEnd && cursorStart !== cursorEnd
         ? sqlStatement.substring(cursorStart, cursorEnd)
         : undefined
     );

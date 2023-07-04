@@ -1,14 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
-import { Select } from "antd";
-import { QueryExecResult } from "../dbStore";
 import { COLORS } from "../constants";
-import { SqlValue } from "sql.js";
-import { useReadOnly } from "../ReadonlyContext";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
-
-type Orientation = "row" | "column";
 
 type Props = {
   transformResult: TransformResult;
@@ -18,67 +12,11 @@ const StackedPieChart: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
-  // const readOnly = useReadOnly();
-  // const { columns, values } = queryResult;
-
-  // const defaults =
-  //   columns.includes("value") && columns.includes("label")
-  //     ? ({
-  //         orientation: "column",
-  //         valueColumnIndex: columns.indexOf("value"),
-  //         labelColumnIndex: columns.indexOf("label"),
-  //       } as const)
-  //     : ({
-  //         orientation: "row",
-  //         valueColumnIndex: 0,
-  //         labelColumnIndex: 0,
-  //       } as const);
-
-  // const [dataOrientation, setDataOrientation] = useState<Orientation>(
-  //   defaults.orientation
-  // );
-  // const [valueColumnIndex, setValueColumnIndex] = useState<number>(
-  //   defaults.valueColumnIndex
-  // );
-  // const [labelColumnIndex, setLabelColumnIndex] = useState<number>(
-  //   defaults.labelColumnIndex
-  // );
-
-  // const [dataRowIndex, setdataRowIndex] = useState(0);
-
-  // const chartData =
-  //   dataOrientation === "row"
-  //     ? values[dataRowIndex]
-  //         .map((v, i) => [v, i] as [SqlValue, number])
-  //         .filter(([, i]) => i !== labelColumnIndex)
-  //         .map(([value, i]) => ({
-  //           label: `${columns[i]}: ${
-  //             // TODO: in case of number columns it should display 0 instead of ""
-  //             value === undefined || value === null ? "" : value
-  //           }`,
-  //           key: i,
-  //           value: value,
-  //         }))
-  //     : values.map((row, i) => ({
-  //         key: i,
-  //         label: `${row[labelColumnIndex]}: ${row[
-  //           valueColumnIndex
-  //         ]?.toLocaleString()}`,
-  //         value: row[valueColumnIndex],
-  //       }));
-  // console.log("Pie", chartData);
-
-  // if (!transformResult.length) {
-  //   return null;
-  // }
-
   const isSingleRow =
     transformConfig.dataOrientation === "row" &&
     Object.keys(transformResult[0]).length === 2;
-  // const dataSets = transformConfig.dataOrientation === "row" ? transformResult
 
   const columns = isSingleRow ? ["value"] : transformConfig.selectedColumns;
-  console.log({ transformResult, isSingleRow, columns });
   return (
     <>
       <PieChart width={600} height={320}>

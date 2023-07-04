@@ -1,4 +1,4 @@
-import { BarChart, Bar, Legend, Tooltip, YAxis, XAxis, Cell } from "recharts";
+import { BarChart, Bar, Tooltip, YAxis, XAxis, Cell } from "recharts";
 
 import { ChartProps } from "../types";
 import { getColor } from "../utils";
