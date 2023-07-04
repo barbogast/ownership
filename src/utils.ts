@@ -67,6 +67,5 @@ export const getNewLabel = (existingLabels: string[], oldLabel: string) => {
 };
 
 export const getColor = (index: number) => {
-  console.log(COLORS[COLORS.length % index], index, COLORS.length % index);
   return COLORS[index % COLORS.length];
 };

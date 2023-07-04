@@ -35,11 +35,6 @@ export const extractSingleDataset = (
   dataRowIndex: number,
   labelColumn: string
 ) => {
-  console.log("extractSingleDataset", {
-    transformResult,
-    dataRowIndex,
-    labelColumn,
-  });
   if (dataRowIndex >= transformResult.length) {
     return [];
   }
