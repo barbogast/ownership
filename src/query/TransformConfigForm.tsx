@@ -2,11 +2,7 @@ import React from "react";
 import { Checkbox, Select } from "antd";
 
 import { QueryExecResult } from "../dbStore";
-import useQueryStore, {
-  updateDataOrientation,
-  updateIsSingleDataset,
-  useQuery,
-} from "./queryStore";
+import useQueryStore, { updateDataOrientation, useQuery } from "./queryStore";
 
 type Props = {
   queryId: string;
@@ -16,8 +12,7 @@ type Props = {
 const TransformConfigForm: React.FC<Props> = ({ queryId, queryResults }) => {
   const { transformConfig } = useQuery(queryId);
 
-  const { dataOrientation, selectedColumns, labelColumn, isSingleDataset } =
-    transformConfig;
+  const { dataOrientation, selectedColumns, labelColumn } = transformConfig;
 
   const { columns } = queryResults[0];
 
@@ -42,15 +37,6 @@ const TransformConfigForm: React.FC<Props> = ({ queryId, queryResults }) => {
         ]}
         style={{ width: 220 }}
       />
-      <br />
-      <Checkbox
-        checked={isSingleDataset}
-        onChange={(event) =>
-          updateIsSingleDataset(queryId, event.target.checked)
-        }
-      >
-        Single dataset
-      </Checkbox>
       <br />
       <br />
       <>

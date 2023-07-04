@@ -27,7 +27,6 @@ export type TransformConfig = {
   selectedColumns: string[];
   labelColumn: string;
   dataRowIndex: number;
-  isSingleDataset: boolean;
 };
 
 export type Query = {
@@ -103,7 +102,6 @@ const getDefaults = () => ({
     selectedColumns: [],
     labelColumn: "",
     dataRowIndex: 0,
-    isSingleDataset: false,
   },
 });
 
@@ -274,9 +272,4 @@ export const updateDataOrientation = (
 ) =>
   useQueryStore.setState((state) => {
     state.queries[queryId].transformConfig.dataOrientation = orientation;
-  });
-
-export const updateIsSingleDataset = (queryId: string, value: boolean) =>
-  useQueryStore.setState((state) => {
-    state.queries[queryId].transformConfig.isSingleDataset = value;
   });
