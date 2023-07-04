@@ -7,7 +7,7 @@ import { TransformResult } from "./types";
 
 type Progress = {
   queried?: boolean;
-  postProcessed?: boolean;
+  transformed?: boolean;
 };
 
 const useQueryController = (queryId: string) => {
@@ -25,9 +25,7 @@ const useQueryController = (queryId: string) => {
   } = query;
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
-  const [postProcessResult, setPostProcessResult] = useState<TransformResult>(
-    []
-  );
+  const [transformResult, setTransformResult] = useState<TransformResult>([]);
 
   const [error, setError] = useState<Error>();
 
@@ -48,15 +46,12 @@ const useQueryController = (queryId: string) => {
     }
   };
 
-  const runPostProcess = (
-    results: QueryExecResult[],
-    transformCode: string
-  ) => {
+  const runTransform = (results: QueryExecResult[], transformCode: string) => {
     try {
       const func = new Function("queryResult", transformCode);
       const result = func(results);
-      setPostProcessResult(result || []);
-      setProgress({ queried: true, postProcessed: true });
+      setTransformResult(result || []);
+      setProgress({ queried: true, transformed: true });
     } catch (err) {
       console.error(err);
       setError(err as Error);
@@ -77,8 +72,8 @@ const useQueryController = (queryId: string) => {
         ? rowsToObjects(queryResults[0])
         : columnsToObjects(queryResults[0], labelColumn);
 
-    setPostProcessResult(data);
-    setProgress({ queried: true, postProcessed: true });
+    setTransformResult(data);
+    setProgress({ queried: true, transformed: true });
   };
 
   useEffect(() => {
@@ -108,7 +103,7 @@ const useQueryController = (queryId: string) => {
   useEffect(() => {
     if (transformType === "code") {
       if (queryResults.length) {
-        runPostProcess(queryResults, transformCode);
+        runTransform(queryResults, transformCode);
       }
     } else {
       applyTransformConfig(transformConfig, queryResults);
@@ -119,9 +114,9 @@ const useQueryController = (queryId: string) => {
     error,
     progress,
     queryResults,
-    runPostProcess,
     runQuery,
-    postProcessResult,
+    runTransform,
+    transformResult,
   };
 };
 

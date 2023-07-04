@@ -14,7 +14,7 @@ import { extractSingleDataset } from "../transform";
 
 type Props = {
   queryId: string;
-  postProcessResult: TransformResult;
+  transformResult: TransformResult;
 };
 
 const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
@@ -26,30 +26,30 @@ const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
   table: TableDisplay,
 };
 
-const ChartDisplay: React.FC<Props> = ({ queryId, postProcessResult }) => {
+const ChartDisplay: React.FC<Props> = ({ queryId, transformResult }) => {
   const { chartType, transformConfig } = useQuery(queryId);
 
   const { labelColumn, dataRowIndex, dataOrientation } = transformConfig;
   const ChartComponent = chartType ? chartComponents[chartType] : undefined;
 
-  const postProcessResult2 =
+  const tranformResult2 =
     chartType &&
     SINGLE_DATASET_CHART_TYPES.includes(chartType) &&
     dataRowIndex !== undefined
       ? extractSingleDataset(
-          postProcessResult,
+          transformResult,
           dataRowIndex,
           dataOrientation === "row" ? "label" : labelColumn
         )
-      : postProcessResult;
+      : transformResult;
 
   return (
     <>
-      {postProcessResult2.length
+      {tranformResult2.length
         ? ChartComponent && (
             <ChartComponent
               transformConfig={transformConfig}
-              transformResult={postProcessResult2}
+              transformResult={tranformResult2}
             />
           )
         : null}

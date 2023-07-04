@@ -6,12 +6,12 @@ import css from "../query.module.css";
 type Props = {
   queryId: string;
   queryResults: QueryExecResult[];
-  runPostProcess: (queryResults: QueryExecResult[]) => void;
+  runTransform: (queryResults: QueryExecResult[]) => void;
 };
 
 const TransformSection: React.FC<Props> = ({
   queryId,
-  runPostProcess,
+  runTransform,
   queryResults,
 }) => {
   const { transformCode } = useQuery(queryId);
@@ -24,7 +24,7 @@ const TransformSection: React.FC<Props> = ({
         className={css.codeinput}
       />
       <br />
-      <Button type="primary" onClick={() => runPostProcess(queryResults)}>
+      <Button type="primary" onClick={() => runTransform(queryResults)}>
         Transform
       </Button>
     </>

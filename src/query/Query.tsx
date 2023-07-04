@@ -32,9 +32,9 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     error,
     progress,
     queryResults,
-    runPostProcess,
     runQuery,
-    postProcessResult,
+    runTransform,
+    transformResult,
   } = useQueryController(queryId);
 
   const exportQuery = () => {
@@ -101,8 +101,8 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                     <TransformSection
                       queryId={queryId}
                       queryResults={queryResults}
-                      runPostProcess={() =>
-                        runPostProcess(queryResults, transformCode)
+                      runTransform={() =>
+                        runTransform(queryResults, transformCode)
                       }
                     />
                   ),
@@ -111,8 +111,8 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
             />
           </Col>
           <Col span={12}>
-            {postProcessResult.length ? (
-              <TableDisplay transformResult={postProcessResult} />
+            {transformResult.length ? (
+              <TableDisplay transformResult={transformResult} />
             ) : null}
           </Col>
         </Row>
@@ -121,12 +121,9 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     {
       key: "visualize",
       label: "Data Display",
-      collapsible: progress.postProcessed ? undefined : "disabled",
+      collapsible: progress.transformed ? undefined : "disabled",
       children: (
-        <DisplaySection
-          queryId={queryId}
-          postProcessResult={postProcessResult}
-        />
+        <DisplaySection queryId={queryId} transformResult={transformResult} />
       ),
     } as const,
   ];

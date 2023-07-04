@@ -7,10 +7,10 @@ import ChartDisplay from "../../display/Index";
 
 type Props = {
   queryId: string;
-  postProcessResult: TransformResult;
+  transformResult: TransformResult;
 };
 
-const DisplaySection: React.FC<Props> = ({ queryId, postProcessResult }) => {
+const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
   const { chartType, transformConfig } = useQuery(queryId);
 
   const { labelColumn, dataRowIndex } = transformConfig;
@@ -32,7 +32,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, postProcessResult }) => {
       />
       <br />
       {(chartType === "barChart" || chartType === "pieChart") &&
-        postProcessResult.length > 1 && (
+        transformResult.length > 1 && (
           <>
             <br />
             Row to display:{" "}
@@ -43,7 +43,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, postProcessResult }) => {
                   state.queries[queryId].transformConfig.dataRowIndex = value;
                 });
               }}
-              options={postProcessResult.map((row, i) => ({
+              options={transformResult.map((row, i) => ({
                 value: i,
                 label: `Row ${i + 1}: "${row[labelColumn]}"`,
               }))}
@@ -54,7 +54,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, postProcessResult }) => {
       <br />
       <br />
 
-      <ChartDisplay queryId={queryId} postProcessResult={postProcessResult} />
+      <ChartDisplay queryId={queryId} transformResult={transformResult} />
     </>
   );
 };

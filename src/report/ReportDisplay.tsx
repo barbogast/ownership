@@ -10,13 +10,13 @@ type Props = {
 };
 
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
-  const { error, postProcessResult } = useQueryController(queryId);
+  const { error, transformResult } = useQueryController(queryId);
 
   return (
     <>
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
 
-      <ChartDisplay queryId={queryId} postProcessResult={postProcessResult} />
+      <ChartDisplay queryId={queryId} transformResult={transformResult} />
 
       {showEditLink && (
         <div style={{ textAlign: "right" }}>
