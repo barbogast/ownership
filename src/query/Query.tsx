@@ -26,7 +26,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const [, setLocation] = useLocation();
 
   const query = useQuery(queryId);
-  const { label, transformCode } = query;
+  const { label, transformCode, transformType } = query;
 
   const {
     error,
@@ -82,6 +82,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                   state.queries[queryId].transformType = key as TransformType;
                 });
               }}
+              activeKey={transformType}
               type="card"
               items={[
                 {
