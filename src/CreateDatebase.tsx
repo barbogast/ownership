@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
 import { Input, Button, Col, Row, Select } from "antd";
@@ -62,7 +62,6 @@ const guessType = (rows: CsvRecords, headerIndex: number) => {
   return "text";
 };
 
-type ColumnType = "integer" | "real" | "text";
 type CsvRecords = string[][];
 
 type ColumnDefinition = {

@@ -101,6 +101,7 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
   const { blocks, label, id } = useReport(reportId);
 
   // Creates a new editor instance.
+  // @ts-expect-error Seems to be an issue with @blocknote
   const editor: BlockNoteEditor | null = useBlockNote({
     editable: !readOnly,
     blockSchema: {
@@ -108,9 +109,11 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
       dataDisplay: ChartBlock,
     },
     slashCommands: [...defaultReactSlashMenuItems, insertImage],
+    // @ts-expect-error Seems to be an issue with @blocknote
     initialContent: blocks,
 
     onEditorContentChange: (editor) =>
+      // @ts-expect-error Seems to be an issue with @blocknote
       updateBlocks(reportId, editor.topLevelBlocks),
   });
 
