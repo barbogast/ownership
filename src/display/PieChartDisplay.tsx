@@ -1,8 +1,8 @@
 import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
-import { COLORS } from "../constants";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
+import { getColor } from "../utils";
 
 type Props = {
   transformResult: TransformResult;
@@ -59,10 +59,7 @@ const PieChartDisplay: React.FC<Props> = ({
             }}
           >
             {Object.keys(transformResult[0]).map((_, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
+              <Cell key={`cell-${index}`} fill={getColor(index)} />
             ))}
           </Pie>
         ))}

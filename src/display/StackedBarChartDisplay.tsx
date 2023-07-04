@@ -1,8 +1,8 @@
 import { Tooltip } from "antd";
 import { BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar } from "recharts";
-import { COLORS } from "../constants";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
+import { getColor } from "../utils";
 
 type Props = {
   transformResult: TransformResult;
@@ -37,12 +37,7 @@ const StackedBarChart: React.FC<Props> = ({
         <Tooltip />
         <Legend />
         {transformConfig.selectedColumns.map((col, i) => (
-          <Bar
-            key={i}
-            dataKey={col}
-            stackId="a"
-            fill={COLORS[i % COLORS.length]}
-          />
+          <Bar key={i} dataKey={col} stackId="a" fill={getColor(i)} />
         ))}
       </BarChart>
     </>

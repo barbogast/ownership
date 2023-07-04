@@ -8,9 +8,9 @@ import {
   Legend,
 } from "recharts";
 
-import { COLORS } from "../constants";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
+import { getColor } from "../utils";
 
 type Props = {
   transformResult: TransformResult;
@@ -44,7 +44,7 @@ const LineChartDisplay: React.FC<Props> = ({
         {Object.keys(transformResult[0])
           .filter((c) => transformConfig.selectedColumns.indexOf(c) !== -1)
           .map((c, i) => (
-            <Line key={i} type="monotone" dataKey={c} stroke={COLORS[i]} />
+            <Line key={i} type="monotone" dataKey={c} stroke={getColor(i)} />
           ))}
       </LineChart>
     </>
