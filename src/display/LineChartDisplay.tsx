@@ -20,6 +20,10 @@ const LineChartDisplay: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
+  const lines = Object.keys(transformResult[0]).filter(
+    (c) => transformConfig.selectedColumns.indexOf(c) !== -1
+  );
+
   return (
     <>
       X axis: <br />
@@ -28,12 +32,7 @@ const LineChartDisplay: React.FC<Props> = ({
         width={500}
         height={300}
         data={transformResult}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey={transformConfig.labelColumn} />
@@ -41,11 +40,9 @@ const LineChartDisplay: React.FC<Props> = ({
         <Tooltip />
         <Legend />
 
-        {Object.keys(transformResult[0])
-          .filter((c) => transformConfig.selectedColumns.indexOf(c) !== -1)
-          .map((c, i) => (
-            <Line key={i} type="monotone" dataKey={c} stroke={getColor(i)} />
-          ))}
+        {lines.map((c, i) => (
+          <Line key={i} type="monotone" dataKey={c} stroke={getColor(i)} />
+        ))}
       </LineChart>
     </>
   );

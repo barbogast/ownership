@@ -18,14 +18,16 @@ const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
 const QueryTable: React.FC<Pick<ChartProps, "transformResult">> = ({
   transformResult,
 }) => {
+  const columns = Object.keys(transformResult[0]).map((col) => ({
+    title: col,
+    dataIndex: col,
+    key: col,
+  }));
+
   return (
     <Table<DataType>
       scroll={{ x: true }}
-      columns={Object.keys(transformResult[0]).map((col) => ({
-        title: col,
-        dataIndex: col,
-        key: col,
-      }))}
+      columns={columns}
       rowSelection={
         "children" in transformResult[0]
           ? {

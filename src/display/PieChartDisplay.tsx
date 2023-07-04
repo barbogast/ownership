@@ -17,6 +17,8 @@ const PieChartDisplay: React.FC<Props> = ({
     Object.keys(transformResult[0]).length === 2;
 
   const columns = isSingleRow ? ["value"] : transformConfig.selectedColumns;
+  const cells = Object.keys(transformResult[0]);
+
   return (
     <>
       <PieChart width={600} height={320}>
@@ -58,7 +60,7 @@ const PieChartDisplay: React.FC<Props> = ({
               );
             }}
           >
-            {Object.keys(transformResult[0]).map((_, index) => (
+            {cells.map((_, index) => (
               <Cell key={`cell-${index}`} fill={getColor(index)} />
             ))}
           </Pie>
