@@ -1,49 +1,19 @@
 import { Select } from "antd";
-import useQueryStore, {
-  ChartType,
-  SINGLE_DATASET_CHART_TYPES,
-  updateChartType,
-  useQuery,
-} from "../queryStore";
-import TableDisplay from "../../display/TableDisplay";
-import BarChartDisplay from "../../display/BarChartDisplay";
-import PieChartDisplay from "../../display/PieChartDisplay";
-import LineChartDisplay from "../../display/LineChartDisplay";
-import { ChartProps, TransformResult } from "../../types";
-import StackedBarChart from "../../display/StackedBarChartDisplay";
-import StackedPieChart from "../../display/StackedPieChartDisplay";
-import { extractSingleDataset } from "../../transform";
+import useQueryStore, { updateChartType, useQuery } from "../queryStore";
+
+import { TransformResult } from "../../types";
+
+import ChartDisplay from "../../display/Index";
 
 type Props = {
   queryId: string;
   postProcessResult: TransformResult;
 };
 
-const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
-  barChart: BarChartDisplay,
-  stackedBarChart: StackedBarChart,
-  pieChart: PieChartDisplay,
-  stackedPieChart: StackedPieChart,
-  lineChart: LineChartDisplay,
-  table: TableDisplay,
-};
-
 const DisplaySection: React.FC<Props> = ({ queryId, postProcessResult }) => {
   const { chartType, transformConfig } = useQuery(queryId);
 
-  const { labelColumn, dataRowIndex, dataOrientation } = transformConfig;
-  const ChartComponent = chartType ? chartComponents[chartType] : undefined;
-
-  const postProcessResult2 =
-    chartType &&
-    SINGLE_DATASET_CHART_TYPES.includes(chartType) &&
-    dataRowIndex !== undefined
-      ? extractSingleDataset(
-          postProcessResult,
-          dataRowIndex,
-          dataOrientation === "row" ? "label" : labelColumn
-        )
-      : postProcessResult;
+  const { labelColumn, dataRowIndex } = transformConfig;
 
   return (
     <>
@@ -84,14 +54,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, postProcessResult }) => {
       <br />
       <br />
 
-      {postProcessResult2.length
-        ? ChartComponent && (
-            <ChartComponent
-              transformConfig={transformConfig}
-              transformResult={postProcessResult2}
-            />
-          )
-        : null}
+      <ChartDisplay queryId={queryId} postProcessResult={postProcessResult} />
     </>
   );
 };
