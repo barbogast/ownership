@@ -16,13 +16,13 @@
     "@blocknote/core": "^0.8.1",
     "@blocknote/react": "^0.8.1",
     "@types/lodash": "^4.14.195",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.3.3",
     "@types/sql.js": "^1.4.4",
     "@types/uuid": "^9.0.2",
-    "antd": "^5.6.2",
+    "antd": "^5.6.4",
     "csv-parse": "^5.4.0",
     "csv-stringify": "^6.4.0",
-    "dayjs": "^1.11.8",
+    "dayjs": "^1.11.9",
     "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -31,20 +31,20 @@
     "sql.js": "^1.8.0",
     "uuid": "^9.0.0",
     "wouter": "^2.11.0",
-    "zustand": "^4.3.8"
+    "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "@types/react": "^18.2.13",
+    "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
-    "@vitejs/plugin-react-swc": "^3.0.0",
-    "eslint": "^8.43.0",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "eslint": "^8.44.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",
-    "typescript": "^5.0.2",
+    "typescript": "^5.1.6",
     "vite": "^4.3.9",
-    "vitest": "^0.32.2"
+    "vitest": "^0.32.4"
   },
   "packageManager": "yarn@3.6.0"
 }
