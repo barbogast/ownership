@@ -1,5 +1,6 @@
 import React from "react";
 import { Checkbox, Select } from "antd";
+
 import { QueryExecResult } from "../dbStore";
 import useQueryStore, {
   updateDataOrientation,
@@ -7,7 +8,11 @@ import useQueryStore, {
   useQuery,
 } from "./queryStore";
 
-type Props = { queryId: string; queryResults: QueryExecResult[] };
+type Props = {
+  queryId: string;
+  queryResults: QueryExecResult[];
+};
+
 const TransformConfigForm: React.FC<Props> = ({ queryId, queryResults }) => {
   const { transformConfig } = useQuery(queryId);
 

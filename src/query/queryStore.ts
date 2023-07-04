@@ -258,11 +258,6 @@ export const updateSqlStatement = (queryId: string, statement: string) =>
     state.queries[queryId].sqlStatement = statement;
   });
 
-// export const updateEnableTransform = (queryId: string, enable: boolean) =>
-//   useQueryStore.setState((state) => {
-//     state.queries[queryId].enableTransform = enable;
-//   });
-
 export const updateTransformCode = (queryId: string, code: string) =>
   useQueryStore.setState((state) => {
     state.queries[queryId].transformCode = code;

@@ -1,7 +1,9 @@
 import React from "react";
 import { Button, Col, Collapse, Input, Row, Tabs } from "antd";
 import * as dayjs from "dayjs";
+import { useLocation } from "wouter";
 
+import useQueryController from "../useQueryController";
 import useQueryStore, {
   TransformType,
   duplicate,
@@ -9,14 +11,12 @@ import useQueryStore, {
   updateLabel,
   useQuery,
 } from "./queryStore";
+import { downloadFile } from "../utils";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
-import { downloadFile } from "../utils";
-import { useLocation } from "wouter";
 import TransformConfigForm from "./TransformConfigForm";
 import TableDisplay from "../display/TableDisplay";
-import useQueryController from "../useQueryController";
 
 type Props = {
   params: { queryId: string };

@@ -1,8 +1,7 @@
 import { Select } from "antd";
+
 import useQueryStore, { updateChartType, useQuery } from "../queryStore";
-
 import { TransformResult } from "../../types";
-
 import ChartDisplay from "../../display/Index";
 
 type Props = {
