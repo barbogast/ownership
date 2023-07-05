@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { QueryExecResult } from "sql.js";
+import * as ts from "typescript/lib/typescript";
+
 import { MyDatabase, initializeDb } from "./dbStore";
 import { useQuery, TransformConfig } from "./query/queryStore";
 import { rowsToObjects, columnsToObjects } from "./transform";
@@ -48,7 +50,18 @@ const useQueryController = (queryId: string) => {
 
   const runTransform = (results: QueryExecResult[], transformCode: string) => {
     try {
-      const func = new Function("queryResult", transformCode);
+      // @ts-expect-error Hack for typescript in browser to not crash
+      window.process = { versions: {} };
+      const transpiledCode = ts.transpile(transformCode, {
+        module: ts.ModuleKind.CommonJS,
+      });
+
+      const finalCode = `
+        ${transpiledCode}
+        return transform(queryResult)
+      `;
+
+      const func = new Function("queryResult", finalCode);
       const result = func(results);
       setTransformResult(result || []);
       setProgress({ queried: true, transformed: true });

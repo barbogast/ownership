@@ -45,32 +45,38 @@ type QueryState = {
 };
 
 const code1 = `
-return queryResult[0].values.map((row) => {
-  const mappedValues = Object.fromEntries(queryResult[0].columns.map((k, i) => [k, row[i]]));
-  return {
-    name: "Year",
-    value: mappedValues.year,
-    children: [
-      {
-        name: "Total",
-        value: mappedValues.total,
-        children: [
-          {
-            name: "Residents",
-            value: mappedValues.residents,
-            children: [
-              { name: "Central Bank", value: mappedValues.central_bank },
-              { name: "OMFIs", value: mappedValues.omfis },
-              { name: "Other financial institutions", value: mappedValues.other_financial_institutions },
-              { name: "Other Residents", value: mappedValues.other_residents },
-            ],
-          },
-          { name: "Non-Residents", value: mappedValues.non_residents },
-        ],
-      },
-    ],
-  };
-});`;
+type Value = string | number | null
+type QueryResult = {values: Value[][], colums: string[]}[]
+type TransformResult = Record<string, Value>[]
+
+function transform(queryResult: QueryResult): TransformResult{
+  return queryResult[0].values.map((row) => {
+    const mappedValues = Object.fromEntries(queryResult[0].columns.map((k, i) => [k, row[i]]));
+    return {
+      name: "Year",
+      value: mappedValues.year,
+      children: [
+        {
+          name: "Total",
+          value: mappedValues.total,
+          children: [
+            {
+              name: "Residents",
+              value: mappedValues.residents,
+              children: [
+                { name: "Central Bank", value: mappedValues.central_bank },
+                { name: "OMFIs", value: mappedValues.omfis },
+                { name: "Other financial institutions", value: mappedValues.other_financial_institutions },
+                { name: "Other Residents", value: mappedValues.other_residents },
+              ],
+            },
+            { name: "Non-Residents", value: mappedValues.non_residents },
+          ],
+        },
+      ],
+    };
+  });
+}`;
 
 const query = `
 select category_1 from aaa where category_1 is not null group by category_1 order by category_1;
@@ -79,20 +85,36 @@ select category_3 from aaa where category_3 is not null group by category_3 orde
 select category_4 from aaa where category_4 is not null group by category_4  order by category_4;`;
 
 const code2 = `
-const valueArrays = queryResult.map(({values}) => values)
-const [cat1, cat2, cat3, cat4] = queryResult.map(res => res.values.map(row => row[0]))
+type Value = string | number | null
+type QueryResult = {values: Value[][], colums: string[]}[]
+type TransformResult = Record<string, Value>[]
+
+function transform(queryResult: QueryResult): TransformResult{
+  const valueArrays = queryResult.map(({values}) => values)
+  const [cat1, cat2, cat3, cat4] = queryResult.map(res => res.values.map(row => row[0]))
 
 
-const maxLength = Math.max(...valueArrays.map(arr => arr.length))
+  const maxLength = Math.max(...valueArrays.map(arr => arr.length))
 
 
-const data = Array(maxLength).fill().map((_, i) => ({
-  category1: cat1[i],
-  category2: cat2[i],
-  category3: cat3[i],
-  category4: cat4[i]
-}))
-return data
+  const data = Array(maxLength).fill(null).map((_, i) => ({
+    category1: cat1[i],
+    category2: cat2[i],
+    category3: cat3[i],
+    category4: cat4[i]
+  }))
+  return data
+}
+`;
+
+const defaultTransformCode = `
+type Value = string | number | null
+type QueryResult = {values: Value[][], colums: string[]}[]
+type TransformResult = Record<string, Value>[]
+
+function transform(queryResult: QueryResult): TransformResult{
+  // Your code here ...
+}
 `;
 
 const getDefaults = () => ({
@@ -103,6 +125,9 @@ const getDefaults = () => ({
     labelColumn: "",
     dataRowIndex: 0,
   },
+  databaseFileName: "",
+  sqlStatement: "",
+  transformCode: defaultTransformCode,
 });
 
 const initialState: QueryState = {
@@ -192,10 +217,6 @@ export const addQuery = () => {
       ...getDefaults(),
       id,
       label: "New query",
-      databaseFileName: "",
-      sqlStatement: "",
-      // enableTransform: false,
-      transformCode: "return queryResult",
     };
   });
   return id;

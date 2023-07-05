@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { useQuery, updateTransformCode } from "../queryStore";
 import { QueryExecResult } from "../../dbStore";
-import css from "../query.module.css";
+import Editor from "@monaco-editor/react";
 
 type Props = {
   queryId: string;
@@ -18,10 +18,11 @@ const TransformSection: React.FC<Props> = ({
 
   return (
     <>
-      <textarea
-        value={transformCode}
-        onChange={(event) => updateTransformCode(queryId, event.target.value)}
-        className={css.codeinput}
+      <Editor
+        height="500px"
+        defaultLanguage="typescript"
+        defaultValue={transformCode}
+        onChange={(value) => value && updateTransformCode(queryId, value)}
       />
       <br />
       <Button type="primary" onClick={() => runTransform(queryResults)}>
