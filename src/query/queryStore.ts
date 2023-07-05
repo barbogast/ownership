@@ -108,8 +108,8 @@ function transform(queryResult: QueryResult): TransformResult{
 `;
 
 const defaultTransformCode = `
-type Value = string | number | null
-type QueryResult = {values: Value[][], colums: string[]}[]
+type Value = string | number | null | TransformResult
+type QueryResult = {values: Value[][], columns: string[]}[]
 type TransformResult = Record<string, Value>[]
 
 function transform(queryResult: QueryResult): TransformResult{
