@@ -60,7 +60,7 @@ export const initializeDb = async (key: string, keyIsFileName: boolean) => {
 
     let db: Database;
     if (keyIsFileName) {
-      const res = await fetch(isLocal ? key : basePath + key);
+      const res = await fetch(isLocal ? key : basePath + "/" + key);
       const buf = await res.arrayBuffer();
       db = new SQL.Database(new Uint8Array(buf));
     } else {
