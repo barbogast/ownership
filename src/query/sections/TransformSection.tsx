@@ -42,7 +42,7 @@ const TransformSection: React.FC<Props> = ({
         startLineNumber: error.position.line,
         endLineNumber: error.position.line,
         startColumn: 0,
-        endColumn: transformCode.split("\n")[error.position.line].length,
+        endColumn: transformCode.split("\n")[error.position.line]?.length,
       };
       monacoInstances.monaco.editor.setModelMarkers(model, "owner", [marker]);
     } else {
