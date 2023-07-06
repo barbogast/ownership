@@ -1,5 +1,5 @@
 import { Menu } from "antd";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
@@ -17,11 +17,32 @@ type Props = {
 const MainMenu: React.FC<Props> = ({ children }) => {
   const queryStore = useQueryStore();
   const reportStore = useReportStore();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const [activeMenuItem, setActiveMenuItem] = useState("");
+  const [openFolders, setOpenFolders] = useState<string[]>([]);
+
+  const openFolder = (submenus: string[]) =>
+    setOpenFolders((state) => [...new Set(state.concat(submenus))]);
+
+  useEffect(() => {
+    // This hook gets executed when the app launches and on subsequent url changes.
+    // It will set the active menu item and add the folder of the active menu item
+    // to the list of opened folders.
+    // The keys of menu items and folders can be derived from the URL; menu items
+    // match the url directly and folders match the path segement of the url
+    setActiveMenuItem(location);
+    const folder = location
+      .split("/")
+      .slice(0, -1)
+      .filter((segment) => Boolean(segment));
+    if (folder) {
+      openFolder(folder);
+    }
+  }, [location]);
 
   const items = [
     {
-      key: `databases`,
+      key: `db`,
       label: `Databases`,
       children: databaseFiles
         .map((fileName) => ({
@@ -34,7 +55,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         }),
     },
     {
-      key: `queries`,
+      key: `query`,
       label: `Queries`,
       onClick: ({ key }: { key: string }) => {
         if (key === "new-query") {
@@ -52,7 +73,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       },
       children: Object.values(queryStore.queries)
         .map((query): { key: string; label: ReactElement | string } => ({
-          key: query.id,
+          key: `/query/${query.id}`,
           label: <Link href={`/query/${query.id}`}>{query.label}</Link>,
         }))
         .concat({
@@ -65,7 +86,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         }),
     },
     {
-      key: `reports`,
+      key: `report`,
       label: `Reports`,
       onClick: ({ key }: { key: string }) => {
         if (key === "new-report") {
@@ -75,7 +96,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       },
       children: Object.values(reportStore.reports)
         .map((report): { key: string; label: ReactElement | string } => ({
-          key: "edit" + report.id,
+          key: `/report/edit/${report.id}`,
           label: <Link href={`/report/edit/${report.id}`}>{report.label}</Link>,
         }))
         .concat({
@@ -84,7 +105,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         }),
     },
     {
-      key: `ownership`,
+      key: `/ownership`,
       label: <Link href="/ownership">Ownership (old)</Link>,
     },
   ];
@@ -94,10 +115,12 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       <Panel defaultSize={20} minSize={10}>
         <Menu
           mode="inline"
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
           style={{ overflow: "scroll", height: "100%" }}
           items={items}
+          selectedKeys={[activeMenuItem]}
+          openKeys={openFolders}
+          onSelect={(selectInfo) => setActiveMenuItem(selectInfo.key)}
+          onOpenChange={setOpenFolders}
         />
       </Panel>
       <PanelResizeHandle
