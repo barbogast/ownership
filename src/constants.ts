@@ -1,3 +1,5 @@
+import { editor } from "monaco-editor";
+
 export const COLORS = [
   "red",
   "blue",
@@ -14,3 +16,9 @@ export const databaseFiles = [
   "database2.sqlite",
   "database3.sqlite",
 ];
+
+export const editorDefaultOptions: editor.IStandaloneEditorConstructionOptions =
+  {
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+  };

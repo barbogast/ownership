@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { Input, Button, Col, Row, Select } from "antd";
-import { TextAreaRef } from "antd/es/input/TextArea";
+import { Button, Col, Row, Select } from "antd";
+import { editor } from "monaco-editor";
 
 import {
   updateDatabaseFileName,
@@ -9,8 +9,9 @@ import {
 } from "./../queryStore";
 import { QueryExecResult } from "../../dbStore";
 import TableDisplay from "../../display/TableDisplay";
-import { databaseFiles } from "../../constants";
+import { databaseFiles, editorDefaultOptions } from "../../constants";
 import { rowsToObjects } from "../../transform";
+import { Editor, OnMount } from "@monaco-editor/react";
 
 type Props = {
   queryId: string;
@@ -20,20 +21,19 @@ type Props = {
 
 const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   const { databaseFileName, sqlStatement } = useQuery(queryId);
-
-  const textAreaRef = useRef<TextAreaRef>(null);
+  const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const run = () => {
-    const cursorStart =
-      textAreaRef.current?.resizableTextArea?.textArea.selectionStart;
-    const cursorEnd =
-      textAreaRef.current?.resizableTextArea?.textArea.selectionEnd;
+    const sel = editorRef.current!.getSelection();
+    if (sel) {
+      const text = editorRef.current!.getModel()!.getValueInRange(sel);
+      runQuery(text || sqlStatement);
+    }
+  };
 
-    runQuery(
-      cursorStart && cursorEnd && cursorStart !== cursorEnd
-        ? sqlStatement.substring(cursorStart, cursorEnd)
-        : undefined
-    );
+  const onEditorMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, run);
   };
 
   return (
@@ -48,19 +48,13 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
         />
         <br />
         SQL:
-        <br />
-        <Input.TextArea
-          value={sqlStatement}
-          onChange={(event) => updateSqlStatement(queryId, event.target.value)}
-          style={{ width: 500 }}
-          rows={5}
-          styles={{ textarea: { fontFamily: "monospace" } }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && event.ctrlKey) {
-              run();
-            }
-          }}
-          ref={textAreaRef}
+        <Editor
+          height="200px"
+          defaultLanguage="sql"
+          defaultValue={sqlStatement}
+          onMount={onEditorMount}
+          onChange={(value) => value && updateSqlStatement(queryId, value)}
+          options={editorDefaultOptions}
         />
         <br />
         <br />
