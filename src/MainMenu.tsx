@@ -1,6 +1,7 @@
-import { Layout, Menu, theme } from "antd";
+import { Menu } from "antd";
 import { ReactElement } from "react";
 import { Link, useLocation } from "wouter";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useQueryStore, {
   Query,
@@ -17,10 +18,6 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const queryStore = useQueryStore();
   const reportStore = useReportStore();
   const [, setLocation] = useLocation();
-
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
   const items = [
     {
@@ -93,37 +90,23 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   ];
 
   return (
-    <Layout
-      style={{
-        padding: "16px 0",
-        background: colorBgContainer,
-      }}
-    >
-      <Layout.Sider
-        style={{
-          background: colorBgContainer,
-        }}
-        width={300}
-      >
+    <PanelGroup direction="horizontal">
+      <Panel defaultSize={20} minSize={10}>
         <Menu
           mode="inline"
           defaultSelectedKeys={["1"]}
           defaultOpenKeys={["sub1"]}
-          style={{
-            height: "100%",
-          }}
+          style={{ overflow: "scroll", height: "100%" }}
           items={items}
         />
-      </Layout.Sider>
-      <Layout.Content
-        style={{
-          padding: "0 24px",
-          minHeight: 280,
-        }}
-      >
+      </Panel>
+      <PanelResizeHandle
+        style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
+      />
+      <Panel minSize={30} style={{ height: "100%", overflow: "scroll" }}>
         {children}
-      </Layout.Content>
-    </Layout>
+      </Panel>
+    </PanelGroup>
   );
 };
 

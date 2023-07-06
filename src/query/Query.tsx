@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Col, Collapse, Input, Row, Tabs } from "antd";
 import * as dayjs from "dayjs";
 import { useLocation } from "wouter";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useQueryController from "../useQueryController";
 import useQueryStore, {
@@ -75,8 +76,8 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
       label: "Transform",
       collapsible: progress.queried ? undefined : "disabled",
       children: (
-        <Row>
-          <Col span={12}>
+        <PanelGroup direction="horizontal">
+          <Panel defaultSize={50} minSize={10}>
             <Tabs
               onChange={(key) => {
                 useQueryStore.setState((state) => {
@@ -112,13 +113,16 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                 },
               ]}
             />
-          </Col>
-          <Col span={12}>
+          </Panel>
+          <PanelResizeHandle
+            style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
+          />
+          <Panel minSize={10}>
             {transformResult.length ? (
               <TableDisplay transformResult={transformResult} />
             ) : null}
-          </Col>
-        </Row>
+          </Panel>
+        </PanelGroup>
       ),
     } as const,
     {

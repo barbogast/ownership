@@ -1,6 +1,7 @@
 import { useRef } from "react";
-import { Button, Col, Row, Select } from "antd";
+import { Button, Select } from "antd";
 import { editor } from "monaco-editor";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import {
   updateDatabaseFileName,
@@ -37,8 +38,8 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   };
 
   return (
-    <Row>
-      <Col span={12}>
+    <PanelGroup direction="horizontal">
+      <Panel defaultSize={50} minSize={10}>
         <Select
           value={databaseFileName}
           onChange={(value) => updateDatabaseFileName(queryId, value)}
@@ -61,13 +62,16 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
         <Button type="primary" onClick={run}>
           Run query
         </Button>
-      </Col>
-      <Col span={12}>
+      </Panel>
+      <PanelResizeHandle
+        style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
+      />
+      <Panel minSize={10}>
         {queryResults.map((queryResult, i) => (
           <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
         ))}
-      </Col>
-    </Row>
+      </Panel>
+    </PanelGroup>
   );
 };
 
