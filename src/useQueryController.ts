@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
 import { QueryExecResult } from "sql.js";
 import * as ts from "typescript/lib/typescript";
+import sourceMap from "source-map-js";
 
 import { MyDatabase, initializeDb } from "./dbStore";
 import { useQuery, TransformConfig } from "./query/queryStore";
 import { rowsToObjects, columnsToObjects } from "./transform";
 import { TransformResult } from "./types";
+import { getPositionFromStacktrace } from "./utils";
 
 type Progress = {
   queried?: boolean;
   transformed?: boolean;
+};
+
+export type TransformError = {
+  position?: { line: number; column: number };
+  error: Error;
 };
 
 const useQueryController = (queryId: string) => {
@@ -29,7 +36,12 @@ const useQueryController = (queryId: string) => {
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
 
-  const [error, setError] = useState<Error>();
+  const [error, setError] = useState<TransformError>();
+
+  const [transformError, setTransformError] = useState<{
+    position?: { line: number; column: number };
+    error: Error;
+  }>();
 
   const runQuery = (statement?: string): QueryExecResult[] => {
     if (db.status !== "loaded") throw new Error();
@@ -42,32 +54,43 @@ const useQueryController = (queryId: string) => {
       return results;
     } catch (err) {
       console.error(err);
-      setError(err as Error);
+      setError({ error: err as Error });
       setQueryResults([]);
       return [];
     }
   };
 
   const runTransform = (results: QueryExecResult[], transformCode: string) => {
+    // @ts-expect-error Hack for typescript in browser to not crash
+    window.process = { versions: {} };
+    const transpiled = ts.transpileModule(transformCode, {
+      compilerOptions: { sourceMap: true },
+    });
+
+    const finalCode = `${transpiled.outputText}
+      return transform(queryResult)
+    `;
+
     try {
-      // @ts-expect-error Hack for typescript in browser to not crash
-      window.process = { versions: {} };
-      const transpiledCode = ts.transpile(transformCode, {
-        module: ts.ModuleKind.CommonJS,
-      });
-
-      const finalCode = `
-        ${transpiledCode}
-        return transform(queryResult)
-      `;
-
+      setTransformError(undefined);
       const func = new Function("queryResult", finalCode);
       const result = func(results);
       setTransformResult(result || []);
       setProgress({ queried: true, transformed: true });
     } catch (err) {
       console.error(err);
-      setError(err as Error);
+
+      const smc = new sourceMap.SourceMapConsumer(
+        JSON.parse(transpiled.sourceMapText!)
+      );
+
+      const transpiledPosition = getPositionFromStacktrace(
+        (err as Error).stack!
+      );
+      const position = transpiledPosition
+        ? smc.originalPositionFor(transpiledPosition)
+        : undefined;
+      setTransformError({ error: err as Error, position });
     }
   };
 
@@ -130,6 +153,7 @@ const useQueryController = (queryId: string) => {
     runQuery,
     runTransform,
     transformResult,
+    transformError,
   };
 };
 

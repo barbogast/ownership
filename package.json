@@ -30,6 +30,7 @@
     "react-dom": "^18.2.0",
     "recharts": "^2.7.2",
     "slugify": "^1.6.6",
+    "source-map-js": "^1.0.2",
     "sql.js": "^1.8.0",
     "uuid": "^9.0.0",
     "wouter": "^2.11.0",

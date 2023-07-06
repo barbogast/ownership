@@ -35,6 +35,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     runQuery,
     runTransform,
     transformResult,
+    transformError,
   } = useQueryController(queryId);
 
   const exportQuery = () => {
@@ -105,6 +106,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                       runTransform={() =>
                         runTransform(queryResults, transformCode)
                       }
+                      error={transformError}
                     />
                   ),
                 },
