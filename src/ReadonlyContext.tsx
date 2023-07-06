@@ -15,4 +15,5 @@ export const ReadOnly: React.FC<Props> = ({ children, readOnly }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useReadOnly = () => useContext(ReadOnlyContext);
