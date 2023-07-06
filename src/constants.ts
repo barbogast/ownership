@@ -21,4 +21,6 @@ export const editorDefaultOptions: editor.IStandaloneEditorConstructionOptions =
   {
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
+    formatOnPaste: true,
+    formatOnType: true,
   };
