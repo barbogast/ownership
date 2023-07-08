@@ -1,7 +1,7 @@
 import { COLORS } from "./constants";
 
 export const logger = (
-  category: "sql" | "database",
+  category: "sql" | "database" | "git",
   msg: string,
   extra?: Record<string, unknown>
 ) => {
