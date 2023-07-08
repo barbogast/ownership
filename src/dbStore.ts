@@ -38,7 +38,6 @@ export default useDatabaseStore;
 const isLocal =
   window.location.host.startsWith("127.0.0.1") ||
   window.location.host.startsWith("localhost");
-const basePath = "/ownership";
 
 const init = async () => {
   // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
@@ -47,7 +46,7 @@ const init = async () => {
     locateFile: () =>
       isLocal
         ? "/node_modules/sql.js/dist/sql-wasm.wasm?init"
-        : basePath + "/sql-wasm.wasm?init",
+        : "/sql-wasm.wasm?init",
   });
   return SQL;
 };
@@ -60,7 +59,7 @@ export const initializeDb = async (key: string, keyIsFileName: boolean) => {
 
     let db: Database;
     if (keyIsFileName) {
-      const res = await fetch(isLocal ? key : basePath + "/" + key);
+      const res = await fetch("/" + key);
       const buf = await res.arrayBuffer();
       db = new SQL.Database(new Uint8Array(buf));
     } else {

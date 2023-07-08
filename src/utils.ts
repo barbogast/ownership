@@ -91,3 +91,9 @@ export const getPositionFromStacktrace = (stack: string) => {
     column: parseInt(result[2]),
   };
 };
+
+export const getBasePath = () => {
+  const [_, organization, repository] = window.location.pathname.split("/");
+  console.log({ organization, repository });
+  return `/${organization}/${repository}`;
+};

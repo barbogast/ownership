@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
+import { getBasePath } from "../utils";
 // import { Block } from "@blocknote/core";
 
 type Block = string[];
@@ -29,7 +30,7 @@ const initialState: ReportState = {
 };
 
 const persistConfig = {
-  name: "reports",
+  name: getBasePath() + "/reports",
   storage: createJSONStorage(() => localStorage),
 };
 
