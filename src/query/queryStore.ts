@@ -208,6 +208,19 @@ export const enable = (info: RepositoryInfo) => {
   useQueryStore.persist.rehydrate();
 };
 
+export const importStore = (info: RepositoryInfo, queries: Query[]) => {
+  const content: QueryState = {
+    queries: Object.fromEntries(queries.map((query) => [query.id, query])),
+  };
+  localStorage.setItem(
+    getStorageName(info),
+    JSON.stringify({
+      state: content,
+      version: CURRENT_VERSION,
+    })
+  );
+};
+
 const useQueryStore = create(
   devtools(
     persist(

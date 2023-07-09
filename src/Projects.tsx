@@ -2,6 +2,9 @@ import { Button, Col, Input, Row } from "antd";
 import { useState } from "react";
 import useProjectStore, { addProject, updateProject } from "./projectStore";
 import { Link } from "wouter";
+import { loadFromGit } from "./gitStorage";
+import { getRepoInfo } from "./utils";
+import { importStore } from "./query/queryStore";
 
 const Projects: React.FC = () => {
   const projects = useProjectStore().projects;
@@ -15,6 +18,8 @@ const Projects: React.FC = () => {
     id: "",
   };
   const [editProject, setEditProject] = useState(initialEditProjectState);
+
+  const [isImporting, setIsImporting] = useState(false);
 
   return (
     <>
@@ -125,6 +130,23 @@ const Projects: React.FC = () => {
             }}
           >
             Create
+          </Button>
+          <Button
+            loading={isImporting}
+            onClick={async () => {
+              setIsImporting(true);
+              const info = getRepoInfo(
+                newProject.organization,
+                newProject.repository
+              );
+              const queries = await loadFromGit(info.path);
+              importStore(info, queries);
+              addProject(info);
+              setNewProject(initialNewProjectState);
+              setIsImporting(false);
+            }}
+          >
+            Import from Github
           </Button>
         </Col>
       </Row>

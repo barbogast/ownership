@@ -44,7 +44,7 @@ const addQuery = async (
 const loadQuery = async (fs: FsHelper, directory: string) => {
   const contents = await fs.readFilesInDirectory(directory);
   const query = filesToQuery(contents);
-  console.log(directory, query);
+  return query;
 };
 
 export const saveToGit = async (repositoryPath: string) => {
@@ -72,15 +72,19 @@ export const loadFromGit = async (repositoryPath: string) => {
   await git.clone(repositoryPath);
 
   const entries = await fs.fs.promises.readdir(gitRoot + "/queries");
+  const queries = [];
   for (const entry of entries) {
     const path = gitRoot + "/queries/" + entry;
     const stat = await fs.fs.promises.stat(path);
     if (stat.isDirectory()) {
-      await loadQuery(fs, path);
+      const query = await loadQuery(fs, path);
+      queries.push(query);
     } else {
       console.error(path, "is not a directory");
     }
   }
+
+  return queries;
   //   console.log(queries);
 };
 /*
