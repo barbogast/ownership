@@ -48,7 +48,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     return children;
   }
 
-  const basepath = repositoryInfo.path;
+  const basepath = "/" + repositoryInfo.path;
 
   const items = [
     {
