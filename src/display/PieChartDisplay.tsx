@@ -24,6 +24,7 @@ const PieChartDisplay: React.FC<Props> = ({
       <PieChart width={600} height={320}>
         {columns.map((column, i) => (
           <Pie
+            key={column + i}
             data={transformResult}
             dataKey={column}
             nameKey="name"
