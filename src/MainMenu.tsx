@@ -161,7 +161,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           onClick={async () => {
             setIsSaving(true);
             await saveToGit(repositoryInfo.path);
-            useModifiedStore.setState(() => ({ dirtyQueries: [] }));
+            useModifiedStore.setState(() => ({ modifiedQueries: [] }));
             setIsSaving(false);
           }}
         >
