@@ -1,5 +1,5 @@
 import { ReactElement, useEffect } from "react";
-import useQueryStore from "./query/queryStore";
+import { enable } from "./query/queryStore";
 import useReportStore from "./report/reportStore";
 import { useRepoInfo } from "./utils";
 
@@ -12,8 +12,7 @@ const RepositoryStores: React.FC<Props> = ({ children }) => {
     if (info) {
       console.log("hydrate", info);
 
-      useQueryStore.persist.setOptions({ name: `${info.path}/queries` });
-      useQueryStore.persist.rehydrate();
+      enable(info);
 
       useReportStore.persist.setOptions({ name: `${info.path}/reports` });
       useReportStore.persist.rehydrate();

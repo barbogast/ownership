@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { deepCopy, getNewLabel } from "../utils";
 import { add } from "../modifiedStore";
+import { RepositoryInfo } from "../types";
 
 export type ChartType =
   | "table"
@@ -176,11 +177,13 @@ const initialState: QueryState = {
   },
 };
 
+const CURRENT_VERSION = 2;
+
 const persistConfig: PersistOptions<QueryState> = {
   name: "uninitializedQueries",
   skipHydration: true,
   storage: createJSONStorage(() => localStorage),
-  version: 2,
+  version: CURRENT_VERSION,
   migrate: (unknownState) => {
     const state = unknownState as QueryState;
     Object.keys(state.queries).forEach((id) => {
@@ -196,6 +199,13 @@ const persistConfig: PersistOptions<QueryState> = {
     });
     return state as QueryState;
   },
+};
+
+const getStorageName = (info: RepositoryInfo) => `${info.path}/queries`;
+
+export const enable = (info: RepositoryInfo) => {
+  useQueryStore.persist.setOptions({ name: getStorageName(info) });
+  useQueryStore.persist.rehydrate();
 };
 
 const useQueryStore = create(
