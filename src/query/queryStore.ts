@@ -8,6 +8,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { deepCopy, getNewLabel } from "../utils";
+import { add } from "../modifiedStore";
 
 export type ChartType =
   | "table"
@@ -265,6 +266,7 @@ export const updateQuery = (
   queryId: string,
   newState: Partial<Omit<Query, "transformConfig">>
 ) => {
+  add(queryId);
   useQueryStore.setState((state) => {
     Object.assign(state.queries[queryId], newState);
   });
@@ -274,6 +276,7 @@ export const updateTransformConfig = (
   queryId: string,
   newState: Partial<TransformConfig>
 ) => {
+  add(queryId);
   useQueryStore.setState((state) => {
     Object.assign(state.queries[queryId].transformConfig, newState);
   });

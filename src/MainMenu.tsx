@@ -1,4 +1,4 @@
-import { Button, Divider, Menu, Select } from "antd";
+import { Badge, Button, Divider, Menu, Select } from "antd";
 import { ReactElement, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -13,6 +13,7 @@ import { databaseFiles } from "./constants";
 import { useRepoInfo } from "./utils";
 import useProjectStore from "./projectStore";
 import { loadFromGit, saveToGit } from "./gitStorage";
+import useModifiedStore from "./modifiedStore";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -25,6 +26,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [openFolders, setOpenFolders] = useState<string[]>([]);
   const repositoryInfo = useRepoInfo();
   const projects = useProjectStore().projects;
+  const { modifiedQueries } = useModifiedStore();
 
   const openFolder = (submenus: string[]) =>
     setOpenFolders((state) => [...new Set(state.concat(submenus))]);
@@ -88,7 +90,16 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         .map((query): { key: string; label: ReactElement | string } => ({
           key: `${basepath}/query/${query.id}`,
           label: (
-            <Link href={`${basepath}/query/${query.id}`}>{query.label}</Link>
+            <Link href={`${basepath}/query/${query.id}`}>
+              {modifiedQueries.includes(query.id) && (
+                <Badge
+                  style={{ position: "absolute", left: 35 }}
+                  title="Modified"
+                  status="error"
+                />
+              )}
+              {query.label}
+            </Link>
           ),
         }))
         .concat({
@@ -145,7 +156,10 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           onSelect={(value) => setLocation("/" + value)}
         />
         <Button
-          onClick={() => saveToGit(repositoryInfo.path).catch(console.error)}
+          onClick={async () => {
+            await saveToGit(repositoryInfo.path);
+            useModifiedStore.setState(() => ({ dirtyQueries: [] }));
+          }}
         >
           Save
         </Button>
