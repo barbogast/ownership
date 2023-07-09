@@ -1,0 +1,60 @@
+import { Buffer } from "buffer";
+globalThis.Buffer = Buffer;
+
+import LightningFS from "@isomorphic-git/lightning-fs";
+import git from "isomorphic-git";
+import http from "isomorphic-git/http/web";
+
+import { GH_TOKEN } from "./secrets";
+
+const onAuth = () => {
+  return {
+    username: "barbogast",
+    password: GH_TOKEN,
+  };
+};
+
+const author = {
+  name: "Mr. Test",
+  email: "mrtest@example.com",
+};
+
+export default class GitHelper {
+  fs: LightningFS;
+  root: string;
+
+  constructor(fs: LightningFS, root: string) {
+    this.fs = fs;
+    this.root = root;
+  }
+
+  clone = (repositoryPath: string) =>
+    git.clone({
+      fs: this.fs,
+      http,
+      dir: this.root,
+      url: "https://github.com/" + repositoryPath,
+      corsProxy: "https://cors.isomorphic-git.org", // TODO: we probably can't keep using this
+      onAuth,
+    });
+
+  commit = () =>
+    git.commit({
+      fs: this.fs,
+      dir: this.root,
+      message: "Change file",
+      author,
+    });
+
+  addFiles = async (folder: string, files: string[]) => {
+    for (const filename of files) {
+      await git.add({
+        fs: this.fs,
+        dir: this.root,
+        filepath: folder + "/" + filename,
+      });
+    }
+  };
+
+  push = () => git.push({ fs: this.fs, dir: this.root, http, onAuth });
+}

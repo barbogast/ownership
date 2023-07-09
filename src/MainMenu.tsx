@@ -12,6 +12,7 @@ import useReportStore, { addReport } from "./report/reportStore";
 import { databaseFiles } from "./constants";
 import { useRepoInfo } from "./utils";
 import useProjectStore from "./projectStore";
+import { loadFromGit, saveToGit } from "./gitStorage";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -143,6 +144,16 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           style={{ width: 200 }}
           onSelect={(value) => setLocation("/" + value)}
         />
+        <Button
+          onClick={() => saveToGit(repositoryInfo.path).catch(console.error)}
+        >
+          Save
+        </Button>
+        <Button
+          onClick={() => loadFromGit(repositoryInfo.path).catch(console.error)}
+        >
+          Load
+        </Button>
         <Divider style={{ margin: "12px 0" }} />
         <Menu
           mode="inline"
