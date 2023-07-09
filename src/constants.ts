@@ -15,6 +15,7 @@ export const databaseFiles = [
   "database.sqlite",
   "database2.sqlite",
   "database3.sqlite",
+  "database4.sqlite",
 ];
 
 export const editorDefaultOptions: editor.IStandaloneEditorConstructionOptions =
