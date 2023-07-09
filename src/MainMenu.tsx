@@ -27,6 +27,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const repositoryInfo = useRepoInfo();
   const projects = useProjectStore().projects;
   const { modifiedQueries } = useModifiedStore();
+  const [isSaving, setIsSaving] = useState(false);
 
   const openFolder = (submenus: string[]) =>
     setOpenFolders((state) => [...new Set(state.concat(submenus))]);
@@ -156,9 +157,12 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           onSelect={(value) => setLocation("/" + value)}
         />
         <Button
+          loading={isSaving}
           onClick={async () => {
+            setIsSaving(true);
             await saveToGit(repositoryInfo.path);
             useModifiedStore.setState(() => ({ dirtyQueries: [] }));
+            setIsSaving(false);
           }}
         >
           Save
