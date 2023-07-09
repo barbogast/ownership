@@ -3,11 +3,7 @@ import { Button, Select } from "antd";
 import { editor } from "monaco-editor";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
-import {
-  updateDatabaseFileName,
-  updateSqlStatement,
-  useQuery,
-} from "./../queryStore";
+import { updateQuery, useQuery } from "./../queryStore";
 import { QueryExecResult } from "../../dbStore";
 import TableDisplay from "../../display/TableDisplay";
 import { databaseFiles, editorDefaultOptions } from "../../constants";
@@ -42,7 +38,9 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
       <Panel defaultSize={50} minSize={10}>
         <Select
           value={databaseFileName}
-          onChange={(value) => updateDatabaseFileName(queryId, value)}
+          onChange={(databaseFileName) =>
+            updateQuery(queryId, { databaseFileName })
+          }
           options={databaseFiles.map((f) => ({ value: f, label: f }))}
           style={{ width: 250 }}
           placeholder="Select database..."
@@ -54,7 +52,9 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
           defaultLanguage="sql"
           defaultValue={sqlStatement}
           onMount={onEditorMount}
-          onChange={(value) => value && updateSqlStatement(queryId, value)}
+          onChange={(sqlStatement) =>
+            sqlStatement && updateQuery(queryId, { sqlStatement })
+          }
           options={editorDefaultOptions}
         />
         <br />

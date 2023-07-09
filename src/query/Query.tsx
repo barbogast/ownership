@@ -9,7 +9,7 @@ import useQueryStore, {
   TransformType,
   duplicate,
   remove,
-  updateLabel,
+  updateQuery,
   useQuery,
 } from "./queryStore";
 import { downloadFile } from "../utils";
@@ -143,7 +143,9 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
             <Input
               addonBefore="Label"
               value={label}
-              onChange={(event) => updateLabel(queryId, event.target.value)}
+              onChange={(event) =>
+                updateQuery(queryId, { label: event.target.value })
+              }
               style={{ width: 500 }}
             />
           </Col>

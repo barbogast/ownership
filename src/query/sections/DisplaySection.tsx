@@ -1,6 +1,6 @@
 import { Select } from "antd";
 
-import useQueryStore, { updateChartType, useQuery } from "../queryStore";
+import useQueryStore, { useQuery, updateQuery } from "../queryStore";
 import { TransformResult } from "../../types";
 import ChartDisplay from "../../display/Index";
 
@@ -18,7 +18,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
     <>
       <Select
         value={chartType}
-        onChange={(value) => updateChartType(queryId, value)}
+        onChange={(chartType) => updateQuery(queryId, { chartType })}
         options={[
           { value: "barChart", label: "Bar chart" },
           { value: "stackedBarChart", label: "Stacked Bar chart" },

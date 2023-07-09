@@ -260,38 +260,21 @@ export const remove = (queryId: string) => {
   }
   return false;
 };
-export const updateLabel = (queryId: string, label: string) =>
-  useQueryStore.setState((state) => {
-    state.queries[queryId].label = label;
-  });
 
-export const updateDatabaseFileName = (
+export const updateQuery = (
   queryId: string,
-  databaseFileName: string
-) =>
+  newState: Partial<Omit<Query, "transformConfig">>
+) => {
   useQueryStore.setState((state) => {
-    state.queries[queryId].databaseFileName = databaseFileName;
+    Object.assign(state.queries[queryId], newState);
   });
+};
 
-export const updateSqlStatement = (queryId: string, statement: string) =>
-  useQueryStore.setState((state) => {
-    state.queries[queryId].sqlStatement = statement;
-  });
-
-export const updateTransformCode = (queryId: string, code: string) =>
-  useQueryStore.setState((state) => {
-    state.queries[queryId].transformCode = code;
-  });
-
-export const updateChartType = (queryId: string, chartType: ChartType) =>
-  useQueryStore.setState((state) => {
-    state.queries[queryId].chartType = chartType;
-  });
-
-export const updateDataOrientation = (
+export const updateTransformConfig = (
   queryId: string,
-  orientation: DataOrientation
-) =>
+  newState: Partial<TransformConfig>
+) => {
   useQueryStore.setState((state) => {
-    state.queries[queryId].transformConfig.dataOrientation = orientation;
+    Object.assign(state.queries[queryId].transformConfig, newState);
   });
+};

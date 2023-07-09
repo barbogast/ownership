@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { editor as monaco, MarkerSeverity } from "monaco-editor";
 import Editor, { OnMount } from "@monaco-editor/react";
 
-import { useQuery, updateTransformCode } from "../queryStore";
+import { updateQuery, useQuery } from "../queryStore";
 import { QueryExecResult } from "../../dbStore";
 import { editorDefaultOptions } from "../../constants";
 import { TransformError } from "../../useQueryController";
@@ -56,7 +56,9 @@ const TransformSection: React.FC<Props> = ({
         height="500px"
         defaultLanguage="typescript"
         defaultValue={transformCode}
-        onChange={(value) => value && updateTransformCode(queryId, value)}
+        onChange={(transformCode) =>
+          transformCode && updateQuery(queryId, { transformCode })
+        }
         onMount={onEditorMount}
         options={editorDefaultOptions}
       />
