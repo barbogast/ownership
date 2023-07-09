@@ -1,6 +1,7 @@
-import { Button, Col, Input, Row, Space } from "antd";
+import { Button, Col, Input, Row } from "antd";
 import { useState } from "react";
 import useProjectStore, { addProject, updateProject } from "./projectStore";
+import { Link } from "wouter";
 
 const Projects: React.FC = () => {
   const projects = useProjectStore().projects;
@@ -70,12 +71,9 @@ const Projects: React.FC = () => {
               <Col span={3}>{project.organization}</Col>
               <Col span={3}>{project.repository}</Col>
               <Col span={3} style={{ display: "flex" }}>
-                <Button
-                  type="primary"
-                  href={`${project.organization}/${project.repository}`}
-                >
-                  Open
-                </Button>
+                <Link href={`/${project.organization}/${project.repository}`}>
+                  <Button type="primary">Open</Button>
+                </Link>
                 <Button
                   onClick={() => {
                     setEditProject({

@@ -1,4 +1,4 @@
-import { Menu } from "antd";
+import { Button, Divider, Menu, Select } from "antd";
 import { ReactElement, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -10,6 +10,8 @@ import useQueryStore, {
 } from "./query/queryStore";
 import useReportStore, { addReport } from "./report/reportStore";
 import { databaseFiles } from "./constants";
+import { useRepoInfo } from "./utils";
+import useProjectStore from "./projectStore";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -20,6 +22,8 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [location, setLocation] = useLocation();
   const [activeMenuItem, setActiveMenuItem] = useState("");
   const [openFolders, setOpenFolders] = useState<string[]>([]);
+  const repositoryInfo = useRepoInfo();
+  const projects = useProjectStore().projects;
 
   const openFolder = (submenus: string[]) =>
     setOpenFolders((state) => [...new Set(state.concat(submenus))]);
@@ -40,6 +44,12 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     }
   }, [location]);
 
+  if (!repositoryInfo) {
+    return children;
+  }
+
+  const basepath = repositoryInfo.path;
+
   const items = [
     {
       key: `db`,
@@ -47,34 +57,38 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       children: databaseFiles
         .map((fileName) => ({
           key: `/db/${fileName}`,
-          label: <Link to={`/db/${fileName}`}>{fileName}</Link>,
+          label: <Link to={`${basepath}/db/${fileName}`}>{fileName}</Link>,
         }))
         .concat({
           key: "new-database",
-          label: <Link href="/new-database">+ Create new database</Link>,
+          label: (
+            <Link href={`${basepath}/new-database`}>+ Create new database</Link>
+          ),
         }),
     },
     {
       key: `query`,
       label: `Queries`,
       onClick: ({ key }: { key: string }) => {
-        if (key === "new-query") {
+        if (key === `${basepath}/new-query`) {
           const id = addQuery();
-          setLocation("/query/" + id);
+          setLocation(`${basepath}/query/${id}`);
         }
 
         if (key === "import-query") {
           const queryStr = prompt("Paste content of exported file");
           if (queryStr) {
             const id = importQuery(JSON.parse(queryStr) as Query);
-            setLocation("/query/" + id);
+            setLocation(`${basepath}/query/${id}`);
           }
         }
       },
       children: Object.values(queryStore.queries)
         .map((query): { key: string; label: ReactElement | string } => ({
-          key: `/query/${query.id}`,
-          label: <Link href={`/query/${query.id}`}>{query.label}</Link>,
+          key: `${basepath}/query/${query.id}`,
+          label: (
+            <Link href={`${basepath}/query/${query.id}`}>{query.label}</Link>
+          ),
         }))
         .concat({
           key: "new-query",
@@ -91,13 +105,17 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       onClick: ({ key }: { key: string }) => {
         if (key === "new-report") {
           const id = addReport();
-          setLocation("/report/edit/" + id);
+          setLocation(`${basepath}/report/edit/${id}`);
         }
       },
       children: Object.values(reportStore.reports)
         .map((report): { key: string; label: ReactElement | string } => ({
-          key: `/report/edit/${report.id}`,
-          label: <Link href={`/report/edit/${report.id}`}>{report.label}</Link>,
+          key: `${basepath}/report/edit/${report.id}`,
+          label: (
+            <Link href={`${basepath}/report/edit/${report.id}`}>
+              {report.label}
+            </Link>
+          ),
         }))
         .concat({
           key: "new-report",
@@ -113,6 +131,19 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   return (
     <PanelGroup direction="horizontal">
       <Panel defaultSize={20} minSize={10}>
+        <Button onClick={() => setLocation("/")} type="text">
+          ←
+        </Button>
+        <Select
+          options={Object.values(projects).map((project) => ({
+            title: `${project.organization}/${project.repository}`,
+            value: `${project.organization}/${project.repository}`,
+          }))}
+          value={repositoryInfo.path}
+          style={{ width: 200 }}
+          onSelect={(value) => setLocation("/" + value)}
+        />
+        <Divider style={{ margin: "12px 0" }} />
         <Menu
           mode="inline"
           style={{ overflow: "scroll", height: "100%" }}

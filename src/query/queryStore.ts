@@ -7,7 +7,7 @@ import {
 } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
-import { deepCopy, getBasePath, getNewLabel } from "../utils";
+import { deepCopy, getNewLabel } from "../utils";
 
 export type ChartType =
   | "table"
@@ -176,7 +176,8 @@ const initialState: QueryState = {
 };
 
 const persistConfig: PersistOptions<QueryState> = {
-  name: getBasePath() + "/queries",
+  name: "uninitializedQueries",
+  skipHydration: true,
   storage: createJSONStorage(() => localStorage),
   version: 2,
   migrate: (unknownState) => {

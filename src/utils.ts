@@ -1,3 +1,4 @@
+import { useLocation } from "wouter";
 import { COLORS } from "./constants";
 
 export const logger = (
@@ -92,8 +93,11 @@ export const getPositionFromStacktrace = (stack: string) => {
   };
 };
 
-export const getBasePath = () => {
-  const [_, organization, repository] = window.location.pathname.split("/");
-  console.log({ organization, repository });
-  return `/${organization}/${repository}`;
+export const useRepoInfo = () => {
+  const [location] = useLocation();
+  const [_, organization, repository] = location.split("/");
+  if (!organization || !repository) {
+    return undefined;
+  }
+  return { organization, repository, path: `${organization}/${repository}` };
 };
