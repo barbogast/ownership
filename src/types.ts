@@ -19,3 +19,9 @@ export type ChartProps = {
   transformResult: TransformResult;
   transformConfig: TransformConfig;
 };
+
+export type RepositoryInfo = {
+  organization: string;
+  repository: string;
+  path: string;
+};

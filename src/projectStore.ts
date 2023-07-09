@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
+import { RepositoryInfo } from "./types";
 
 type Project = {
   id: string;
@@ -34,13 +35,13 @@ export default useProjectStore;
 export const useProject = (id: string) =>
   useProjectStore((state) => state.projects[id]);
 
-export const addProject = (organization: string, repository: string) => {
+export const addProject = (info: RepositoryInfo) => {
   const id = uuidv4();
   useProjectStore.setState((state) => {
     state.projects[id] = {
       id,
-      organization,
-      repository,
+      organization: info.organization,
+      repository: info.repository,
     };
   });
   return id;

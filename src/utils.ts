@@ -1,5 +1,6 @@
 import { useLocation } from "wouter";
 import { COLORS } from "./constants";
+import { RepositoryInfo } from "./types";
 
 export const logger = (
   category: "sql" | "database" | "git",
@@ -93,11 +94,20 @@ export const getPositionFromStacktrace = (stack: string) => {
   };
 };
 
-export const useRepoInfo = () => {
+export const getRepoInfo = (
+  organization: string,
+  repository: string
+): RepositoryInfo => ({
+  organization,
+  repository,
+  path: `${organization}/${repository}`,
+});
+
+export const useRepoInfo = (): RepositoryInfo | undefined => {
   const [location] = useLocation();
   const [_, organization, repository] = location.split("/");
   if (!organization || !repository) {
-    return undefined;
+    return;
   }
   return { organization, repository, path: `${organization}/${repository}` };
 };

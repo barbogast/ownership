@@ -118,7 +118,9 @@ const Projects: React.FC = () => {
         <Col span={3}>
           <Button
             onClick={() => {
-              addProject(newProject.organization, newProject.repository);
+              addProject(
+                getRepoInfo(newProject.organization, newProject.repository)
+              );
               setNewProject(initialNewProjectState);
             }}
           >
