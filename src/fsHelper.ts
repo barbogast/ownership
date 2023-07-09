@@ -46,7 +46,7 @@ export default class FsHelper {
     fileContents: FileContents
   ) => {
     for (const [filename, contents] of Object.entries(fileContents)) {
-      await this.fs.promises.writeFile(directory + '"' + filename, contents);
+      await this.fs.promises.writeFile(directory + "/" + filename, contents);
     }
   };
 }

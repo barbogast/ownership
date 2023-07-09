@@ -13,7 +13,7 @@ const queryToFiles = (query: Query) => {
   if (transformCode) {
     fileContents["transformCode.ts"] = transformCode;
   }
-  fileContents["index.json"] = stringify(partialQuery);
+  fileContents["index.json"] = stringify(partialQuery, null, 2);
   return fileContents;
 };
 
