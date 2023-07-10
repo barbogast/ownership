@@ -1,4 +1,11 @@
-const ALL_CATEGORIES = ["transform", "sql", "database", "git", "fs"] as const;
+const ALL_CATEGORIES = [
+  "transform",
+  "sql",
+  "database",
+  "git",
+  "fs",
+  "csv",
+] as const;
 type LogCategory = (typeof ALL_CATEGORIES)[number];
 
 class Logger {
@@ -18,7 +25,7 @@ class Logger {
     Logger.activeCategories = categories;
   }
 
-  log(msg: string, extra?: Record<string, unknown>) {
+  log(msg: string, extra?: Record<string, unknown> | string) {
     if (Logger.activeCategories.includes(this.category)) {
       console.info(`[${this.category}]`, msg, extra);
     }
@@ -27,7 +34,17 @@ class Logger {
   wrap<T extends Array<unknown>, U>(name: string, func: (...args: T) => U) {
     return (...args: T): U => {
       const result = func(...args);
-      this.log(name, { args, result });
+      this.log(name + "()", { args, result });
+      return result;
+    };
+  }
+
+  time<T extends Array<unknown>, U>(name: string, func: (...args: T) => U) {
+    return (...args: T): U => {
+      const start = performance.now();
+      const result = func(...args);
+      const end = performance.now();
+      this.log(name + "()", `${Math.round(end - start)} ms`);
       return result;
     };
   }

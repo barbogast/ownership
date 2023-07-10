@@ -8,7 +8,8 @@ import { downloadFile } from "./util/utils";
 import { useDatabase, Database } from "./dbStore";
 import Logger from "./util/logger";
 
-const logger = new Logger("sql");
+const csvLogger = new Logger("csv");
+const sqlLogger = new Logger("sql");
 
 const DEBUG = true;
 const initialValues = DEBUG
@@ -97,7 +98,7 @@ const createTable = (
     create table ${tableName} (${columns.map(
     (col) => `${col.dbName} ${col.type}`
   )})`;
-  logger.log(createTableStatement);
+  sqlLogger.log(createTableStatement);
   db.exec(createTableStatement);
 };
 
@@ -110,7 +111,7 @@ const insertIntoTable = (
   const insertStmt = `insert into ${tableName} (${columns.map(
     (col) => col.dbName
   )}) values (${columns.map(() => "?")})`;
-  logger.log(insertStmt);
+  sqlLogger.log(insertStmt);
 
   const preparedStatement = db.prepare(insertStmt);
   for (const row of records.slice(1)) {
@@ -138,35 +139,30 @@ const CreateDatabase: React.FC = () => {
 
   const [error, setError] = useState<Error>();
 
-  const parseCsv = () => {
+  const parseCsv = csvLogger.time("parseCsv", () => {
     try {
-      console.time("parseCsv()");
       const result = Papa.parse<string[]>(csvText);
-      console.log("asdf", result.data.length);
       setColumns(analyzeCsvHeader(result.data));
       setCsvRecords(result.data);
       setProgress({ parsed: true });
-      console.timeEnd("parseCsv()");
     } catch (err) {
       console.error(err);
       setError(err as Error);
     }
-  };
+  });
 
-  const insertTable = () => {
+  const insertTable = sqlLogger.time("insertTable", () => {
     if (db.status !== "loaded") throw new Error();
     try {
-      console.time("insertTable()");
       setError(undefined);
       createTable(db.db, tableName, columns);
       insertIntoTable(db.db, tableName, columns, csvRecords);
       setProgress({ parsed: true, imported: true });
-      console.timeEnd("insertTable()");
     } catch (err) {
       console.error(err);
       setError(err as Error);
     }
-  };
+  });
 
   const downloadDatabase = () => {
     if (db.status !== "loaded") throw new Error();
