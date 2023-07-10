@@ -12,14 +12,7 @@ import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
 import { RepositoryInfo } from "../types";
 import getQueryTestData from "./queryStoreTestData";
-
-export type ChartType =
-  | "table"
-  | "barChart"
-  | "stackedBarChart"
-  | "pieChart"
-  | "stackedPieChart"
-  | "lineChart";
+import { ChartType } from "../display/Index";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";

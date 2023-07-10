@@ -1,4 +1,4 @@
-import { ChartType, useQuery } from "../query/queryStore";
+import { useQuery } from "../query/queryStore";
 import TableDisplay from "./TableDisplay";
 import BarChartDisplay from "./BarChartDisplay";
 import PieChartDisplay from "./PieChartDisplay";
@@ -7,6 +7,14 @@ import { ChartProps, TransformResult } from "../types";
 import StackedBarChart from "./StackedBarChartDisplay";
 import StackedPieChart from "./StackedPieChartDisplay";
 import { extractSingleDataset } from "../util/transform";
+
+export type ChartType =
+  | "table"
+  | "barChart"
+  | "stackedBarChart"
+  | "pieChart"
+  | "stackedPieChart"
+  | "lineChart";
 
 type Props = {
   queryId: string;
