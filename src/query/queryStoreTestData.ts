@@ -63,47 +63,48 @@ function transform(queryResult: QueryResult): TransformResult{
 }
 `;
 
-const queryTestData: Record<string, Query> = {
-  tableofownershipdetails: {
-    ...getDefaults(),
-    id: "tableofownershipdetails",
-    label: "Debt ownership: Details",
-    databaseFileName: "database.sqlite",
-    sqlStatement: "select * from aaa",
-    transformType: "code",
-    transformCode: code1,
-    chartType: "table",
-  },
-  tableofownershipdistribution: {
-    ...getDefaults(),
-    id: "tableofownershipdistribution",
-    label: "Debt ownership: Distribution",
-    databaseFileName: "database.sqlite",
-    sqlStatement:
-      "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
-    transformCode: "",
-    chartType: "pieChart",
-  },
-  tableofownershiptime: {
-    ...getDefaults(),
-    id: "tableofownershiptime",
-    label: "Debt ownership: Time",
-    databaseFileName: "database.sqlite",
-    sqlStatement:
-      "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
-    transformCode: "",
-    chartType: "barChart",
-  },
-  categoryanalysis: {
-    ...getDefaults(),
-    id: "categoryanalysis",
-    label: "Category Analysis",
-    databaseFileName: "database2.sqlite",
-    sqlStatement: query,
-    transformCode: code2,
-    transformType: "code",
-    chartType: "table",
-  },
-};
+const getQueryTestData = () =>
+  ({
+    tableofownershipdetails: {
+      ...getDefaults(),
+      id: "tableofownershipdetails",
+      label: "Debt ownership: Details",
+      databaseFileName: "database.sqlite",
+      sqlStatement: "select * from aaa",
+      transformType: "code",
+      transformCode: code1,
+      chartType: "table",
+    },
+    tableofownershipdistribution: {
+      ...getDefaults(),
+      id: "tableofownershipdistribution",
+      label: "Debt ownership: Distribution",
+      databaseFileName: "database.sqlite",
+      sqlStatement:
+        "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
+      transformCode: "",
+      chartType: "pieChart",
+    },
+    tableofownershiptime: {
+      ...getDefaults(),
+      id: "tableofownershiptime",
+      label: "Debt ownership: Time",
+      databaseFileName: "database.sqlite",
+      sqlStatement:
+        "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
+      transformCode: "",
+      chartType: "barChart",
+    },
+    categoryanalysis: {
+      ...getDefaults(),
+      id: "categoryanalysis",
+      label: "Category Analysis",
+      databaseFileName: "database2.sqlite",
+      sqlStatement: query,
+      transformCode: code2,
+      transformType: "code",
+      chartType: "table",
+    },
+  } as Record<string, Query>);
 
-export default queryTestData;
+export default getQueryTestData;

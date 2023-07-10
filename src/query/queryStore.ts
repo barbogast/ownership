@@ -10,7 +10,7 @@ import { immer } from "zustand/middleware/immer";
 import { deepCopy, getNewLabel } from "../utils";
 import { add } from "../modifiedStore";
 import { RepositoryInfo } from "../types";
-import queryTestData from "./queryStoreTestData";
+import getQueryTestData from "./queryStoreTestData";
 
 export type ChartType =
   | "table"
@@ -71,7 +71,7 @@ export const getDefaults = () => ({
 });
 
 const initialState: QueryState = {
-  queries: queryTestData,
+  queries: getQueryTestData(),
 };
 
 const CURRENT_VERSION = 2;
