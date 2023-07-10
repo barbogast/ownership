@@ -6,7 +6,7 @@ import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
 import DatabaseDisplay from "./DatabaseDisplay";
-import Projects from "./repository/Projects";
+import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
 import RepositoryStores from "./RepositoryStores";
 
@@ -14,7 +14,7 @@ function App() {
   return (
     <Router>
       <MainMenu>
-        <Route path="/" component={Projects}></Route>
+        <Route path="/" component={RepositoryList}></Route>
         <Route path="/ownership" component={Ownership} />
         <Route
           path="/:organization/:repository/:rest*"

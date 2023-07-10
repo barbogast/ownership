@@ -1,6 +1,6 @@
 import { Button, Col, Input, Row } from "antd";
 import { useState } from "react";
-import useProjectStore, { addProject, updateProject } from "./projectStore";
+import useProjectStore, { addProject, updateProject } from "./repositoryStore";
 import { Link } from "wouter";
 import { loadFromGit } from "../gitStorage";
 import { getRepoInfo } from "../utils";

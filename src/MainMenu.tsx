@@ -11,7 +11,7 @@ import useQueryStore, {
 import useReportStore, { addReport } from "./report/reportStore";
 import { databaseFiles } from "./constants";
 import { useRepoInfo } from "./utils";
-import useProjectStore from "./repository/projectStore";
+import useRepositoryStore from "./repository/repositoryStore";
 import { loadFromGit, saveToGit } from "./gitStorage";
 import useModifiedStore from "./modifiedStore";
 
@@ -25,7 +25,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [activeMenuItem, setActiveMenuItem] = useState("");
   const [openFolders, setOpenFolders] = useState<string[]>([]);
   const repositoryInfo = useRepoInfo();
-  const projects = useProjectStore().projects;
+  const projects = useRepositoryStore().projects;
   const { modifiedQueries } = useModifiedStore();
   const [isSaving, setIsSaving] = useState(false);
 
