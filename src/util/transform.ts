@@ -20,14 +20,20 @@ export const columnsToObjects = (
       Object.fromEntries(
         [["label", col] as [SqlValue, SqlValue]].concat(
           queryResults.values.map((row) => [
-            labelColumn === "--no-label-column--"
-              ? "value"
-              : row[queryResults.columns.indexOf(labelColumn)],
+            row[queryResults.columns.indexOf(labelColumn)],
             row[i],
           ])
         )
       )
     );
+};
+
+export const singleRowColumnsToObjects = (queryResults: QueryExecResult) => {
+  console.log("singleRowColumnsToObjects", queryResults);
+  return queryResults.columns.map((col, i) => ({
+    label: col,
+    value: queryResults.values[0][i],
+  }));
 };
 
 export const extractSingleDataset = (
