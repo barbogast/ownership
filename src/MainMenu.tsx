@@ -51,92 +51,95 @@ const MainMenu: React.FC<Props> = ({ children }) => {
 
   const basepath = "/" + repositoryInfo.path;
 
-  const items = [
-    {
-      key: `db`,
-      label: `Databases`,
-      children: databaseFiles
-        .map((fileName) => ({
-          key: `/db/${fileName}`,
-          label: <Link to={`${basepath}/db/${fileName}`}>{fileName}</Link>,
-        }))
-        .concat({
-          key: "new-database",
-          label: (
-            <Link href={`${basepath}/new-database`}>+ Create new database</Link>
-          ),
-        }),
-    },
-    {
-      key: `query`,
-      label: `Queries`,
-      onClick: ({ key }: { key: string }) => {
-        if (key === `${basepath}/new-query`) {
-          const id = addQuery();
+  const databases = {
+    key: `db`,
+    label: `Databases`,
+    children: databaseFiles
+      .map((fileName) => ({
+        key: `/db/${fileName}`,
+        label: <Link to={`${basepath}/db/${fileName}`}>{fileName}</Link>,
+      }))
+      .concat({
+        key: "new-database",
+        label: (
+          <Link href={`${basepath}/new-database`}>+ Create new database</Link>
+        ),
+      }),
+  };
+
+  const queries = {
+    key: `query`,
+    label: `Queries`,
+    onClick: ({ key }: { key: string }) => {
+      if (key === `${basepath}/new-query`) {
+        const id = addQuery();
+        setLocation(`${basepath}/query/${id}`);
+      }
+
+      if (key === "import-query") {
+        const queryStr = prompt("Paste content of exported file");
+        if (queryStr) {
+          const id = importQuery(JSON.parse(queryStr) as Query);
           setLocation(`${basepath}/query/${id}`);
         }
+      }
+    },
+    children: Object.values(queryStore.queries)
+      .map((query): { key: string; label: ReactElement | string } => ({
+        key: `${basepath}/query/${query.id}`,
+        label: (
+          <Link href={`${basepath}/query/${query.id}`}>
+            {modifiedQueries.includes(query.id) && (
+              <Badge
+                style={{ position: "absolute", left: 35 }}
+                title="Modified"
+                status="error"
+              />
+            )}
+            {query.label}
+          </Link>
+        ),
+      }))
+      .concat({
+        key: "new-query",
+        label: "+ Create new query",
+      })
+      .concat({
+        key: "import-query",
+        label: "+ Import query",
+      }),
+  };
 
-        if (key === "import-query") {
-          const queryStr = prompt("Paste content of exported file");
-          if (queryStr) {
-            const id = importQuery(JSON.parse(queryStr) as Query);
-            setLocation(`${basepath}/query/${id}`);
-          }
-        }
-      },
-      children: Object.values(queryStore.queries)
-        .map((query): { key: string; label: ReactElement | string } => ({
-          key: `${basepath}/query/${query.id}`,
-          label: (
-            <Link href={`${basepath}/query/${query.id}`}>
-              {modifiedQueries.includes(query.id) && (
-                <Badge
-                  style={{ position: "absolute", left: 35 }}
-                  title="Modified"
-                  status="error"
-                />
-              )}
-              {query.label}
-            </Link>
-          ),
-        }))
-        .concat({
-          key: "new-query",
-          label: "+ Create new query",
-        })
-        .concat({
-          key: "import-query",
-          label: "+ Import query",
-        }),
+  const reports = {
+    key: `report`,
+    label: `Reports`,
+    onClick: ({ key }: { key: string }) => {
+      if (key === "new-report") {
+        const id = addReport();
+        setLocation(`${basepath}/report/edit/${id}`);
+      }
     },
-    {
-      key: `report`,
-      label: `Reports`,
-      onClick: ({ key }: { key: string }) => {
-        if (key === "new-report") {
-          const id = addReport();
-          setLocation(`${basepath}/report/edit/${id}`);
-        }
-      },
-      children: Object.values(reportStore.reports)
-        .map((report): { key: string; label: ReactElement | string } => ({
-          key: `${basepath}/report/edit/${report.id}`,
-          label: (
-            <Link href={`${basepath}/report/edit/${report.id}`}>
-              {report.label}
-            </Link>
-          ),
-        }))
-        .concat({
-          key: "new-report",
-          label: "+ Create new report",
-        }),
-    },
-    {
-      key: `/ownership`,
-      label: <Link href="/ownership">Ownership (old)</Link>,
-    },
-  ];
+    children: Object.values(reportStore.reports)
+      .map((report): { key: string; label: ReactElement | string } => ({
+        key: `${basepath}/report/edit/${report.id}`,
+        label: (
+          <Link href={`${basepath}/report/edit/${report.id}`}>
+            {report.label}
+          </Link>
+        ),
+      }))
+      .concat({
+        key: "new-report",
+        label: "+ Create new report",
+      }),
+  };
+
+  const ownership = {
+    key: `/ownership`,
+    label: <Link href="/ownership">Ownership (old)</Link>,
+  };
+
+  const items = [databases, queries, reports, ownership];
 
   return (
     <PanelGroup direction="horizontal">
