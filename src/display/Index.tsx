@@ -10,7 +10,7 @@ import LineChartDisplay from "./LineChartDisplay";
 import { ChartProps, TransformResult } from "../types";
 import StackedBarChart from "./StackedBarChartDisplay";
 import StackedPieChart from "./StackedPieChartDisplay";
-import { extractSingleDataset } from "../transform";
+import { extractSingleDataset } from "../util/transform";
 
 type Props = {
   queryId: string;

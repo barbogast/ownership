@@ -5,8 +5,8 @@ import useRepositoryStore, {
   updateRepository,
 } from "./repositoryStore";
 import { Link } from "wouter";
-import { loadFromGit } from "../gitStorage";
-import { getRepoInfo } from "../utils";
+import { loadFromGit } from "../util/gitStorage";
+import { getRepoInfo } from "../util/utils";
 import { importStore } from "../query/queryStore";
 
 const RepositoryList: React.FC = () => {

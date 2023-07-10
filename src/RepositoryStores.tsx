@@ -1,7 +1,7 @@
 import { ReactElement, useEffect } from "react";
 import { enable } from "./query/queryStore";
 import useReportStore from "./report/reportStore";
-import { useRepoInfo } from "./utils";
+import { useRepoInfo } from "./util/utils";
 
 type Props = {
   children: ReactElement[] | ReactElement;

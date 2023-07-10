@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button, Col, Row, Select } from "antd";
 
-import { saveToGit, loadFromGit } from "./gitStorage";
+import { saveToGit, loadFromGit } from "./util/gitStorage";
 import useModifiedStore from "./modifiedStore";
 import useRepositoryStore from "./repository/repositoryStore";
-import { useRepoInfo } from "./utils";
+import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
 
 const RepositoryControl: React.FC = () => {

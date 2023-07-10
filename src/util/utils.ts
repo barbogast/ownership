@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
-import { COLORS } from "./constants";
-import { RepositoryInfo } from "./types";
+import { COLORS } from "../constants";
+import { RepositoryInfo } from "../types";
 
 export const logger = (
   category: "sql" | "database" | "git",

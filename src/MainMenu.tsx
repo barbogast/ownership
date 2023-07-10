@@ -10,7 +10,7 @@ import useQueryStore, {
 } from "./query/queryStore";
 import useReportStore, { addReport } from "./report/reportStore";
 import { databaseFiles } from "./constants";
-import { useRepoInfo } from "./utils";
+import { useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
 

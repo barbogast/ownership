@@ -1,6 +1,6 @@
 import stringify from "safe-stable-stringify";
 
-import useQueryStore, { Query } from "./query/queryStore";
+import useQueryStore, { Query } from "../query/queryStore";
 import FsHelper, { FileContents } from "./fsHelper";
 import GitHelper from "./gitHelpers";
 

@@ -1,7 +1,7 @@
 import { BarChart, Bar, Tooltip, YAxis, XAxis, Cell } from "recharts";
 
 import { ChartProps } from "../types";
-import { getColor } from "../utils";
+import { getColor } from "../util/utils";
 
 const BarChartDisplay: React.FC<Pick<ChartProps, "transformResult">> = ({
   transformResult,

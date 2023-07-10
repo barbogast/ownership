@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Input, Button, Col, Row, Select } from "antd";
 import { parse } from "csv-parse/browser/esm";
 
-import { downloadFile, logger } from "./utils";
+import { downloadFile, logger } from "./util/utils";
 import { useDatabase, Database } from "./dbStore";
 
 const DEBUG = true;

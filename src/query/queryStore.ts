@@ -7,7 +7,7 @@ import {
 } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
-import { deepCopy, getNewLabel } from "../utils";
+import { deepCopy, getNewLabel } from "../util/utils";
 import { add } from "../modifiedStore";
 import { RepositoryInfo } from "../types";
 import getQueryTestData from "./queryStoreTestData";

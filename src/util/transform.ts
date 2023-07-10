@@ -1,5 +1,5 @@
 import { QueryExecResult, SqlValue } from "sql.js";
-import { TransformResult } from "./types";
+import { TransformResult } from "../types";
 
 export const rowsToObjects = (queryResults: QueryExecResult) => {
   console.log("rowsToObjects", queryResults);

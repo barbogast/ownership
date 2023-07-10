@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDatabase, QueryExecResult } from "./dbStore";
 import TableDisplay from "./display/TableDisplay";
-import { rowsToObjects } from "./transform";
+import { rowsToObjects } from "./util/transform";
 
 type Props = {
   params: {

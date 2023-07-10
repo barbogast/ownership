@@ -12,7 +12,7 @@ import useQueryStore, {
   updateQuery,
   useQuery,
 } from "./queryStore";
-import { downloadFile } from "../utils";
+import { downloadFile } from "../util/utils";
 import QuerySection from "./sections/QuerySection";
 import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";

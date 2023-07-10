@@ -2,7 +2,7 @@ import { Tooltip } from "antd";
 import { BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar } from "recharts";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
-import { getColor } from "../utils";
+import { getColor } from "../util/utils";
 
 type Props = {
   transformResult: TransformResult;

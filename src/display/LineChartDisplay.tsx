@@ -10,7 +10,7 @@ import {
 
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
-import { getColor } from "../utils";
+import { getColor } from "../util/utils";
 
 type Props = {
   transformResult: TransformResult;

@@ -5,7 +5,7 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import git from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 
-import { GH_TOKEN } from "./secrets";
+import { GH_TOKEN } from "../secrets";
 
 const onAuth = () => {
   return {

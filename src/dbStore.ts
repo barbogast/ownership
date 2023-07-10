@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import initSqlJs, { Database } from "sql.js";
-import { logger } from "./utils";
+import { logger } from "./util/utils";
 
 export type { Database, QueryExecResult } from "sql.js";
 

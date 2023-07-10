@@ -7,7 +7,7 @@ import { updateQuery, useQuery } from "./../queryStore";
 import { QueryExecResult } from "../../dbStore";
 import TableDisplay from "../../display/TableDisplay";
 import { databaseFiles, editorDefaultOptions } from "../../constants";
-import { rowsToObjects } from "../../transform";
+import { rowsToObjects } from "../../util/transform";
 import { Editor, OnMount } from "@monaco-editor/react";
 
 type Props = {

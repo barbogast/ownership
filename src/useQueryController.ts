@@ -5,9 +5,9 @@ import sourceMap from "source-map-js";
 
 import { MyDatabase, initializeDb } from "./dbStore";
 import { useQuery, TransformConfig } from "./query/queryStore";
-import { rowsToObjects, columnsToObjects } from "./transform";
+import { rowsToObjects, columnsToObjects } from "./util/transform";
 import { TransformResult } from "./types";
-import { getPositionFromStacktrace } from "./utils";
+import { getPositionFromStacktrace } from "./util/utils";
 
 type Progress = {
   queried?: boolean;
