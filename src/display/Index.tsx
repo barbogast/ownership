@@ -20,6 +20,8 @@ type Props = {
   queryId: string;
   transformResult: TransformResult;
 };
+
+// eslint-disable-next-line react-refresh/only-export-components
 export const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
 
 const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
