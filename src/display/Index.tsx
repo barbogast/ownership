@@ -20,7 +20,7 @@ type Props = {
   queryId: string;
   transformResult: TransformResult;
 };
-const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
+export const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
 
 const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
   barChart: BarChartDisplay,

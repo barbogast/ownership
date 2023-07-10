@@ -2,7 +2,7 @@ import { Select } from "antd";
 
 import useQueryStore, { useQuery, updateQuery } from "../queryStore";
 import { TransformResult } from "../../types";
-import ChartDisplay from "../../display/Index";
+import ChartDisplay, { SINGLE_DATASET_CHART_TYPES } from "../../display/Index";
 
 type Props = {
   queryId: string;
@@ -30,7 +30,8 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
         style={{ width: 200 }}
       />
       <br />
-      {(chartType === "barChart" || chartType === "pieChart") &&
+      {chartType &&
+        SINGLE_DATASET_CHART_TYPES.includes(chartType) &&
         transformResult.length > 1 && (
           <>
             <br />
