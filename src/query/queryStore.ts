@@ -21,8 +21,6 @@ export type ChartType =
   | "stackedPieChart"
   | "lineChart";
 
-export const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
-
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
 

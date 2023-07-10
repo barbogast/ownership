@@ -1,8 +1,4 @@
-import {
-  ChartType,
-  SINGLE_DATASET_CHART_TYPES,
-  useQuery,
-} from "../query/queryStore";
+import { ChartType, useQuery } from "../query/queryStore";
 import TableDisplay from "./TableDisplay";
 import BarChartDisplay from "./BarChartDisplay";
 import PieChartDisplay from "./PieChartDisplay";
@@ -16,6 +12,7 @@ type Props = {
   queryId: string;
   transformResult: TransformResult;
 };
+const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
 
 const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
   barChart: BarChartDisplay,
