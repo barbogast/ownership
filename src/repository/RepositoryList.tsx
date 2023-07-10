@@ -30,45 +30,39 @@ const RepositoryList: React.FC = () => {
           {editRepo.id === repo.id ? (
             <>
               <Col span={3}>
-                <div>
-                  <Input
-                    value={editRepo.organization}
-                    onChange={(event) =>
-                      setEditRepo((state) => ({
-                        ...state,
-                        organization: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
+                <Input
+                  value={editRepo.organization}
+                  onChange={(event) =>
+                    setEditRepo((state) => ({
+                      ...state,
+                      organization: event.target.value,
+                    }))
+                  }
+                />
               </Col>
               <Col span={3}>
-                <div>
-                  <Input
-                    value={editRepo.repository}
-                    onChange={(event) =>
-                      setEditRepo((state) => ({
-                        ...state,
-                        repository: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
+                <Input
+                  value={editRepo.repository}
+                  onChange={(event) =>
+                    setEditRepo((state) => ({
+                      ...state,
+                      repository: event.target.value,
+                    }))
+                  }
+                />
               </Col>
               <Col span={3}>
-                <div>
-                  <Button
-                    onClick={() => {
-                      updateRepository(editRepo.id, editRepo);
-                      setEditRepo(initialEditRepoState);
-                    }}
-                  >
-                    Save
-                  </Button>
-                  <Button onClick={() => setEditRepo(initialEditRepoState)}>
-                    Cancel
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => {
+                    updateRepository(editRepo.id, editRepo);
+                    setEditRepo(initialEditRepoState);
+                  }}
+                >
+                  Save
+                </Button>
+                <Button onClick={() => setEditRepo(initialEditRepoState)}>
+                  Cancel
+                </Button>
               </Col>
             </>
           ) : (
