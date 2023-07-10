@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
-import { RepositoryInfo } from "./types";
+import { RepositoryInfo } from "../types";
 
 type Project = {
   id: string;

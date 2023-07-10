@@ -2,9 +2,9 @@ import { Button, Col, Input, Row } from "antd";
 import { useState } from "react";
 import useProjectStore, { addProject, updateProject } from "./projectStore";
 import { Link } from "wouter";
-import { loadFromGit } from "./gitStorage";
-import { getRepoInfo } from "./utils";
-import { importStore } from "./query/queryStore";
+import { loadFromGit } from "../gitStorage";
+import { getRepoInfo } from "../utils";
+import { importStore } from "../query/queryStore";
 
 const Projects: React.FC = () => {
   const projects = useProjectStore().projects;

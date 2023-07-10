@@ -11,7 +11,7 @@ import useQueryStore, {
 import useReportStore, { addReport } from "./report/reportStore";
 import { databaseFiles } from "./constants";
 import { useRepoInfo } from "./utils";
-import useProjectStore from "./projectStore";
+import useProjectStore from "./repository/projectStore";
 import { loadFromGit, saveToGit } from "./gitStorage";
 import useModifiedStore from "./modifiedStore";
 

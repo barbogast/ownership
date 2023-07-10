@@ -6,7 +6,7 @@ import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
 import DatabaseDisplay from "./DatabaseDisplay";
-import Projects from "./Projects";
+import Projects from "./repository/Projects";
 import NestedRoutes from "./NestedRoutes";
 import RepositoryStores from "./RepositoryStores";
 
