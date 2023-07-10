@@ -1,4 +1,4 @@
-import { Badge, Button, Col, Divider, Menu, Row, Select } from "antd";
+import { Badge, Divider, Menu } from "antd";
 import { ReactElement, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -11,9 +11,8 @@ import useQueryStore, {
 import useReportStore, { addReport } from "./report/reportStore";
 import { databaseFiles } from "./constants";
 import { useRepoInfo } from "./utils";
-import useRepositoryStore from "./repository/repositoryStore";
-import { loadFromGit, saveToGit } from "./gitStorage";
 import useModifiedStore from "./modifiedStore";
+import RepositoryControl from "./RepositoryControl";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -25,9 +24,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [activeMenuItem, setActiveMenuItem] = useState("");
   const [openFolders, setOpenFolders] = useState<string[]>([]);
   const repositoryInfo = useRepoInfo();
-  const projects = useRepositoryStore().repositories;
   const { modifiedQueries } = useModifiedStore();
-  const [isSaving, setIsSaving] = useState(false);
 
   const openFolder = (submenus: string[]) =>
     setOpenFolders((state) => [...new Set(state.concat(submenus))]);
@@ -144,45 +141,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   return (
     <PanelGroup direction="horizontal">
       <Panel defaultSize={20} minSize={10} style={{ marginRight: 10 }}>
-        <Row wrap={false}>
-          <Col>
-            <Button onClick={() => setLocation("/")} type="text">
-              ←
-            </Button>
-          </Col>
-          <Col flex={1}>
-            <Select
-              options={Object.values(projects).map((project) => ({
-                title: `${project.organization}/${project.repository}`,
-                value: `${project.organization}/${project.repository}`,
-              }))}
-              value={repositoryInfo.path}
-              style={{ width: "100%" }}
-              onSelect={(value) => setLocation("/" + value)}
-            />
-          </Col>
-        </Row>
-
-        <Row justify="space-between" style={{ marginTop: 10 }}>
-          <Button
-            loading={isSaving}
-            onClick={async () => {
-              setIsSaving(true);
-              await saveToGit(repositoryInfo.path);
-              useModifiedStore.setState(() => ({ modifiedQueries: [] }));
-              setIsSaving(false);
-            }}
-          >
-            Save
-          </Button>
-          <Button
-            onClick={() =>
-              loadFromGit(repositoryInfo.path).catch(console.error)
-            }
-          >
-            Load
-          </Button>
-        </Row>
+        <RepositoryControl />
         <Divider style={{ margin: "12px 0" }} />
         <Menu
           mode="inline"
