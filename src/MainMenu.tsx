@@ -25,7 +25,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [activeMenuItem, setActiveMenuItem] = useState("");
   const [openFolders, setOpenFolders] = useState<string[]>([]);
   const repositoryInfo = useRepoInfo();
-  const projects = useRepositoryStore().projects;
+  const projects = useRepositoryStore().repositories;
   const { modifiedQueries } = useModifiedStore();
   const [isSaving, setIsSaving] = useState(false);
 

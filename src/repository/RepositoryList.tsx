@@ -1,38 +1,40 @@
 import { Button, Col, Input, Row } from "antd";
 import { useState } from "react";
-import useProjectStore, { addProject, updateProject } from "./repositoryStore";
+import useRepositoryStore, {
+  addRepository,
+  updateRepository,
+} from "./repositoryStore";
 import { Link } from "wouter";
 import { loadFromGit } from "../gitStorage";
 import { getRepoInfo } from "../utils";
 import { importStore } from "../query/queryStore";
 
-const Projects: React.FC = () => {
-  const projects = useProjectStore().projects;
+const RepositoryList: React.FC = () => {
+  const repositories = useRepositoryStore().repositories;
+  const initialNewRepoState = { organization: "", repository: "" };
+  const [newRepo, setNewRepo] = useState(initialNewRepoState);
 
-  const initialNewProjectState = { organization: "", repository: "" };
-  const [newProject, setNewProject] = useState(initialNewProjectState);
-
-  const initialEditProjectState = {
+  const initialEditRepoState = {
     organization: "",
     repository: "",
     id: "",
   };
-  const [editProject, setEditProject] = useState(initialEditProjectState);
+  const [editRepo, setEditRepo] = useState(initialEditRepoState);
 
   const [isImporting, setIsImporting] = useState(false);
 
   return (
     <>
-      {Object.values(projects).map((project) => (
-        <Row gutter={[24, 24]} key={project.id}>
-          {editProject.id === project.id ? (
+      {Object.values(repositories).map((repo) => (
+        <Row gutter={[24, 24]} key={repo.id}>
+          {editRepo.id === repo.id ? (
             <>
               <Col span={3}>
                 <div>
                   <Input
-                    value={editProject.organization}
+                    value={editRepo.organization}
                     onChange={(event) =>
-                      setEditProject((state) => ({
+                      setEditRepo((state) => ({
                         ...state,
                         organization: event.target.value,
                       }))
@@ -43,9 +45,9 @@ const Projects: React.FC = () => {
               <Col span={3}>
                 <div>
                   <Input
-                    value={editProject.repository}
+                    value={editRepo.repository}
                     onChange={(event) =>
-                      setEditProject((state) => ({
+                      setEditRepo((state) => ({
                         ...state,
                         repository: event.target.value,
                       }))
@@ -57,15 +59,13 @@ const Projects: React.FC = () => {
                 <div>
                   <Button
                     onClick={() => {
-                      updateProject(editProject.id, editProject);
-                      setEditProject(initialEditProjectState);
+                      updateRepository(editRepo.id, editRepo);
+                      setEditRepo(initialEditRepoState);
                     }}
                   >
                     Save
                   </Button>
-                  <Button
-                    onClick={() => setEditProject(initialEditProjectState)}
-                  >
+                  <Button onClick={() => setEditRepo(initialEditRepoState)}>
                     Cancel
                   </Button>
                 </div>
@@ -73,18 +73,18 @@ const Projects: React.FC = () => {
             </>
           ) : (
             <>
-              <Col span={3}>{project.organization}</Col>
-              <Col span={3}>{project.repository}</Col>
+              <Col span={3}>{repo.organization}</Col>
+              <Col span={3}>{repo.repository}</Col>
               <Col span={3} style={{ display: "flex" }}>
-                <Link href={`/${project.organization}/${project.repository}`}>
+                <Link href={`/${repo.organization}/${repo.repository}`}>
                   <Button type="primary">Open</Button>
                 </Link>
                 <Button
                   onClick={() => {
-                    setEditProject({
-                      id: project.id,
-                      organization: project.organization,
-                      repository: project.repository,
+                    setEditRepo({
+                      id: repo.id,
+                      organization: repo.organization,
+                      repository: repo.repository,
                     });
                   }}
                 >
@@ -99,9 +99,9 @@ const Projects: React.FC = () => {
         <Col span={3}>
           <Input
             placeholder="Organization"
-            value={newProject.organization}
+            value={newRepo.organization}
             onChange={(event) =>
-              setNewProject((state) => ({
+              setNewRepo((state) => ({
                 ...state,
                 organization: event.target.value,
               }))
@@ -111,9 +111,9 @@ const Projects: React.FC = () => {
         <Col span={3}>
           <Input
             placeholder="Repository"
-            value={newProject.repository}
+            value={newRepo.repository}
             onChange={(event) =>
-              setNewProject((state) => ({
+              setNewRepo((state) => ({
                 ...state,
                 repository: event.target.value,
               }))
@@ -123,10 +123,10 @@ const Projects: React.FC = () => {
         <Col span={3}>
           <Button
             onClick={() => {
-              addProject(
-                getRepoInfo(newProject.organization, newProject.repository)
+              addRepository(
+                getRepoInfo(newRepo.organization, newRepo.repository)
               );
-              setNewProject(initialNewProjectState);
+              setNewRepo(initialNewRepoState);
             }}
           >
             Create
@@ -136,13 +136,13 @@ const Projects: React.FC = () => {
             onClick={async () => {
               setIsImporting(true);
               const info = getRepoInfo(
-                newProject.organization,
-                newProject.repository
+                newRepo.organization,
+                newRepo.repository
               );
               const queries = await loadFromGit(info.path);
               importStore(info, queries);
-              addProject(info);
-              setNewProject(initialNewProjectState);
+              addRepository(info);
+              setNewRepo(initialNewRepoState);
               setIsImporting(false);
             }}
           >
@@ -154,4 +154,4 @@ const Projects: React.FC = () => {
   );
 };
 
-export default Projects;
+export default RepositoryList;

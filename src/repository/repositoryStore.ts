@@ -4,41 +4,41 @@ import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "../types";
 
-type Project = {
+type Repository = {
   id: string;
   organization: string;
   repository: string;
 };
 
-type ProjectsState = {
-  projects: { [projectId: string]: Project };
+type RepositoryState = {
+  repositories: { [repositoryId: string]: Repository };
 };
 
-const initialState: ProjectsState = {
-  projects: {},
+const initialState: RepositoryState = {
+  repositories: {},
 };
 
 const persistConfig = {
-  name: "projects",
+  name: "repositories",
   storage: createJSONStorage(() => localStorage),
 };
 
-const useProjectStore = create(
+const useRepositoryStore = create(
   persist(
-    immer<ProjectsState>(() => initialState),
+    immer<RepositoryState>(() => initialState),
     persistConfig
   )
 );
 
-export default useProjectStore;
+export default useRepositoryStore;
 
-export const useProject = (id: string) =>
-  useProjectStore((state) => state.projects[id]);
+export const useRepository = (id: string) =>
+  useRepositoryStore((state) => state.repositories[id]);
 
-export const addProject = (info: RepositoryInfo) => {
+export const addRepository = (info: RepositoryInfo) => {
   const id = uuidv4();
-  useProjectStore.setState((state) => {
-    state.projects[id] = {
+  useRepositoryStore.setState((state) => {
+    state.repositories[id] = {
       id,
       organization: info.organization,
       repository: info.repository,
@@ -47,17 +47,20 @@ export const addProject = (info: RepositoryInfo) => {
   return id;
 };
 
-export const updateProject = (
-  projectId: string,
-  update: Partial<Omit<Project, "id">>
+export const updateRepository = (
+  repositoryId: string,
+  update: Partial<Omit<Repository, "id">>
 ) => {
-  useProjectStore.setState((state) => {
-    Object.assign(state.projects[projectId], update);
+  useRepositoryStore.setState((state) => {
+    Object.assign(state.repositories[repositoryId], update);
   });
 };
 
-export const updateRepositoryName = (projectId: string, repository: string) => {
-  useProjectStore.setState((state) => {
-    state.projects[projectId].repository = repository;
+export const updateRepositoryName = (
+  repositoryId: string,
+  repository: string
+) => {
+  useRepositoryStore.setState((state) => {
+    state.repositories[repositoryId].repository = repository;
   });
 };
