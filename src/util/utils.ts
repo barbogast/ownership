@@ -2,14 +2,6 @@ import { useLocation } from "wouter";
 import { COLORS } from "../constants";
 import { RepositoryInfo } from "../types";
 
-export const logger = (
-  category: "sql" | "database" | "git",
-  msg: string,
-  extra?: Record<string, unknown>
-) => {
-  console.info(`[${category}]`, msg, extra);
-};
-
 export const downloadFile = (
   data: BlobPart,
   mimeType: string,

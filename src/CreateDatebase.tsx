@@ -4,8 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import { Input, Button, Col, Row, Select } from "antd";
 import { parse } from "csv-parse/browser/esm";
 
-import { downloadFile, logger } from "./util/utils";
+import { downloadFile } from "./util/utils";
 import { useDatabase, Database } from "./dbStore";
+import Logger from "./util/logger";
+
+const logger = new Logger("sql");
 
 const DEBUG = true;
 const initialValues = DEBUG
@@ -94,7 +97,7 @@ const createTable = (
     create table ${tableName} (${columns.map(
     (col) => `${col.dbName} ${col.type}`
   )})`;
-  logger("sql", createTableStatement);
+  logger.log(createTableStatement);
   db.exec(createTableStatement);
 };
 
@@ -107,7 +110,7 @@ const insertIntoTable = (
   const insertStmt = `insert into ${tableName} (${columns.map(
     (col) => col.dbName
   )}) values (${columns.map(() => "?")})`;
-  logger("sql", insertStmt);
+  logger.log(insertStmt);
 
   const preparedStatement = db.prepare(insertStmt);
   for (const row of records.slice(1)) {

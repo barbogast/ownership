@@ -1,6 +1,7 @@
 import LightningFS from "@isomorphic-git/lightning-fs";
+import Logger from "./logger";
 
-import { logger } from "./utils";
+const logger = new Logger("fs");
 
 export type FileContents = Record<string, string>;
 
@@ -21,10 +22,10 @@ export default class FsHelper {
       fullPath += "/" + segment;
       try {
         await this.fs.promises.stat(fullPath);
-        logger("git", "mkdir_p exists", { fullPath });
+        logger.log("mkdir_p exists", { fullPath });
       } catch (err) {
         if ((err as { code: string }).code === "ENOENT") {
-          logger("git", "mkdir", { fullPath });
+          logger.log("mkdir", { fullPath });
           await this.fs.promises.mkdir(fullPath);
         }
       }

@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import initSqlJs, { Database } from "sql.js";
-import { logger } from "./util/utils";
+import Logger from "./util/logger";
+
+const logger = new Logger("database");
 
 export type { Database, QueryExecResult } from "sql.js";
 
@@ -51,31 +53,33 @@ const init = async () => {
   return SQL;
 };
 
-export const initializeDb = async (key: string, keyIsFileName: boolean) => {
-  logger("database", "initializeFromFile", { key });
-  let myDb: MyDatabase;
-  try {
-    const SQL = await init();
+export const initializeDb = logger.wrap(
+  "initializeDb",
+  async (key: string, keyIsFileName: boolean) => {
+    let myDb: MyDatabase;
+    try {
+      const SQL = await init();
 
-    let db: Database;
-    if (keyIsFileName) {
-      const res = await fetch("/" + key);
-      const buf = await res.arrayBuffer();
-      db = new SQL.Database(new Uint8Array(buf));
-    } else {
-      db = new SQL.Database();
+      let db: Database;
+      if (keyIsFileName) {
+        const res = await fetch("/" + key);
+        const buf = await res.arrayBuffer();
+        db = new SQL.Database(new Uint8Array(buf));
+      } else {
+        db = new SQL.Database();
+      }
+
+      myDb = { key, status: "loaded", db };
+    } catch (err) {
+      myDb = { key, error: err as Error, status: "error" };
     }
 
-    myDb = { key, status: "loaded", db };
-  } catch (err) {
-    myDb = { key, error: err as Error, status: "error" };
+    useDatabaseStore.setState((state) => {
+      state.databases[key] = myDb;
+    });
+    return myDb;
   }
-
-  useDatabaseStore.setState((state) => {
-    state.databases[key] = myDb;
-  });
-  return myDb;
-};
+);
 
 export const useDatabase = (key: string, keyIsFileName: boolean) => {
   let db = useDatabaseStore((state) => state.databases[key]);
