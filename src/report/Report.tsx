@@ -15,7 +15,7 @@ import {
 import "@blocknote/core/style.css";
 import ReportDisplay from "./ReportDisplay";
 import { updateBlocks, updateLabel, useReport } from "./reportStore";
-import { ReadOnly, useReadOnly } from "../ReadonlyContext";
+import { ReadOnly, useReadOnly } from "./ReadonlyContext";
 import { Input } from "antd";
 import useQueryStore from "../query/queryStore";
 
