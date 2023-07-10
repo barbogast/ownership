@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
 import { Input, Button, Col, Row, Select } from "antd";
-import { parse } from "csv-parse/browser/esm";
+import Papa from "papaparse";
 
 import { downloadFile } from "./util/utils";
 import { useDatabase, Database } from "./dbStore";
@@ -139,28 +139,18 @@ const CreateDatabase: React.FC = () => {
   const [error, setError] = useState<Error>();
 
   const parseCsv = () => {
-    const f = async () => {
-      try {
-        console.time("parseCsv()");
-        const records: CsvRecords = await new Promise((resolve, reject) =>
-          parse(csvText, { delimiter: "\t" }, (err, records) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(records);
-            }
-          })
-        );
-        setColumns(analyzeCsvHeader(records));
-        setCsvRecords(records);
-        setProgress({ parsed: true });
-        console.timeEnd("parseCsv()");
-      } catch (err) {
-        console.error(err);
-        setError(err as Error);
-      }
-    };
-    f();
+    try {
+      console.time("parseCsv()");
+      const result = Papa.parse<string[]>(csvText);
+      console.log("asdf", result.data.length);
+      setColumns(analyzeCsvHeader(result.data));
+      setCsvRecords(result.data);
+      setProgress({ parsed: true });
+      console.timeEnd("parseCsv()");
+    } catch (err) {
+      console.error(err);
+      setError(err as Error);
+    }
   };
 
   const insertTable = () => {
