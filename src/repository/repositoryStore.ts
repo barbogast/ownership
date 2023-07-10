@@ -55,12 +55,3 @@ export const updateRepository = (
     Object.assign(state.repositories[repositoryId], update);
   });
 };
-
-export const updateRepositoryName = (
-  repositoryId: string,
-  repository: string
-) => {
-  useRepositoryStore.setState((state) => {
-    state.repositories[repositoryId].repository = repository;
-  });
-};
