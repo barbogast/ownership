@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
 import { COLORS } from "../constants";
 import { RepositoryInfo } from "../types";
+import { useMemo } from "react";
 
 export const downloadFile = (
   data: BlobPart,
@@ -56,9 +57,21 @@ export const getRepoInfo = (
 
 export const useRepoInfo = (): RepositoryInfo | undefined => {
   const [location] = useLocation();
+
   const [_, organization, repository] = location.split("/");
+
+  const info = useMemo(
+    () => ({
+      organization,
+      repository,
+      path: `${organization}/${repository}`,
+    }),
+    [organization, repository]
+  );
+
   if (!organization || !repository) {
     return;
   }
-  return { organization, repository, path: `${organization}/${repository}` };
+
+  return info;
 };
