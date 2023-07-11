@@ -2,13 +2,13 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-export type Database = {
+export type DatabaseDefinition = {
   name: string;
   csvContent: string;
 };
 
 type DatabaseState = {
-  databases: Record<string, Database>;
+  databases: Record<string, DatabaseDefinition>;
 };
 
 const initialState: DatabaseState = {

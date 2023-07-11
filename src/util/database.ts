@@ -1,7 +1,13 @@
 import { Database } from "sql.js";
 import Logger from "./logger";
-import { CsvRecords } from "./csv";
+import { CsvRecords, analyzeCsvHeader } from "./csv";
 import initSqlJs from "sql.js";
+
+import useDatabaseConnectionStore, {
+  DatabaseConnection,
+} from "../databaseConnectionStore";
+import { DatabaseSource } from "../query/queryStore";
+import Papa from "papaparse";
 
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");
@@ -29,7 +35,7 @@ const init = async () => {
   return SQL;
 };
 
-export const initializeDbFromUrl = dbLogger.wrap(
+const initializeDbFromUrl = dbLogger.wrap(
   "initializeDbFromUrl",
   async (key: string) => {
     const SQL = await init();
@@ -40,7 +46,7 @@ export const initializeDbFromUrl = dbLogger.wrap(
   }
 );
 
-export const initializeDbFromCsv = dbLogger.time(
+const initializeDbFromCsv = dbLogger.time(
   "initializeFromCsv",
   async (columns: ColumnDefinition[], csvContent: CsvRecords) => {
     const SQL = await init();
@@ -50,6 +56,37 @@ export const initializeDbFromCsv = dbLogger.time(
     return db;
   }
 );
+
+export const initialize = async (
+  databaseSource: DatabaseSource,
+  csvContent: string
+) => {
+  useDatabaseConnectionStore.setState((state) => {
+    state.databases[databaseSource.url] = {
+      key: databaseSource.url,
+      status: "loading",
+    };
+  });
+
+  let connection: DatabaseConnection;
+  const key = databaseSource.url;
+  try {
+    let db: Database;
+    if (databaseSource.type === "remote") {
+      db = await initializeDbFromUrl(databaseSource.url);
+    } else {
+      const result = Papa.parse<string[]>(csvContent);
+      const columns = analyzeCsvHeader(result.data);
+      db = await initializeDbFromCsv(columns, result.data);
+    }
+    connection = { key, status: "loaded", db };
+  } catch (err) {
+    connection = { key, error: err as Error, status: "error" };
+  }
+  useDatabaseConnectionStore.setState((state) => {
+    state.databases[key] = connection;
+  });
+};
 
 export const createTable = (
   db: Database,

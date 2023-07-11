@@ -1,7 +1,11 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
-import { Database, QueryExecResult } from "../databaseConnectionStore";
+import {
+  Database,
+  QueryExecResult,
+  useDatabaseConnection,
+} from "../databaseConnectionStore";
 import QueryResult from "./QueryResult";
 import {
   BarChart,
@@ -15,7 +19,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import useDb from "../useDb";
+import { initialize } from "../util/database";
 
 const log = (msg: string, category: "sql") => {
   console.log(category, ": ", msg);
@@ -152,7 +156,7 @@ type ChartType = "barChart" | "pieChart";
 
 const CsvImport: React.FC = () => {
   const id = useMemo(uuidv4, []);
-  const db = useDb({ url: id, type: "remote" });
+  const db = useDatabaseConnection(id);
   const [progress, setProgress] = useState<Progress>({});
   const [csvText, setCsvText] = useState(initialValues.csv);
   const [tableName, setTableName] = useState(initialValues.tableName);
@@ -196,6 +200,13 @@ const CsvImport: React.FC = () => {
       setQueryResult([]);
     }
   };
+
+  useEffect(() => {
+    if (db.status !== "uninitialized") {
+      return;
+    }
+    initialize({ type: "local", url: id }, "").catch(console.error);
+  }, [id, db.status]);
 
   console.log(queryResult);
 

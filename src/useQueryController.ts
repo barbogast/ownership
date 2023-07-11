@@ -3,7 +3,6 @@ import { QueryExecResult } from "sql.js";
 import * as ts from "typescript/lib/typescript";
 import sourceMap from "source-map-js";
 
-import useDb from "./useDb";
 import { useQuery, TransformConfig } from "./query/queryStore";
 import {
   rowsToObjects,
@@ -12,6 +11,9 @@ import {
 } from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
+import { initialize } from "./util/database";
+import useDatabaseSourceStore from "./databaseSourceStore";
+import { useDatabaseConnection } from "./databaseConnectionStore";
 
 type Progress = {
   queried?: boolean;
@@ -34,7 +36,9 @@ const useQueryController = (queryId: string) => {
     transformCode,
     transformConfig,
   } = query;
-  const db = useDb(databaseSource);
+  const db = useDatabaseConnection(databaseSource.url);
+  const databaseDefintion =
+    useDatabaseSourceStore().databases[databaseSource.url];
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
@@ -121,6 +125,15 @@ const useQueryController = (queryId: string) => {
     setTransformResult(data);
     setProgress({ queried: true, transformed: true });
   };
+
+  useEffect(() => {
+    if (!databaseSource || db.status !== "uninitialized") {
+      return;
+    }
+    initialize(databaseSource, databaseDefintion.csvContent).catch(
+      console.error
+    );
+  }, [databaseSource, db.status, databaseDefintion]);
 
   useEffect(() => {
     if (db.status !== "loaded" || !sqlStatement) {
