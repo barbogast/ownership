@@ -1,4 +1,7 @@
+import { isPromise } from "./utils";
+
 const ALL_CATEGORIES = [
+  "main",
   "transform",
   "sql",
   "database",
@@ -25,9 +28,9 @@ class Logger {
     Logger.activeCategories = categories;
   }
 
-  log(msg: string, extra?: Record<string, unknown> | string) {
+  log(msg: string, ...extra: (Record<string, unknown> | string)[]) {
     if (Logger.activeCategories.includes(this.category)) {
-      console.info(`[${this.category}]`, msg, extra);
+      console.info(`[${this.category}]`, msg, ...extra);
     }
   }
 
@@ -43,8 +46,14 @@ class Logger {
     return (...args: T): U => {
       const start = performance.now();
       const result = func(...args);
-      const end = performance.now();
-      this.log(name + "()", `${Math.round(end - start)} ms`);
+
+      if (isPromise(result)) {
+        result.then(() =>
+          this.log(name + "()", `${Math.round(performance.now() - start)} ms`)
+        );
+      } else {
+        this.log(name + "()", `${Math.round(performance.now() - start)} ms`);
+      }
       return result;
     };
   }

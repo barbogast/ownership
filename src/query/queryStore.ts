@@ -13,6 +13,7 @@ import { add } from "../modifiedStore";
 import { RepositoryInfo } from "../types";
 import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
+import useDatabaseSourceStore from "../databaseSourceStore";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -24,10 +25,16 @@ export type TransformConfig = {
   dataRowIndex: number;
 };
 
+export type DatabaseSource = {
+  type: "remote" | "local";
+  url: string;
+};
+
 export type Query = {
   id: string;
   label: string;
   databaseFileName: string;
+  databaseSource: DatabaseSource;
   sqlStatement: string;
   transformCode: string;
   chartType?: ChartType;
@@ -51,6 +58,10 @@ function transform(queryResult: QueryResult): TransformResult{
 
 export const getDefaults = () => ({
   transformType: "config" as const,
+  databaseSource: {
+    type: "local" as const,
+    url: Object.values(useDatabaseSourceStore.getState().databases)[0]?.name,
+  },
   transformConfig: {
     dataOrientation: "row" as const,
     selectedColumns: [],

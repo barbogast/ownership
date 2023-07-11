@@ -4,7 +4,7 @@ import { editor as monaco, MarkerSeverity } from "monaco-editor";
 import Editor, { OnMount } from "@monaco-editor/react";
 
 import { updateQuery, useQuery } from "../queryStore";
-import { QueryExecResult } from "../../dbStore";
+import { QueryExecResult } from "../../databaseConnectionStore";
 import { editorDefaultOptions } from "../../constants";
 import { TransformError } from "../../useQueryController";
 

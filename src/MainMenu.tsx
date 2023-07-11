@@ -9,16 +9,17 @@ import useQueryStore, {
   importQuery,
 } from "./query/queryStore";
 import useReportStore, { addReport } from "./report/reportStore";
-import { databaseFiles } from "./constants";
 import { useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
+import useDatabaseSourceStore from "./databaseSourceStore";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
 };
 const MainMenu: React.FC<Props> = ({ children }) => {
   const queryStore = useQueryStore();
+  const databaseStore = useDatabaseSourceStore();
   const reportStore = useReportStore();
   const [location, setLocation] = useLocation();
   const [activeMenuItem, setActiveMenuItem] = useState("");
@@ -54,11 +55,12 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const databases = {
     key: `db`,
     label: `Databases`,
-    children: databaseFiles
-      .map((fileName) => ({
-        key: `/db/${fileName}`,
-        label: <Link to={`${basepath}/db/${fileName}`}>{fileName}</Link>,
+    children: Object.values(databaseStore.databases)
+      .map((db) => ({
+        key: db.name,
+        label: <Link href={`${basepath}/db/${db.name}`}>{db.name}</Link>,
       }))
+
       .concat({
         key: "new-database",
         label: (

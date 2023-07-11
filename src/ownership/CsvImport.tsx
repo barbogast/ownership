@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo, useState } from "react";
 import slugify from "slugify";
 import { v4 as uuidv4 } from "uuid";
-import { Database, QueryExecResult } from "../dbStore";
+import { Database, QueryExecResult } from "../databaseConnectionStore";
 import QueryResult from "./QueryResult";
 import {
   BarChart,
@@ -15,7 +15,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { useDatabase } from "../dbStore";
+import useDb from "../useDb";
 
 const log = (msg: string, category: "sql") => {
   console.log(category, ": ", msg);
@@ -152,7 +152,7 @@ type ChartType = "barChart" | "pieChart";
 
 const CsvImport: React.FC = () => {
   const id = useMemo(uuidv4, []);
-  const db = useDatabase(id, false);
+  const db = useDb({ url: id, type: "remote" });
   const [progress, setProgress] = useState<Progress>({});
   const [csvText, setCsvText] = useState(initialValues.csv);
   const [tableName, setTableName] = useState(initialValues.tableName);

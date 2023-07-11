@@ -4,11 +4,12 @@ import { editor } from "monaco-editor";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { updateQuery, useQuery } from "./../queryStore";
-import { QueryExecResult } from "../../dbStore";
+import { QueryExecResult } from "../../databaseConnectionStore";
 import TableDisplay from "../../display/TableDisplay";
-import { databaseFiles, editorDefaultOptions } from "../../constants";
+import { editorDefaultOptions } from "../../constants";
 import { rowsToObjects } from "../../util/transform";
 import { Editor, OnMount } from "@monaco-editor/react";
+import useDatabaseSourceStore from "../../databaseSourceStore";
 
 type Props = {
   queryId: string;
@@ -17,7 +18,8 @@ type Props = {
 };
 
 const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
-  const { databaseFileName, sqlStatement } = useQuery(queryId);
+  const { sqlStatement, databaseSource } = useQuery(queryId);
+  const { databases } = useDatabaseSourceStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const run = () => {
@@ -37,11 +39,16 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
     <PanelGroup direction="horizontal">
       <Panel defaultSize={50} minSize={10}>
         <Select
-          value={databaseFileName}
-          onChange={(databaseFileName) =>
-            updateQuery(queryId, { databaseFileName })
+          value={databaseSource?.url}
+          onChange={(name) =>
+            updateQuery(queryId, {
+              databaseSource: { type: "local", url: name },
+            })
           }
-          options={databaseFiles.map((f) => ({ value: f, label: f }))}
+          options={Object.values(databases).map((db) => ({
+            value: db.name,
+            label: db.name,
+          }))}
           style={{ width: 250 }}
           placeholder="Select database..."
         />

@@ -24,7 +24,7 @@ function App() {
                 base={`/${params.organization}/${params.repository}`}
               >
                 <Route path="/new-database" component={CreateDatabase}></Route>
-                <Route path="/db/:fileName" component={DatabaseDisplay}></Route>
+                <Route path="/db/:name" component={DatabaseDisplay}></Route>
 
                 <Route
                   path="/query/:queryId"

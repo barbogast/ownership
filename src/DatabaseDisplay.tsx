@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useDatabase, QueryExecResult } from "./dbStore";
+
+import { QueryExecResult } from "./databaseConnectionStore";
 import TableDisplay from "./display/TableDisplay";
 import { rowsToObjects } from "./util/transform";
+import useDb from "./useDb";
 
 type Props = {
   params: {
-    fileName: string;
+    name: string;
   };
 };
 
 const DiplayDatabase: React.FC<Props> = ({ params }) => {
-  const db = useDatabase(params.fileName, true);
+  const db = useDb({ url: params.name, type: "local" });
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
 

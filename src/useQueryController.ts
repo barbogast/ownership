@@ -3,9 +3,13 @@ import { QueryExecResult } from "sql.js";
 import * as ts from "typescript/lib/typescript";
 import sourceMap from "source-map-js";
 
-import { MyDatabase, initializeDb } from "./dbStore";
+import useDb from "./useDb";
 import { useQuery, TransformConfig } from "./query/queryStore";
-import { rowsToObjects, columnsToObjects } from "./util/transform";
+import {
+  rowsToObjects,
+  columnsToObjects,
+  singleRowColumnsToObjects,
+} from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 
@@ -22,16 +26,15 @@ export type TransformError = {
 const useQueryController = (queryId: string) => {
   const [progress, setProgress] = useState<Progress>({});
 
-  const [db, setDb] = useState<MyDatabase>({ status: "loading", key: "" });
-
   const query = useQuery(queryId);
   const {
     sqlStatement,
     transformType,
-    databaseFileName,
+    databaseSource,
     transformCode,
     transformConfig,
   } = query;
+  const db = useDb(databaseSource);
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
@@ -44,7 +47,8 @@ const useQueryController = (queryId: string) => {
   }>();
 
   const runQuery = (statement?: string): QueryExecResult[] => {
-    if (db.status !== "loaded") throw new Error();
+    if (db.status !== "loaded")
+      throw new Error(`Db status should be "loaded" but is "${db.status}"`);
 
     try {
       setError(undefined);
@@ -117,16 +121,6 @@ const useQueryController = (queryId: string) => {
     setTransformResult(data);
     setProgress({ queried: true, transformed: true });
   };
-
-  useEffect(() => {
-    const func = async () => {
-      if (databaseFileName) {
-        const db = await initializeDb(databaseFileName, true);
-        setDb(db);
-      }
-    };
-    func();
-  }, [databaseFileName]);
 
   useEffect(() => {
     if (db.status !== "loaded" || !sqlStatement) {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Checkbox, Select } from "antd";
 
-import { QueryExecResult } from "../dbStore";
+import { QueryExecResult } from "../databaseConnectionStore";
 import { updateTransformConfig, useQuery } from "./queryStore";
 
 type Props = {

@@ -75,3 +75,6 @@ export const useRepoInfo = (): RepositoryInfo | undefined => {
 
   return info;
 };
+
+export const isPromise = <T>(value: unknown): value is Promise<T> =>
+  typeof value === "object" && value !== null && "then" in value;

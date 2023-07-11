@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from "react";
-import slugify from "slugify";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState } from "react";
 import { Input, Button, Col, Row, Select } from "antd";
 import Papa from "papaparse";
 
-import { downloadFile } from "./util/utils";
-import { useDatabase, Database } from "./dbStore";
 import Logger from "./util/logger";
+import { addDatabase } from "./databaseSourceStore";
+import { analyzeCsvHeader } from "./util/csv";
+import { ColumnDefinition } from "./util/database";
 
 const csvLogger = new Logger("csv");
 const sqlLogger = new Logger("sql");
@@ -50,92 +49,18 @@ const initialValues = DEBUG
       query: "",
     };
 
-const guessType = (rows: CsvRecords, headerIndex: number) => {
-  const value = rows[1][headerIndex];
-  if (String(parseInt(value)) === value) {
-    return "integer";
-  }
-
-  if (
-    String(parseFloat(value)) ===
-    // parseFloat(111.0) will result in "111"
-    value.replace(".0", "")
-  ) {
-    return "real";
-  }
-
-  return "text";
-};
-
-type CsvRecords = string[][];
-
-type ColumnDefinition = {
-  csvName: string;
-  dbName: string;
-  csvIndex: number;
-  type: "integer" | "real" | "text";
-};
-
-const analyzeCsvHeader = (records: CsvRecords): ColumnDefinition[] => {
-  const columns = records[0].map(
-    (name, index) =>
-      ({
-        csvName: name,
-        dbName: slugify(name, "_").toLowerCase().replace("-", "_"),
-        csvIndex: index,
-        type: guessType(records, index),
-      } as const)
-  );
-  return columns;
-};
-
-const createTable = (
-  db: Database,
-  tableName: string,
-  columns: ColumnDefinition[]
-) => {
-  const createTableStatement = `
-    create table ${tableName} (${columns.map(
-    (col) => `${col.dbName} ${col.type}`
-  )})`;
-  sqlLogger.log(createTableStatement);
-  db.exec(createTableStatement);
-};
-
-const insertIntoTable = (
-  db: Database,
-  tableName: string,
-  columns: ColumnDefinition[],
-  records: CsvRecords
-) => {
-  const insertStmt = `insert into ${tableName} (${columns.map(
-    (col) => col.dbName
-  )}) values (${columns.map(() => "?")})`;
-  sqlLogger.log(insertStmt);
-
-  const preparedStatement = db.prepare(insertStmt);
-  for (const row of records.slice(1)) {
-    preparedStatement.run(row.map((v) => (v === "" ? null : v)));
-    preparedStatement.reset();
-  }
-  preparedStatement.free();
-};
-
 type Progress = {
   parsed?: boolean;
   imported?: boolean;
   queried?: boolean;
 };
 
-const CreateDatabase: React.FC = () => {
-  const id = useMemo(uuidv4, []);
-  const db = useDatabase(id, false);
-
+const CreateDatabase2: React.FC = () => {
   const [progress, setProgress] = useState<Progress>({});
   const [csvText, setCsvText] = useState(initialValues.csv);
-  const [csvRecords, setCsvRecords] = useState<CsvRecords>([]);
   const [tableName, setTableName] = useState(initialValues.tableName);
   const [columns, setColumns] = useState<ColumnDefinition[]>([]);
+  const [dbName, setDbName] = useState("");
 
   const [error, setError] = useState<Error>();
 
@@ -143,7 +68,6 @@ const CreateDatabase: React.FC = () => {
     try {
       const result = Papa.parse<string[]>(csvText);
       setColumns(analyzeCsvHeader(result.data));
-      setCsvRecords(result.data);
       setProgress({ parsed: true });
     } catch (err) {
       console.error(err);
@@ -151,29 +75,10 @@ const CreateDatabase: React.FC = () => {
     }
   });
 
-  const insertTable = sqlLogger.time("insertTable", () => {
-    if (db.status !== "loaded") throw new Error();
-    try {
-      setError(undefined);
-      createTable(db.db, tableName, columns);
-      insertIntoTable(db.db, tableName, columns, csvRecords);
-      setProgress({ parsed: true, imported: true });
-    } catch (err) {
-      console.error(err);
-      setError(err as Error);
-    }
+  const saveDatabase = sqlLogger.time("insertTable", async () => {
+    // TODO: validate that dbName only contains letters, numbers and -
+    addDatabase(dbName, csvText);
   });
-
-  const downloadDatabase = () => {
-    if (db.status !== "loaded") throw new Error();
-    downloadFile(db.db.export(), "application/x-sqlite3", "database.sqlite");
-  };
-
-  const downloadImportFile = () => {
-    const manifest = { manifestVersion: 1, columnDefinitions: columns };
-    const fileContent = "#" + JSON.stringify(manifest) + "\n" + csvText;
-    downloadFile(fileContent, "application/csv", "database-import.csv");
-  };
 
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
@@ -246,8 +151,13 @@ const CreateDatabase: React.FC = () => {
               <br />
             </Row>
           ))}
-          <Button onClick={insertTable} type="primary">
-            Import into DB
+          <Input
+            value={dbName}
+            onChange={(event) => setDbName(event.target.value)}
+            addonBefore="Database name"
+          />
+          <Button onClick={saveDatabase} type="primary">
+            Save
           </Button>
           <br />
         </>
@@ -255,19 +165,9 @@ const CreateDatabase: React.FC = () => {
       <br />
       <br />
 
-      {progress.imported && (
-        <Button onClick={downloadDatabase}>Download database</Button>
-      )}
-      <br />
-      <br />
-      {progress.imported && (
-        <Button onClick={downloadImportFile}>
-          Download database import file
-        </Button>
-      )}
       <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
     </div>
   );
 };
 
-export default CreateDatabase;
+export default CreateDatabase2;
