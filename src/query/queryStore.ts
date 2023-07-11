@@ -13,7 +13,7 @@ import { add } from "../modifiedStore";
 import { RepositoryInfo } from "../types";
 import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
-import useDatabaseSourceStore from "../databaseSourceStore";
+import useDatabaseDefinitionStore from "../databaseDefinitionStore";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -60,7 +60,8 @@ export const getDefaults = () => ({
   transformType: "config" as const,
   databaseSource: {
     type: "local" as const,
-    url: Object.values(useDatabaseSourceStore.getState().databases)[0]?.name,
+    url: Object.values(useDatabaseDefinitionStore.getState().databases)[0]
+      ?.name,
   },
   transformConfig: {
     dataOrientation: "row" as const,

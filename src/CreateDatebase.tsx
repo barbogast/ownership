@@ -3,7 +3,7 @@ import { Input, Button, Col, Row, Select } from "antd";
 import Papa from "papaparse";
 
 import Logger from "./util/logger";
-import { addDatabase } from "./databaseSourceStore";
+import { addDatabaseDefinition } from "./databaseDefinitionStore";
 import { analyzeCsvHeader } from "./util/csv";
 import { ColumnDefinition } from "./util/database";
 
@@ -77,7 +77,7 @@ const CreateDatabase2: React.FC = () => {
 
   const saveDatabase = sqlLogger.time("insertTable", async () => {
     // TODO: validate that dbName only contains letters, numbers and -
-    addDatabase(dbName, csvText);
+    addDatabaseDefinition(dbName, csvText);
   });
 
   return (

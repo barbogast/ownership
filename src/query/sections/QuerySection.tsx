@@ -9,7 +9,7 @@ import TableDisplay from "../../display/TableDisplay";
 import { editorDefaultOptions } from "../../constants";
 import { rowsToObjects } from "../../util/transform";
 import { Editor, OnMount } from "@monaco-editor/react";
-import useDatabaseSourceStore from "../../databaseSourceStore";
+import useDatabaseDefinitionStore from "../../databaseDefinitionStore";
 
 type Props = {
   queryId: string;
@@ -19,7 +19,7 @@ type Props = {
 
 const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   const { sqlStatement, databaseSource } = useQuery(queryId);
-  const { databases } = useDatabaseSourceStore();
+  const { databases } = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const run = () => {

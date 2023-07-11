@@ -12,14 +12,14 @@ import useReportStore, { addReport } from "./report/reportStore";
 import { useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
-import useDatabaseSourceStore from "./databaseSourceStore";
+import useDatabaseDefinitionStore from "./databaseDefinitionStore";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
 };
 const MainMenu: React.FC<Props> = ({ children }) => {
   const queryStore = useQueryStore();
-  const databaseStore = useDatabaseSourceStore();
+  const databaseStore = useDatabaseDefinitionStore();
   const reportStore = useReportStore();
   const [location, setLocation] = useLocation();
   const [activeMenuItem, setActiveMenuItem] = useState("");

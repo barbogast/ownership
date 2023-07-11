@@ -20,17 +20,17 @@ const persistConfig = {
   storage: createJSONStorage(() => localStorage),
 };
 
-const useDatabaseSourceStore = create(
+const useDatabaseDefinitionStore = create(
   persist(
     immer<DatabaseState>(() => initialState),
     persistConfig
   )
 );
 
-export const addDatabase = (name: string, csvContent: string) => {
-  useDatabaseSourceStore.setState((state) => {
+export const addDatabaseDefinition = (name: string, csvContent: string) => {
+  useDatabaseDefinitionStore.setState((state) => {
     state.databases[name] = { name, csvContent };
   });
 };
 
-export default useDatabaseSourceStore;
+export default useDatabaseDefinitionStore;

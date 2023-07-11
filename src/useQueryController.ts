@@ -12,7 +12,7 @@ import {
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
-import useDatabaseSourceStore from "./databaseSourceStore";
+import useDatabaseDefinitionStore from "./databaseDefinitionStore";
 import {
   DatabaseConnection,
   useDatabaseConnection,
@@ -34,7 +34,7 @@ const useQueryController = (queryId: string) => {
   const query = useQuery(queryId);
   const db = useDatabaseConnection(query.databaseSource.url);
   const databaseDefintion =
-    useDatabaseSourceStore().databases[query.databaseSource.url];
+    useDatabaseDefinitionStore().databases[query.databaseSource.url];
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);

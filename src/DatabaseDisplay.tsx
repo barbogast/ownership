@@ -7,7 +7,7 @@ import {
 import TableDisplay from "./display/TableDisplay";
 import { rowsToObjects } from "./util/transform";
 import { initialize } from "./util/database";
-import useDatabaseSourceStore from "./databaseSourceStore";
+import useDatabaseDefinitionStore from "./databaseDefinitionStore";
 
 type Props = {
   params: {
@@ -18,7 +18,7 @@ type Props = {
 const DiplayDatabase: React.FC<Props> = ({ params }) => {
   const conn = useDatabaseConnection(params.name);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
-  const databaseDefintion = useDatabaseSourceStore().databases[params.name];
+  const databaseDefintion = useDatabaseDefinitionStore().databases[params.name];
 
   useEffect(() => {
     if (conn.status === "uninitialized") {
