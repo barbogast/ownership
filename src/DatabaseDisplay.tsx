@@ -16,41 +16,32 @@ type Props = {
 };
 
 const DiplayDatabase: React.FC<Props> = ({ params }) => {
-  const db = useDatabaseConnection(params.name);
-
+  const conn = useDatabaseConnection(params.name);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const databaseDefintion = useDatabaseSourceStore().databases[params.name];
 
   useEffect(() => {
-    if (db.status !== "uninitialized") {
+    if (conn.status === "uninitialized") {
+      initialize(
+        { type: "local", url: params.name },
+        databaseDefintion.csvContent
+      );
       return;
     }
-    initialize(
-      { type: "local", url: params.name },
-      databaseDefintion.csvContent
-    ).catch(console.error);
-  }, [params.name, db.status, databaseDefintion]);
 
-  useEffect(() => {
-    const func = async () => {
-      if (db.status === "loaded") {
-        const tables = db.db
-          .exec(
-            `SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name`
-          )
-          .map((row) => row.values[0]);
+    if (conn.status === "loading" || conn.status === "error") {
+      return;
+    }
 
-        const query = tables
-          .map((table) => `select * from ${table}`)
-          .join(";\n");
+    const tables = conn.db
+      .exec(`SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name`)
+      .map((row) => row.values[0]);
 
-        const result = db.db.exec(query);
-        setQueryResults(result);
-      }
-    };
+    const query = tables.map((table) => `select * from ${table}`).join(";\n");
 
-    func();
-  }, [db]);
+    const result = conn.db.exec(query);
+    setQueryResults(result);
+  }, [conn, params.name, databaseDefintion]);
 
   return (
     <div style={{ display: "block", flexDirection: "column" }}>

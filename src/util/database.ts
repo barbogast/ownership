@@ -86,6 +86,8 @@ export const initialize = async (
   useDatabaseConnectionStore.setState((state) => {
     state.databases[key] = connection;
   });
+
+  return connection;
 };
 
 export const createTable = (

@@ -13,7 +13,10 @@ import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
 import useDatabaseSourceStore from "./databaseSourceStore";
-import { useDatabaseConnection } from "./databaseConnectionStore";
+import {
+  DatabaseConnection,
+  useDatabaseConnection,
+} from "./databaseConnectionStore";
 
 type Progress = {
   queried?: boolean;
@@ -29,16 +32,9 @@ const useQueryController = (queryId: string) => {
   const [progress, setProgress] = useState<Progress>({});
 
   const query = useQuery(queryId);
-  const {
-    sqlStatement,
-    transformType,
-    databaseSource,
-    transformCode,
-    transformConfig,
-  } = query;
-  const db = useDatabaseConnection(databaseSource.url);
+  const db = useDatabaseConnection(query.databaseSource.url);
   const databaseDefintion =
-    useDatabaseSourceStore().databases[databaseSource.url];
+    useDatabaseSourceStore().databases[query.databaseSource.url];
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
@@ -50,13 +46,16 @@ const useQueryController = (queryId: string) => {
     error: Error;
   }>();
 
-  const runQuery = (statement?: string): QueryExecResult[] => {
+  const runQuery = (
+    db: DatabaseConnection,
+    statement: string
+  ): QueryExecResult[] => {
     if (db.status !== "loaded")
       throw new Error(`Db status should be "loaded" but is "${db.status}"`);
 
     try {
       setError(undefined);
-      const results = db.db.exec(statement || sqlStatement);
+      const results = db.db.exec(statement);
       setQueryResults(results);
       setProgress({ queried: true });
       return results;
@@ -127,43 +126,41 @@ const useQueryController = (queryId: string) => {
   };
 
   useEffect(() => {
-    if (!databaseSource || db.status !== "uninitialized") {
+    if (!query.databaseSource) {
       return;
     }
-    initialize(databaseSource, databaseDefintion.csvContent).catch(
-      console.error
-    );
-  }, [databaseSource, db.status, databaseDefintion]);
 
-  useEffect(() => {
-    if (db.status !== "loaded" || !sqlStatement) {
+    if (db.status === "uninitialized") {
+      initialize(query.databaseSource, databaseDefintion.csvContent).catch(
+        console.error
+      );
       return;
     }
-    const results = runQuery();
+
+    if (db.status === "loading" || !query.sqlStatement) {
+      return;
+    }
+
+    const results = runQuery(db, query.sqlStatement);
     if (!results.length) {
       // DB query most probably resulted in an error
       return;
     }
 
-    // Run this hook only once after the component mounted and the DB was initialised
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [db.status]);
-
-  useEffect(() => {
-    if (transformType === "code") {
-      if (queryResults.length) {
-        runTransform(queryResults, transformCode);
+    if (query.transformType === "code") {
+      if (results.length) {
+        runTransform(results, query.transformCode);
       }
     } else {
-      applyTransformConfig(transformConfig, queryResults);
+      applyTransformConfig(query.transformConfig, results);
     }
-  }, [transformType, transformConfig, transformCode, queryResults]);
+  }, [db, databaseDefintion, query]);
 
   return {
     error,
     progress,
     queryResults,
-    runQuery,
+    runQuery: () => runQuery(db, query.sqlStatement),
     runTransform,
     transformResult,
     transformError,
