@@ -103,10 +103,16 @@ const useQueryController = (queryId: string) => {
     }
     const { dataOrientation, labelColumn } = transformConfig;
 
-    const data =
-      dataOrientation === "column"
-        ? rowsToObjects(queryResults[0])
-        : columnsToObjects(queryResults[0], labelColumn);
+    let data;
+    if (dataOrientation === "column") {
+      data = rowsToObjects(queryResults[0]);
+    } else {
+      if (labelColumn === "--no-label-column--") {
+        data = singleRowColumnsToObjects(queryResults[0]);
+      } else {
+        data = columnsToObjects(queryResults[0], labelColumn);
+      }
+    }
 
     setTransformResult(data);
     setProgress({ queried: true, transformed: true });
