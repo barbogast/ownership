@@ -126,7 +126,7 @@ const useQueryController = (queryId: string) => {
   };
 
   useEffect(() => {
-    if (!query.databaseSource) {
+    if (!query.databaseSource || !databaseDefintion) {
       return;
     }
 
