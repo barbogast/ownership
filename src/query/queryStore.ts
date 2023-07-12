@@ -7,6 +7,8 @@ import {
 } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
+import stringify from "safe-stable-stringify";
+
 import { deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
@@ -14,6 +16,7 @@ import { RepositoryInfo } from "../types";
 import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
 import useDatabaseDefinitionStore from "../databaseDefinitionStore";
+import { FileContents } from "../util/fsHelper";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -204,4 +207,25 @@ export const updateTransformConfig = (
   useQueryStore.setState((state) => {
     Object.assign(state.queries[queryId].transformConfig, newState);
   });
+};
+
+export const queryToFiles = (query: Query) => {
+  const { sqlStatement, transformCode, ...partialQuery } = query;
+  const fileContents: FileContents = {};
+  if (sqlStatement) {
+    fileContents["sqlStatement.sql"] = sqlStatement;
+  }
+  if (transformCode) {
+    fileContents["transformCode.ts"] = transformCode;
+  }
+  fileContents["index.json"] = stringify(partialQuery, null, 2);
+  return fileContents;
+};
+
+export const filesToQuery = (fileContents: FileContents): Query => {
+  return {
+    ...JSON.parse(fileContents["index.json"]),
+    sqlStatement: fileContents["sqlStatement.sql"],
+    transformCode: fileContents["transformCode.ts"],
+  };
 };

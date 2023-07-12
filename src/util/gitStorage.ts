@@ -1,29 +1,10 @@
-import stringify from "safe-stable-stringify";
-
-import useQueryStore, { Query } from "../query/queryStore";
-import FsHelper, { FileContents } from "./fsHelper";
+import useQueryStore, {
+  Query,
+  filesToQuery,
+  queryToFiles,
+} from "../query/queryStore";
+import FsHelper from "./fsHelper";
 import GitHelper from "./gitHelpers";
-
-const queryToFiles = (query: Query) => {
-  const { sqlStatement, transformCode, ...partialQuery } = query;
-  const fileContents: FileContents = {};
-  if (sqlStatement) {
-    fileContents["sqlStatement.sql"] = sqlStatement;
-  }
-  if (transformCode) {
-    fileContents["transformCode.ts"] = transformCode;
-  }
-  fileContents["index.json"] = stringify(partialQuery, null, 2);
-  return fileContents;
-};
-
-const filesToQuery = (fileContents: FileContents): Query => {
-  return {
-    ...JSON.parse(fileContents["index.json"]),
-    sqlStatement: fileContents["sqlStatement.sql"],
-    transformCode: fileContents["transformCode.ts"],
-  };
-};
 
 const addQuery = async (
   fsHelper: FsHelper,
