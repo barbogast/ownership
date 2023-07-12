@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage, PersistOptions } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "../types";
@@ -33,11 +33,12 @@ const initialState: ReportState = {
 
 const CURRENT_VERSION = 1;
 
-const persistConfig = {
+const persistConfig: PersistOptions<ReportState> = {
   name: "uninitializedReports",
   storage: createJSONStorage(() => localStorage),
   version: CURRENT_VERSION,
   skipHydration: true,
+  merge: (_, currentState) => currentState, // Drop previous state when rehydrating
 };
 
 const useReportStore = create(

@@ -88,6 +88,7 @@ const persistConfig: PersistOptions<QueryState> = {
   skipHydration: true,
   storage: createJSONStorage(() => localStorage),
   version: CURRENT_VERSION,
+  merge: (_, currentState) => currentState, // Drop previous state when rehydrating
   migrate: (unknownState) => {
     const state = unknownState as QueryState;
     Object.keys(state.queries).forEach((id) => {

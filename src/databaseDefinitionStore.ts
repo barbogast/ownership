@@ -24,6 +24,7 @@ const persistConfig: PersistOptions<DatabaseState> = {
   skipHydration: true,
   storage: createJSONStorage(() => localStorage),
   version: CURRENT_VERSION,
+  merge: (_, currentState) => currentState, // Drop previous state when rehydrating
 };
 
 const useDatabaseDefinitionStore = create(
