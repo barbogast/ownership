@@ -1,8 +1,9 @@
 import { ReactElement, useEffect } from "react";
-import { enable } from "./query/queryStore";
-import useReportStore from "./report/reportStore";
 import { useRepoInfo } from "./util/utils";
 import Logger from "./util/logger";
+import * as queryStore from "./query/queryStore";
+import * as databaseDefinitionStore from "./databaseDefinitionStore";
+import * as reportStore from "./report/reportStore";
 
 const logger = new Logger("database");
 type Props = {
@@ -14,10 +15,9 @@ const RepositoryStores: React.FC<Props> = ({ children }) => {
     if (info) {
       logger.log("hydrate", info);
 
-      enable(info);
-
-      useReportStore.persist.setOptions({ name: `${info.path}/reports` });
-      useReportStore.persist.rehydrate();
+      queryStore.enable(info);
+      databaseDefinitionStore.enable(info);
+      reportStore.enable(info);
     }
   }, [info]);
   return children;

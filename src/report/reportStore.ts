@@ -2,6 +2,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
+import { RepositoryInfo } from "../types";
+import { FileContents } from "../util/fsHelper";
+import stringify from "safe-stable-stringify";
 // import { Block } from "@blocknote/core";
 
 type Block = string[];
@@ -27,9 +30,13 @@ const initialState: ReportState = {
     },
   },
 };
+
+const CURRENT_VERSION = 1;
+
 const persistConfig = {
   name: "uninitializedReports",
   storage: createJSONStorage(() => localStorage),
+  version: CURRENT_VERSION,
   skipHydration: true,
 };
 
@@ -41,6 +48,26 @@ const useReportStore = create(
 );
 
 export default useReportStore;
+
+const getStorageName = (info: RepositoryInfo) => `${info.path}/reports`;
+
+export const enable = (info: RepositoryInfo) => {
+  useReportStore.persist.setOptions({ name: getStorageName(info) });
+  useReportStore.persist.rehydrate();
+};
+
+export const importStore = (info: RepositoryInfo, reports: Report[]) => {
+  const content: ReportState = {
+    reports: Object.fromEntries(reports.map((report) => [report.id, report])),
+  };
+  localStorage.setItem(
+    getStorageName(info),
+    JSON.stringify({
+      state: content,
+      version: CURRENT_VERSION,
+    })
+  );
+};
 
 export const useReport = (id: string) =>
   useReportStore((state) => state.reports[id]);
@@ -66,3 +93,20 @@ export const updateBlocks = (queryId: string, blocks: Block[]) =>
   useReportStore.setState((state) => {
     state.reports[queryId].blocks = blocks;
   });
+
+type ReportFiles = FileContents<"index.json" | "blocks.json">;
+export const reportToFiles = (report: Report): ReportFiles => {
+  const { blocks, ...partialReport } = report;
+  const fileContents = {
+    "index.json": stringify(partialReport, null, 2),
+    "blocks.json": stringify(blocks, null, 2),
+  };
+  return fileContents;
+};
+
+export const filesToReport = (fileContents: ReportFiles): Report => {
+  return {
+    ...JSON.parse(fileContents["index.json"]),
+    sqlStatement: JSON.parse(fileContents["blocks.json"]),
+  };
+};

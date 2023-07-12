@@ -1,5 +1,6 @@
 import useQueryStore, {
   Query,
+  QueryFiles,
   filesToQuery,
   queryToFiles,
 } from "../query/queryStore";
@@ -23,7 +24,7 @@ const addQuery = async (
 };
 
 const loadQuery = async (fs: FsHelper, directory: string) => {
-  const contents = await fs.readFilesInDirectory(directory);
+  const contents = await fs.readFilesInDirectory<QueryFiles>(directory);
   const query = filesToQuery(contents);
   return query;
 };

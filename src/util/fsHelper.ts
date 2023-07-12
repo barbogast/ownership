@@ -3,7 +3,7 @@ import Logger from "./logger";
 
 const logger = new Logger("fs");
 
-export type FileContents = Record<string, string>;
+export type FileContents<T extends string> = Record<T, string>;
 
 export default class FsHelper {
   fs: LightningFS;
@@ -32,21 +32,21 @@ export default class FsHelper {
     }
   };
 
-  readFilesInDirectory = async (directory: string) => {
+  readFilesInDirectory = async <T>(directory: string) => {
     const fileContents: Record<string, string> = {};
     const files = await this.fs.promises.readdir(directory);
     for (const file of files) {
       const content = await this.readFile(directory + "/" + file);
       fileContents[file] = content as string;
     }
-    return fileContents;
+    return fileContents as T;
   };
 
-  writeFilesToDirectory = async (
+  writeFilesToDirectory = async <T extends string>(
     directory: string,
-    fileContents: FileContents
+    fileContents: FileContents<T>
   ) => {
-    for (const [filename, contents] of Object.entries(fileContents)) {
+    for (const [filename, contents] of Object.entries<string>(fileContents)) {
       await this.fs.promises.writeFile(directory + "/" + filename, contents);
     }
   };

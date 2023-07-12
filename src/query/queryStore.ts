@@ -209,20 +209,20 @@ export const updateTransformConfig = (
   });
 };
 
-export const queryToFiles = (query: Query) => {
+export type QueryFiles = FileContents<
+  "index.json" | "sqlStatement.sql" | "transformCode.ts"
+>;
+export const queryToFiles = (query: Query): QueryFiles => {
   const { sqlStatement, transformCode, ...partialQuery } = query;
-  const fileContents: FileContents = {};
-  if (sqlStatement) {
-    fileContents["sqlStatement.sql"] = sqlStatement;
-  }
-  if (transformCode) {
-    fileContents["transformCode.ts"] = transformCode;
-  }
-  fileContents["index.json"] = stringify(partialQuery, null, 2);
+  const fileContents = {
+    "index.json": stringify(partialQuery, null, 2),
+    "sqlStatement.sql": sqlStatement,
+    "transformCode.ts": transformCode,
+  };
   return fileContents;
 };
 
-export const filesToQuery = (fileContents: FileContents): Query => {
+export const filesToQuery = (fileContents: QueryFiles): Query => {
   return {
     ...JSON.parse(fileContents["index.json"]),
     sqlStatement: fileContents["sqlStatement.sql"],
