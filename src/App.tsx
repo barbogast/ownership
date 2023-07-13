@@ -8,7 +8,7 @@ import Report from "./report/Report";
 import DatabaseDisplay from "./DatabaseDisplay";
 import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
-import RepositoryStores from "./RepositoryStores";
+import WithNestedStores from "./nestedStorage/WithNestedStores";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         <Route
           path="/:organization/:repository/:rest*"
           component={({ params }) => (
-            <RepositoryStores>
+            <WithNestedStores>
               <NestedRoutes
                 base={`/${params.organization}/${params.repository}`}
               >
@@ -35,7 +35,7 @@ function App() {
                   )}
                 ></Route>
               </NestedRoutes>
-            </RepositoryStores>
+            </WithNestedStores>
           )}
         />
 
