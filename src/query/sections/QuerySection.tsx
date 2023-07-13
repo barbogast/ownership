@@ -46,8 +46,8 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
             })
           }
           options={Object.values(databases).map((db) => ({
-            value: db.name,
-            label: db.name,
+            value: db.id,
+            label: db.id,
           }))}
           style={{ width: 250 }}
           placeholder="Select database..."

@@ -14,18 +14,17 @@ import GitHelper from "./gitHelpers";
 
 const save = async <
   EntityProp extends string,
-  IdProp extends string,
-  Entity extends Record<IdProp | string, unknown>,
+  Entity extends Record<"id" | string, unknown>,
   Files extends string,
   State extends Record<EntityProp, Record<string, Entity>>
 >(
   fsHelper: FsHelper,
   gitHelper: GitHelper,
   data: Record<EntityProp, Record<string, Entity>>,
-  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>
+  config: StoreConfig<EntityProp, Entity, Files, State>
 ) => {
   for (const entity of Object.values(data[config.entityProp])) {
-    const folder = `${config.name}/${entity[config.idProp]}`;
+    const folder = `${config.name}/${entity.id}`;
     await fsHelper.mkdir_p(`${gitHelper.root}/${folder}`);
 
     const files = config.entityToFiles(entity);
@@ -36,14 +35,13 @@ const save = async <
 
 const load = async <
   EntityProp extends string,
-  IdProp extends string,
-  Entity extends Record<IdProp | string, unknown>,
+  Entity extends Record<"id" | string, unknown>,
   Files extends string,
   State extends Record<EntityProp, Record<string, Entity>>
 >(
   fsHelper: FsHelper,
   gitHelper: GitHelper,
-  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>
+  config: StoreConfig<EntityProp, Entity, Files, State>
 ) => {
   const directory = `${gitHelper.root}/${config.name}`;
   const entries = await fsHelper.fs.promises.readdir(directory);

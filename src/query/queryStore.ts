@@ -55,8 +55,7 @@ export const getDefaults = () => ({
   transformType: "config" as const,
   databaseSource: {
     type: "local" as const,
-    url: Object.values(useDatabaseDefinitionStore.getState().databases)[0]
-      ?.name,
+    url: Object.values(useDatabaseDefinitionStore.getState().databases)[0]?.id,
   },
   transformConfig: {
     dataOrientation: "row" as const,
@@ -95,7 +94,6 @@ type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
 
 type QueryStoreConfig = StoreConfig<
   "queries",
-  "id",
   Query,
   Files,
   { queries: Record<string, Query> }
@@ -123,7 +121,6 @@ export const queryStoreConfig: QueryStoreConfig = {
   entityToFiles: queryToFiles,
   filesToEntity: filesToQuery,
   name: "queries",
-  idProp: "id",
   entityProp: "queries",
   initialState,
   version: CURRENT_VERSION,

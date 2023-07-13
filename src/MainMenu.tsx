@@ -57,8 +57,8 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     label: `Databases`,
     children: Object.values(databaseStore.databases)
       .map((db) => ({
-        key: db.name,
-        label: <Link href={`${basepath}/db/${db.name}`}>{db.name}</Link>,
+        key: db.id,
+        label: <Link href={`${basepath}/db/${db.id}`}>{db.id}</Link>,
       }))
 
       .concat({

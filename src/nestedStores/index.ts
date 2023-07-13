@@ -11,8 +11,7 @@ import { RepositoryInfo } from "../types";
 
 export type StoreConfig<
   EntityProp extends string,
-  IdProp extends string,
-  Entity extends Record<IdProp | string, unknown>,
+  Entity extends Record<"id" | string, unknown>,
   Files extends string,
   State extends Record<EntityProp, Record<string, Entity>>
 > = {
@@ -20,7 +19,6 @@ export type StoreConfig<
   filesToEntity: (files: FileContents<Files>) => Entity;
   name: string;
   entityProp: EntityProp;
-  idProp: string;
   initialState: State;
   version: number;
   migrate?: (state: unknown) => State;
@@ -28,8 +26,7 @@ export type StoreConfig<
 
 class NestedStore<
   EntityProp extends string,
-  IdProp extends string,
-  Entity extends Record<IdProp | string, unknown>,
+  Entity extends Record<"id" | string, unknown>,
   Files extends string,
   State extends Record<EntityProp, Record<string, Entity>>
 > {
@@ -43,10 +40,10 @@ class NestedStore<
       ]
     >
   >;
-  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>;
+  config: StoreConfig<EntityProp, Entity, Files, State>;
   info: RepositoryInfo | undefined;
 
-  constructor(config: StoreConfig<EntityProp, IdProp, Entity, Files, State>) {
+  constructor(config: StoreConfig<EntityProp, Entity, Files, State>) {
     const persistConfig: PersistOptions<State> = {
       storage: createJSONStorage(() => localStorage),
       name: `uninitialized${config.name}`,
@@ -82,7 +79,7 @@ class NestedStore<
   import = (info: RepositoryInfo, entities: Entity[]) => {
     const content = {
       queries: Object.fromEntries(
-        entities.map((entity) => [entity[this.config.idProp], entity])
+        entities.map((entity) => [entity.id, entity])
       ),
     };
     localStorage.setItem(

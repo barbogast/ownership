@@ -3,7 +3,7 @@ import NestedStore, { StoreConfig } from "./nestedStores";
 import { FileContents } from "./util/fsHelper";
 
 export type DatabaseDefinition = {
-  name: string;
+  id: string;
   csvContent: string;
 };
 
@@ -21,7 +21,6 @@ type Files = "content.csv" | "index.json";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   "databases",
-  "name",
   DatabaseDefinition,
   Files,
   { databases: Record<string, DatabaseDefinition> }
@@ -51,7 +50,6 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
   entityToFiles: databaseToFiles,
   filesToEntity: fileToDatabase,
   name: "databases",
-  idProp: "name",
   entityProp: "databases",
   initialState,
   version: CURRENT_VERSION,
@@ -62,9 +60,9 @@ export const databaseDefinitionStore = new NestedStore(
 );
 const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
-export const addDatabaseDefinition = (name: string, csvContent: string) => {
+export const addDatabaseDefinition = (id: string, csvContent: string) => {
   useDatabaseDefinitionStore.setState((state) => {
-    state.databases[name] = { name, csvContent };
+    state.databases[id] = { id, csvContent };
   });
 };
 
