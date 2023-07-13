@@ -1,11 +1,11 @@
 import useDatabaseDefinitionStore, {
+  databaseDefinitionStore,
   databaseDefinitionStoreConfig,
-  importStore as importDatabaseDefinitionStore,
 } from "../databaseDefinitionStore";
 import { StoreConfig } from "../nestedStorage";
 import useQueryStore, {
+  queryStore,
   queryStoreConfig,
-  importStore as importQueryStore,
 } from "../query/queryStore";
 import { RepositoryInfo } from "../types";
 import { FileContents } from "./fsHelper";
@@ -47,7 +47,6 @@ const load = async <
 ) => {
   const directory = `${gitHelper.root}/${config.name}`;
   const entries = await fsHelper.fs.promises.readdir(directory);
-  console.log({ entries });
   const entities = [];
   for (const entry of entries) {
     const path = `${directory}/${entry}`;
@@ -97,8 +96,8 @@ export const loadFromGit = async (info: RepositoryInfo) => {
 
   const queries = await load(fs, git, queryStoreConfig);
   const dbs = await load(fs, git, databaseDefinitionStoreConfig);
-  importQueryStore(info, queries);
-  importDatabaseDefinitionStore(info, dbs);
+  queryStore.import(info, queries);
+  databaseDefinitionStore.import(info, dbs);
 };
 /*
 - create query: add file

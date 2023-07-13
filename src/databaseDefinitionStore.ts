@@ -1,6 +1,5 @@
-import { RepositoryInfo } from "./types";
 import stringify from "safe-stable-stringify";
-import { StoreConfig, createNestedStore } from "./nestedStorage";
+import NestedStore, { StoreConfig } from "./nestedStorage";
 import { FileContents } from "./util/fsHelper";
 
 export type DatabaseDefinition = {
@@ -58,32 +57,10 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
   version: CURRENT_VERSION,
 };
 
-const useDatabaseDefinitionStore = createNestedStore(
+export const databaseDefinitionStore = new NestedStore(
   databaseDefinitionStoreConfig
 );
-
-const getStorageName = (info: RepositoryInfo) => `${info.path}/databases`;
-
-export const enable = (info: RepositoryInfo) => {
-  useDatabaseDefinitionStore.persist.setOptions({ name: getStorageName(info) });
-  useDatabaseDefinitionStore.persist.rehydrate();
-};
-
-export const importStore = (
-  info: RepositoryInfo,
-  dbs: DatabaseDefinition[]
-) => {
-  const content: DatabaseState = {
-    databases: Object.fromEntries(dbs.map((db) => [db.name, db])),
-  };
-  localStorage.setItem(
-    getStorageName(info),
-    JSON.stringify({
-      state: content,
-      version: CURRENT_VERSION,
-    })
-  );
-};
+const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
 export const addDatabaseDefinition = (name: string, csvContent: string) => {
   useDatabaseDefinitionStore.setState((state) => {

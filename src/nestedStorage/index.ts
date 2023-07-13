@@ -7,6 +7,7 @@ import {
 } from "zustand/middleware";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { RepositoryInfo } from "../types";
 
 export type StoreConfig<
   EntityProp extends string,
@@ -25,63 +26,73 @@ export type StoreConfig<
   migrate?: (state: unknown) => State;
 };
 
-export const createNestedStore = <
+class NestedStore<
   EntityProp extends string,
   IdProp extends string,
   Entity extends Record<IdProp | string, unknown>,
   Files extends string,
   State extends Record<EntityProp, Record<string, Entity>>
->(
-  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>
-) => {
-  const persistConfig: PersistOptions<State> = {
-    storage: createJSONStorage(() => localStorage),
-    name: `uninitialized${config.name}`,
-    skipHydration: true,
-    version: config.version,
-    migrate: config.migrate,
-    merge: (persistedState, currentState) =>
-      (persistedState as State) || // Drop previous state when rehydrating
-      currentState, // ... or use the initialState if there is no previous state
-  };
-  console.log("create", config.name, config.initialState);
+> {
+  store: ReturnType<
+    typeof create<
+      State,
+      [
+        ["zustand/devtools", State],
+        ["zustand/persist", State],
+        ["zustand/immer", State]
+      ]
+    >
+  >;
+  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>;
+  info: RepositoryInfo | undefined;
 
-  const store = create(
-    devtools(
-      persist(
-        immer<State>(() => config.initialState),
-        persistConfig
+  constructor(config: StoreConfig<EntityProp, IdProp, Entity, Files, State>) {
+    const persistConfig: PersistOptions<State> = {
+      storage: createJSONStorage(() => localStorage),
+      name: `uninitialized${config.name}`,
+      skipHydration: true,
+      version: config.version,
+      migrate: config.migrate,
+      merge: (persistedState, currentState) =>
+        (persistedState as State) || // Drop previous state when rehydrating
+        currentState, // ... or use the initialState if there is no previous state
+    };
+
+    this.config = config;
+    this.store = create(
+      devtools(
+        persist(
+          immer<State>(() => config.initialState),
+          persistConfig
+        )
       )
-    )
-  );
+    );
+  }
 
-  return store;
-};
+  #getStoragePath = (info: RepositoryInfo) =>
+    `${info.path}/${this.config.name}`;
 
-// type Store = ReturnType<typeof createNestedStore>;
+  hydrate = (info: RepositoryInfo) => {
+    this.info = info;
+    this.store.persist.setOptions({ name: this.#getStoragePath(this.info) });
+    console.log(1111, this.#getStoragePath(this.info));
+    this.store.persist.rehydrate();
+  };
 
-// const getStoragePath = <
-//   EntityProp extends string,
-//   IdProp extends string,
-//   Entity extends Record<IdProp | string, unknown>,
-//   Files extends string,
-//   State extends Record<EntityProp, Record<string, Entity>>
-// >(
-//   config: StoreConfig<EntityProp, IdProp, Entity, Files, State>,
-//   info: RepositoryInfo
-// ) => `${info.path}/${config.name}`;
+  import = (info: RepositoryInfo, entities: Entity[]) => {
+    const content = {
+      queries: Object.fromEntries(
+        entities.map((entity) => [entity[this.config.idProp], entity])
+      ),
+    };
+    localStorage.setItem(
+      this.#getStoragePath(info),
+      JSON.stringify({
+        state: content,
+        version: this.config.version,
+      })
+    );
+  };
+}
 
-// export const enable = <
-//   EntityProp extends string,
-//   IdProp extends string,
-//   Entity extends Record<IdProp | string, unknown>,
-//   Files extends string,
-//   State extends Record<EntityProp, Record<string, Entity>>
-// >(
-//   store: Store,
-//   config: StoreConfig<EntityProp, IdProp, Entity, Files, State>,
-//   info: RepositoryInfo
-// ) => {
-//   store.persist.setOptions({ name: getStoragePath(config, info) });
-//   store.persist.rehydrate();
-// };
+export default NestedStore;

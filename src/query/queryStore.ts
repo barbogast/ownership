@@ -4,12 +4,11 @@ import stringify from "safe-stable-stringify";
 import { deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
-import { RepositoryInfo } from "../types";
 import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
 import useDatabaseDefinitionStore from "../databaseDefinitionStore";
 import { FileContents } from "../util/fsHelper";
-import { StoreConfig, createNestedStore } from "../nestedStorage";
+import NestedStore, { StoreConfig } from "../nestedStorage";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -76,27 +75,6 @@ const initialState: QueryState = {
 
 const CURRENT_VERSION = 2;
 
-const storageName = "queries";
-const getStoragePath = (info: RepositoryInfo) => `${info.path}/${storageName}`;
-
-export const enable = (info: RepositoryInfo) => {
-  useQueryStore.persist.setOptions({ name: getStoragePath(info) });
-  useQueryStore.persist.rehydrate();
-};
-
-export const importStore = (info: RepositoryInfo, queries: Query[]) => {
-  const content: QueryState = {
-    queries: Object.fromEntries(queries.map((query) => [query.id, query])),
-  };
-  localStorage.setItem(
-    getStoragePath(info),
-    JSON.stringify({
-      state: content,
-      version: CURRENT_VERSION,
-    })
-  );
-};
-
 const migrate = (unknownState: unknown) => {
   const state = unknownState as QueryState;
   Object.keys(state.queries).forEach((id) => {
@@ -152,7 +130,8 @@ export const queryStoreConfig: QueryStoreConfig = {
   migrate,
 };
 
-const useQueryStore = createNestedStore(queryStoreConfig);
+export const queryStore = new NestedStore(queryStoreConfig);
+const useQueryStore = queryStore.store;
 
 export default useQueryStore;
 

@@ -1,26 +1,29 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useRepoInfo } from "./util/utils";
 import Logger from "./util/logger";
-import * as queryStore from "./query/queryStore";
-import * as databaseDefinitionStore from "./databaseDefinitionStore";
+import { queryStore } from "./query/queryStore";
+import { databaseDefinitionStore } from "./databaseDefinitionStore";
 import * as reportStore from "./report/reportStore";
 
-const logger = new Logger("database");
+const logger = new Logger("main");
 type Props = {
   children: ReactElement[] | ReactElement;
 };
 const RepositoryStores: React.FC<Props> = ({ children }) => {
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const info = useRepoInfo();
   useEffect(() => {
     if (info) {
-      logger.log("hydrate", info);
+      logger.log("rehydrate stores", info);
 
-      queryStore.enable(info);
-      databaseDefinitionStore.enable(info);
+      queryStore.hydrate(info);
+      databaseDefinitionStore.hydrate(info);
       reportStore.enable(info);
+      setIsInitialized(true);
     }
   }, [info]);
-  return children;
+  return isInitialized ? children : null;
 };
 
 export default RepositoryStores;
