@@ -8,7 +8,7 @@ import Report from "./report/Report";
 import DatabaseDisplay from "./DatabaseDisplay";
 import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
-import WithNestedStores from "./nestedStorage/WithNestedStores";
+import WithNestedStores from "./nestedStores/WithNestedStores";
 
 function App() {
   return (

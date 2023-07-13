@@ -1,5 +1,5 @@
 import stringify from "safe-stable-stringify";
-import NestedStore, { StoreConfig } from "./nestedStorage";
+import NestedStore, { StoreConfig } from "./nestedStores";
 import { FileContents } from "./util/fsHelper";
 
 export type DatabaseDefinition = {

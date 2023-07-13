@@ -8,7 +8,7 @@ import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
 import useDatabaseDefinitionStore from "../databaseDefinitionStore";
 import { FileContents } from "../util/fsHelper";
-import NestedStore, { StoreConfig } from "../nestedStorage";
+import NestedStore, { StoreConfig } from "../nestedStores";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";

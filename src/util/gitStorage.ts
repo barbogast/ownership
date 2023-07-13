@@ -2,7 +2,7 @@ import useDatabaseDefinitionStore, {
   databaseDefinitionStore,
   databaseDefinitionStoreConfig,
 } from "../databaseDefinitionStore";
-import { StoreConfig } from "../nestedStorage";
+import { StoreConfig } from "../nestedStores";
 import useQueryStore, {
   queryStore,
   queryStoreConfig,
