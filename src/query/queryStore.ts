@@ -88,7 +88,7 @@ const migrate = (unknownState: unknown) => {
 
 type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
 
-type QueryStoreConfig = StoreConfig<Query, Files, Record<string, Query>>;
+type QueryStoreConfig = StoreConfig<Query, Record<string, Query>, Files>;
 
 export const queryToFiles = (query: Query): FileContents<Files> => {
   const { sqlStatement, transformCode, ...partialQuery } = query;

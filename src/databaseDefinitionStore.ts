@@ -17,8 +17,8 @@ type Files = "content.csv" | "index.json";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
-  Files,
-  Record<string, DatabaseDefinition>
+  Record<string, DatabaseDefinition>,
+  Files
 >;
 
 export const databaseToFiles = (

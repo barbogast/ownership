@@ -11,8 +11,8 @@ import { RepositoryInfo } from "../types";
 
 export type StoreConfig<
   Entity extends Record<"id" | string, unknown>,
-  Files extends string,
-  State extends Record<string, Entity>
+  State extends Record<string, Entity>,
+  Files extends string = string
 > = {
   entityToFiles: (entity: Entity) => FileContents<Files>;
   filesToEntity: (files: FileContents<Files>) => Entity;
@@ -24,7 +24,6 @@ export type StoreConfig<
 
 class NestedStore<
   Entity extends Record<"id" | string, unknown>,
-  Files extends string,
   State extends Record<string, Entity>
 > {
   store: ReturnType<
@@ -37,10 +36,10 @@ class NestedStore<
       ]
     >
   >;
-  config: StoreConfig<Entity, Files, State>;
+  config: StoreConfig<Entity, State>;
   info: RepositoryInfo | undefined;
 
-  constructor(config: StoreConfig<Entity, Files, State>) {
+  constructor(config: StoreConfig<Entity, State>) {
     const persistConfig: PersistOptions<State> = {
       storage: createJSONStorage(() => localStorage),
       name: `uninitialized${config.name}`,
