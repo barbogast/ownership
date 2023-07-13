@@ -81,7 +81,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
             <Tabs
               onChange={(key) => {
                 useQueryStore.setState((state) => {
-                  state.queries[queryId].transformType = key as TransformType;
+                  state[queryId].transformType = key as TransformType;
                 });
               }}
               activeKey={transformType}

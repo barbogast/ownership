@@ -55,7 +55,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const databases = {
     key: `db`,
     label: `Databases`,
-    children: Object.values(databaseStore.databases)
+    children: Object.values(databaseStore)
       .map((db) => ({
         key: db.id,
         label: <Link href={`${basepath}/db/${db.id}`}>{db.id}</Link>,
@@ -86,7 +86,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         }
       }
     },
-    children: Object.values(queryStore.queries)
+    children: Object.values(queryStore)
       .map((query): { key: string; label: ReactElement | string } => ({
         key: `${basepath}/query/${query.id}`,
         label: (

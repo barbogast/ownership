@@ -7,23 +7,18 @@ export type DatabaseDefinition = {
   csvContent: string;
 };
 
-type DatabaseState = {
-  databases: Record<string, DatabaseDefinition>;
-};
+type DatabaseState = Record<string, DatabaseDefinition>;
 
-const initialState: DatabaseState = {
-  databases: {},
-};
+const initialState: DatabaseState = {};
 
 const CURRENT_VERSION = 1;
 
 type Files = "content.csv" | "index.json";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
-  "databases",
   DatabaseDefinition,
   Files,
-  { databases: Record<string, DatabaseDefinition> }
+  Record<string, DatabaseDefinition>
 >;
 
 export const databaseToFiles = (
@@ -50,7 +45,6 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
   entityToFiles: databaseToFiles,
   filesToEntity: fileToDatabase,
   name: "databases",
-  entityProp: "databases",
   initialState,
   version: CURRENT_VERSION,
 };
@@ -62,7 +56,7 @@ const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
 export const addDatabaseDefinition = (id: string, csvContent: string) => {
   useDatabaseDefinitionStore.setState((state) => {
-    state.databases[id] = { id, csvContent };
+    state[id] = { id, csvContent };
   });
 };
 

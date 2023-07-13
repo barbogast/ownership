@@ -10,25 +10,22 @@ import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "../types";
 
 export type StoreConfig<
-  EntityProp extends string,
   Entity extends Record<"id" | string, unknown>,
   Files extends string,
-  State extends Record<EntityProp, Record<string, Entity>>
+  State extends Record<string, Entity>
 > = {
   entityToFiles: (entity: Entity) => FileContents<Files>;
   filesToEntity: (files: FileContents<Files>) => Entity;
   name: string;
-  entityProp: EntityProp;
   initialState: State;
   version: number;
   migrate?: (state: unknown) => State;
 };
 
 class NestedStore<
-  EntityProp extends string,
   Entity extends Record<"id" | string, unknown>,
   Files extends string,
-  State extends Record<EntityProp, Record<string, Entity>>
+  State extends Record<string, Entity>
 > {
   store: ReturnType<
     typeof create<
@@ -40,10 +37,10 @@ class NestedStore<
       ]
     >
   >;
-  config: StoreConfig<EntityProp, Entity, Files, State>;
+  config: StoreConfig<Entity, Files, State>;
   info: RepositoryInfo | undefined;
 
-  constructor(config: StoreConfig<EntityProp, Entity, Files, State>) {
+  constructor(config: StoreConfig<Entity, Files, State>) {
     const persistConfig: PersistOptions<State> = {
       storage: createJSONStorage(() => localStorage),
       name: `uninitialized${config.name}`,

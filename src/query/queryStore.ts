@@ -37,9 +37,7 @@ export type Query = {
   transformConfig: TransformConfig;
 };
 
-type QueryState = {
-  queries: { [queryId: string]: Query };
-};
+type QueryState = { [queryId: string]: Query };
 
 const defaultTransformCode = `
 type Value = string | number | null | TransformResult
@@ -55,7 +53,7 @@ export const getDefaults = () => ({
   transformType: "config" as const,
   databaseSource: {
     type: "local" as const,
-    url: Object.values(useDatabaseDefinitionStore.getState().databases)[0]?.id,
+    url: Object.values(useDatabaseDefinitionStore.getState())[0]?.id,
   },
   transformConfig: {
     dataOrientation: "row" as const,
@@ -68,36 +66,29 @@ export const getDefaults = () => ({
   transformCode: defaultTransformCode,
 });
 
-const initialState: QueryState = {
-  queries: getQueryTestData(),
-};
+const initialState: QueryState = getQueryTestData();
 
 const CURRENT_VERSION = 2;
 
 const migrate = (unknownState: unknown) => {
   const state = unknownState as QueryState;
   Object.keys(state.queries).forEach((id) => {
-    state.queries[id] = {
+    state[id] = {
       ...getDefaults(),
-      ...state.queries[id],
+      ...state[id],
     };
   });
 
   Object.keys(state.queries).forEach((id) => {
-    state.queries[id].transformConfig.selectedColumns =
-      state.queries[id].transformConfig.selectedColumns || [];
+    state[id].transformConfig.selectedColumns =
+      state[id].transformConfig.selectedColumns || [];
   });
   return state as QueryState;
 };
 
 type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
 
-type QueryStoreConfig = StoreConfig<
-  "queries",
-  Query,
-  Files,
-  { queries: Record<string, Query> }
->;
+type QueryStoreConfig = StoreConfig<Query, Files, Record<string, Query>>;
 
 export const queryToFiles = (query: Query): FileContents<Files> => {
   const { sqlStatement, transformCode, ...partialQuery } = query;
@@ -121,7 +112,6 @@ export const queryStoreConfig: QueryStoreConfig = {
   entityToFiles: queryToFiles,
   filesToEntity: filesToQuery,
   name: "queries",
-  entityProp: "queries",
   initialState,
   version: CURRENT_VERSION,
   migrate,
@@ -132,13 +122,12 @@ const useQueryStore = queryStore.store;
 
 export default useQueryStore;
 
-export const useQuery = (id: string) =>
-  useQueryStore((state) => state.queries[id]);
+export const useQuery = (id: string) => useQueryStore((state) => state[id]);
 
 export const addQuery = () => {
   const id = uuidv4();
   useQueryStore.setState((state) => {
-    state.queries[id] = {
+    state[id] = {
       ...getDefaults(),
       id,
       label: "New query",
@@ -149,36 +138,36 @@ export const addQuery = () => {
 
 export const importQuery = (query: Query) => {
   const id = uuidv4();
-  const existingLabels = Object.values(useQueryStore.getState().queries).map(
+  const existingLabels = Object.values(useQueryStore.getState()).map(
     (q) => q.label
   );
   const label = getNewLabel(existingLabels, query.label);
   useQueryStore.setState((state) => {
-    state.queries[id] = { ...getDefaults(), ...query, id, label };
+    state[id] = { ...getDefaults(), ...query, id, label };
   });
   return id;
 };
 
 export const duplicate = (queryId: string) => {
-  const sourceQuery = useQueryStore.getState().queries[queryId];
+  const sourceQuery = useQueryStore.getState()[queryId];
   const id = uuidv4();
-  const existingLabels = Object.values(useQueryStore.getState().queries).map(
+  const existingLabels = Object.values(useQueryStore.getState()).map(
     (q) => q.label
   );
   const label = getNewLabel(existingLabels, sourceQuery.label);
 
   useQueryStore.setState((state) => {
-    state.queries[id] = { ...deepCopy(sourceQuery), id, label };
+    state[id] = { ...deepCopy(sourceQuery), id, label };
   });
   return id;
 };
 
 export const remove = (queryId: string) => {
-  const query = useQueryStore.getState().queries[queryId];
+  const query = useQueryStore.getState()[queryId];
   const answer = confirm(`Are you sure to delete the query "${query.label}"?`);
   if (answer === true) {
     useQueryStore.setState((state) => {
-      delete state.queries[queryId];
+      delete state[queryId];
     });
     return true;
   }
@@ -191,7 +180,7 @@ export const updateQuery = (
 ) => {
   add(queryId);
   useQueryStore.setState((state) => {
-    Object.assign(state.queries[queryId], newState);
+    Object.assign(state[queryId], newState);
   });
 };
 
@@ -201,6 +190,6 @@ export const updateTransformConfig = (
 ) => {
   add(queryId);
   useQueryStore.setState((state) => {
-    Object.assign(state.queries[queryId].transformConfig, newState);
+    Object.assign(state[queryId].transformConfig, newState);
   });
 };

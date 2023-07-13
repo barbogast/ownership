@@ -30,7 +30,7 @@ const ChartBlock = createReactBlockSpec({
   containsInlineContent: true,
   render: ({ block, editor }): React.ReactElement => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const queries = Object.values(useQueryStore().queries);
+    const queries = Object.values(useQueryStore());
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const readOnly = useReadOnly();

@@ -34,7 +34,7 @@ const useQueryController = (queryId: string) => {
   const query = useQuery(queryId);
   const db = useDatabaseConnection(query.databaseSource.url);
   const databaseDefintion =
-    useDatabaseDefinitionStore().databases[query.databaseSource.url];
+    useDatabaseDefinitionStore()[query.databaseSource.url];
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);

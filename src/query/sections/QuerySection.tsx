@@ -19,7 +19,7 @@ type Props = {
 
 const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   const { sqlStatement, databaseSource } = useQuery(queryId);
-  const { databases } = useDatabaseDefinitionStore();
+  const databases = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
   const run = () => {

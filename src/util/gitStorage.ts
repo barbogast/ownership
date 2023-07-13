@@ -13,17 +13,16 @@ import FsHelper from "./fsHelper";
 import GitHelper from "./gitHelpers";
 
 const save = async <
-  EntityProp extends string,
   Entity extends Record<"id" | string, unknown>,
   Files extends string,
-  State extends Record<EntityProp, Record<string, Entity>>
+  State extends Record<string, Entity>
 >(
   fsHelper: FsHelper,
   gitHelper: GitHelper,
-  data: Record<EntityProp, Record<string, Entity>>,
-  config: StoreConfig<EntityProp, Entity, Files, State>
+  data: Record<string, Entity>,
+  config: StoreConfig<Entity, Files, State>
 ) => {
-  for (const entity of Object.values(data[config.entityProp])) {
+  for (const entity of Object.values(data)) {
     const folder = `${config.name}/${entity.id}`;
     await fsHelper.mkdir_p(`${gitHelper.root}/${folder}`);
 
@@ -34,14 +33,13 @@ const save = async <
 };
 
 const load = async <
-  EntityProp extends string,
   Entity extends Record<"id" | string, unknown>,
   Files extends string,
-  State extends Record<EntityProp, Record<string, Entity>>
+  State extends Record<string, Entity>
 >(
   fsHelper: FsHelper,
   gitHelper: GitHelper,
-  config: StoreConfig<EntityProp, Entity, Files, State>
+  config: StoreConfig<Entity, Files, State>
 ) => {
   const directory = `${gitHelper.root}/${config.name}`;
   const entries = await fsHelper.fs.promises.readdir(directory);

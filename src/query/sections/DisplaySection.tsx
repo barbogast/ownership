@@ -40,7 +40,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
               value={dataRowIndex}
               onChange={(value) => {
                 useQueryStore.setState((state) => {
-                  state.queries[queryId].transformConfig.dataRowIndex = value;
+                  state[queryId].transformConfig.dataRowIndex = value;
                 });
               }}
               options={transformResult.map((row, i) => ({

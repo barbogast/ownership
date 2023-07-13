@@ -18,7 +18,7 @@ type Props = {
 const DiplayDatabase: React.FC<Props> = ({ params }) => {
   const conn = useDatabaseConnection(params.name);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
-  const databaseDefintion = useDatabaseDefinitionStore().databases[params.name];
+  const databaseDefintion = useDatabaseDefinitionStore()[params.name];
 
   useEffect(() => {
     if (conn.status === "uninitialized") {
