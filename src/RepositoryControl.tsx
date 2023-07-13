@@ -51,7 +51,7 @@ const RepositoryControl: React.FC = () => {
           Save
         </Button>
         <Button
-          onClick={() => loadFromGit(repositoryInfo.path).catch(console.error)}
+          onClick={() => loadFromGit(repositoryInfo).catch(console.error)}
         >
           Load
         </Button>

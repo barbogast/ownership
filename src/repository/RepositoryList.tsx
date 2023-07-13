@@ -7,7 +7,6 @@ import useRepositoryStore, {
 import { Link } from "wouter";
 import { loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
-import { importStore } from "../query/queryStore";
 
 const RepositoryList: React.FC = () => {
   const repositories = useRepositoryStore().repositories;
@@ -133,8 +132,7 @@ const RepositoryList: React.FC = () => {
                 newRepo.organization,
                 newRepo.repository
               );
-              const queries = await loadFromGit(info.path);
-              importStore(info, queries);
+              await loadFromGit(info);
               addRepository(info);
               setNewRepo(initialNewRepoState);
               setIsImporting(false);

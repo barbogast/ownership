@@ -1,8 +1,7 @@
-import { create } from "zustand";
-import { persist, createJSONStorage, PersistOptions } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "./types";
 import stringify from "safe-stable-stringify";
+import { StoreConfig, createNestedStore } from "./nestedStorage";
+import { FileContents } from "./util/fsHelper";
 
 export type DatabaseDefinition = {
   name: string;
@@ -19,19 +18,48 @@ const initialState: DatabaseState = {
 
 const CURRENT_VERSION = 1;
 
-const persistConfig: PersistOptions<DatabaseState> = {
-  name: "uninitializedDatabases",
-  skipHydration: true,
-  storage: createJSONStorage(() => localStorage),
-  version: CURRENT_VERSION,
-  merge: (_, currentState) => currentState, // Drop previous state when rehydrating
+type Files = "content.csv" | "index.json";
+
+type DatabaseDefinitionStoreConfig = StoreConfig<
+  "databases",
+  "name",
+  DatabaseDefinition,
+  Files,
+  { databases: Record<string, DatabaseDefinition> }
+>;
+
+export const databaseToFiles = (
+  db: DatabaseDefinition
+): FileContents<Files> => {
+  const { csvContent, ...partialDb } = db;
+  const fileContents = {
+    "index.json": stringify(partialDb, null, 2),
+    "content.csv": csvContent,
+  };
+  return fileContents;
 };
 
-const useDatabaseDefinitionStore = create(
-  persist(
-    immer<DatabaseState>(() => initialState),
-    persistConfig
-  )
+export const fileToDatabase = (
+  fileContents: FileContents<Files>
+): DatabaseDefinition => {
+  return {
+    ...JSON.parse(fileContents["index.json"]),
+    csvContent: fileContents["content.csv"],
+  };
+};
+
+export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
+  entityToFiles: databaseToFiles,
+  filesToEntity: fileToDatabase,
+  name: "databases",
+  idProp: "name",
+  entityProp: "databases",
+  initialState,
+  version: CURRENT_VERSION,
+};
+
+const useDatabaseDefinitionStore = createNestedStore(
+  databaseDefinitionStoreConfig
 );
 
 const getStorageName = (info: RepositoryInfo) => `${info.path}/databases`;
@@ -64,20 +92,3 @@ export const addDatabaseDefinition = (name: string, csvContent: string) => {
 };
 
 export default useDatabaseDefinitionStore;
-
-type Files = Record<"content.csv" | "index.json", string>;
-export const reportToFiles = (db: DatabaseDefinition) => {
-  const { csvContent, ...partialDb } = db;
-  const fileContents: Files = {
-    "index.json": stringify(partialDb, null, 2),
-    "content.csv": csvContent,
-  };
-  return fileContents;
-};
-
-export const filesToReport = (fileContents: Files): DatabaseDefinition => {
-  return {
-    ...JSON.parse(fileContents["index.json"]),
-    csvContent: JSON.parse(fileContents["content.csv"]),
-  };
-};

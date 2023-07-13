@@ -1,12 +1,4 @@
-import { create } from "zustand";
-import {
-  persist,
-  createJSONStorage,
-  PersistOptions,
-  devtools,
-} from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
-import { immer } from "zustand/middleware/immer";
 import stringify from "safe-stable-stringify";
 
 import { deepCopy } from "../util/utils";
@@ -17,6 +9,7 @@ import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
 import useDatabaseDefinitionStore from "../databaseDefinitionStore";
 import { FileContents } from "../util/fsHelper";
+import { StoreConfig, createNestedStore } from "../nestedStorage";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -83,33 +76,11 @@ const initialState: QueryState = {
 
 const CURRENT_VERSION = 2;
 
-const persistConfig: PersistOptions<QueryState> = {
-  name: "uninitializedQueries",
-  skipHydration: true,
-  storage: createJSONStorage(() => localStorage),
-  version: CURRENT_VERSION,
-  merge: (_, currentState) => currentState, // Drop previous state when rehydrating
-  migrate: (unknownState) => {
-    const state = unknownState as QueryState;
-    Object.keys(state.queries).forEach((id) => {
-      state.queries[id] = {
-        ...getDefaults(),
-        ...state.queries[id],
-      };
-    });
-
-    Object.keys(state.queries).forEach((id) => {
-      state.queries[id].transformConfig.selectedColumns =
-        state.queries[id].transformConfig.selectedColumns || [];
-    });
-    return state as QueryState;
-  },
-};
-
-const getStorageName = (info: RepositoryInfo) => `${info.path}/queries`;
+const storageName = "queries";
+const getStoragePath = (info: RepositoryInfo) => `${info.path}/${storageName}`;
 
 export const enable = (info: RepositoryInfo) => {
-  useQueryStore.persist.setOptions({ name: getStorageName(info) });
+  useQueryStore.persist.setOptions({ name: getStoragePath(info) });
   useQueryStore.persist.rehydrate();
 };
 
@@ -118,7 +89,7 @@ export const importStore = (info: RepositoryInfo, queries: Query[]) => {
     queries: Object.fromEntries(queries.map((query) => [query.id, query])),
   };
   localStorage.setItem(
-    getStorageName(info),
+    getStoragePath(info),
     JSON.stringify({
       state: content,
       version: CURRENT_VERSION,
@@ -126,14 +97,62 @@ export const importStore = (info: RepositoryInfo, queries: Query[]) => {
   );
 };
 
-const useQueryStore = create(
-  devtools(
-    persist(
-      immer<QueryState>(() => initialState),
-      persistConfig
-    )
-  )
-);
+const migrate = (unknownState: unknown) => {
+  const state = unknownState as QueryState;
+  Object.keys(state.queries).forEach((id) => {
+    state.queries[id] = {
+      ...getDefaults(),
+      ...state.queries[id],
+    };
+  });
+
+  Object.keys(state.queries).forEach((id) => {
+    state.queries[id].transformConfig.selectedColumns =
+      state.queries[id].transformConfig.selectedColumns || [];
+  });
+  return state as QueryState;
+};
+
+type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
+
+type QueryStoreConfig = StoreConfig<
+  "queries",
+  "id",
+  Query,
+  Files,
+  { queries: Record<string, Query> }
+>;
+
+export const queryToFiles = (query: Query): FileContents<Files> => {
+  const { sqlStatement, transformCode, ...partialQuery } = query;
+  const fileContents = {
+    "index.json": stringify(partialQuery, null, 2),
+    "sqlStatement.sql": sqlStatement,
+    "transformCode.ts": transformCode,
+  };
+  return fileContents;
+};
+
+export const filesToQuery = (fileContents: FileContents<Files>): Query => {
+  return {
+    ...JSON.parse(fileContents["index.json"]),
+    sqlStatement: fileContents["sqlStatement.sql"],
+    transformCode: fileContents["transformCode.ts"],
+  };
+};
+
+export const queryStoreConfig: QueryStoreConfig = {
+  entityToFiles: queryToFiles,
+  filesToEntity: filesToQuery,
+  name: "queries",
+  idProp: "id",
+  entityProp: "queries",
+  initialState,
+  version: CURRENT_VERSION,
+  migrate,
+};
+
+const useQueryStore = createNestedStore(queryStoreConfig);
 
 export default useQueryStore;
 
@@ -208,25 +227,4 @@ export const updateTransformConfig = (
   useQueryStore.setState((state) => {
     Object.assign(state.queries[queryId].transformConfig, newState);
   });
-};
-
-export type QueryFiles = FileContents<
-  "index.json" | "sqlStatement.sql" | "transformCode.ts"
->;
-export const queryToFiles = (query: Query): QueryFiles => {
-  const { sqlStatement, transformCode, ...partialQuery } = query;
-  const fileContents = {
-    "index.json": stringify(partialQuery, null, 2),
-    "sqlStatement.sql": sqlStatement,
-    "transformCode.ts": transformCode,
-  };
-  return fileContents;
-};
-
-export const filesToQuery = (fileContents: QueryFiles): Query => {
-  return {
-    ...JSON.parse(fileContents["index.json"]),
-    sqlStatement: fileContents["sqlStatement.sql"],
-    transformCode: fileContents["transformCode.ts"],
-  };
 };

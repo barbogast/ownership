@@ -1,32 +1,70 @@
+import useDatabaseDefinitionStore, {
+  databaseDefinitionStoreConfig,
+  importStore as importDatabaseDefinitionStore,
+} from "../databaseDefinitionStore";
+import { StoreConfig } from "../nestedStorage";
 import useQueryStore, {
-  Query,
-  QueryFiles,
-  filesToQuery,
-  queryToFiles,
+  queryStoreConfig,
+  importStore as importQueryStore,
 } from "../query/queryStore";
+import { RepositoryInfo } from "../types";
+import { FileContents } from "./fsHelper";
 import FsHelper from "./fsHelper";
 import GitHelper from "./gitHelpers";
 
-const addQuery = async (
+const save = async <
+  EntityProp extends string,
+  IdProp extends string,
+  Entity extends Record<IdProp | string, unknown>,
+  Files extends string,
+  State extends Record<EntityProp, Record<string, Entity>>
+>(
   fsHelper: FsHelper,
   gitHelper: GitHelper,
-  query: Query
+  data: Record<EntityProp, Record<string, Entity>>,
+  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>
 ) => {
-  const folder = `queries/${query.id}`;
-  await fsHelper.mkdir_p(`${gitHelper.root}/${folder}`);
+  for (const entity of Object.values(data[config.entityProp])) {
+    const folder = `${config.name}/${entity[config.idProp]}`;
+    await fsHelper.mkdir_p(`${gitHelper.root}/${folder}`);
 
-  const fileContents = queryToFiles(query);
-  await fsHelper.writeFilesToDirectory(
-    gitHelper.root + "/" + folder,
-    fileContents
-  );
-  await gitHelper.addFiles(folder, Object.keys(fileContents));
+    const files = config.entityToFiles(entity);
+    await fsHelper.writeFilesToDirectory(`${gitHelper.root}/${folder}`, files);
+    await gitHelper.addFiles(folder, Object.keys(files));
+  }
 };
 
-const loadQuery = async (fs: FsHelper, directory: string) => {
-  const contents = await fs.readFilesInDirectory<QueryFiles>(directory);
-  const query = filesToQuery(contents);
-  return query;
+const load = async <
+  EntityProp extends string,
+  IdProp extends string,
+  Entity extends Record<IdProp | string, unknown>,
+  Files extends string,
+  State extends Record<EntityProp, Record<string, Entity>>
+>(
+  fsHelper: FsHelper,
+  gitHelper: GitHelper,
+  config: StoreConfig<EntityProp, IdProp, Entity, Files, State>
+) => {
+  const directory = `${gitHelper.root}/${config.name}`;
+  const entries = await fsHelper.fs.promises.readdir(directory);
+  console.log({ entries });
+  const entities = [];
+  for (const entry of entries) {
+    const path = `${directory}/${entry}`;
+    const stat = await fsHelper.fs.promises.stat(path);
+    if (stat.isDirectory()) {
+      const contents = await fsHelper.readFilesInDirectory<FileContents<Files>>(
+        path
+      );
+      console.log(path, contents);
+      const entity = await config.filesToEntity(contents);
+      entities.push(entity);
+    } else {
+      console.error(path, "is not a directory");
+    }
+  }
+
+  return entities;
 };
 
 export const saveToGit = async (repositoryPath: string) => {
@@ -37,37 +75,30 @@ export const saveToGit = async (repositoryPath: string) => {
   const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
   await gitHelper.clone(repositoryPath);
 
-  for (const query of Object.values(useQueryStore.getState().queries)) {
-    await addQuery(fsHelper, gitHelper, query);
-  }
+  await save(fsHelper, gitHelper, useQueryStore.getState(), queryStoreConfig);
+  await save(
+    fsHelper,
+    gitHelper,
+    useDatabaseDefinitionStore.getState(),
+    databaseDefinitionStoreConfig
+  );
 
   await gitHelper.commit();
   await gitHelper.push();
 };
 
-export const loadFromGit = async (repositoryPath: string) => {
-  const [organization, repository] = repositoryPath.split("/");
+export const loadFromGit = async (info: RepositoryInfo) => {
+  const { repository, organization, path } = info;
   const gitRoot = "/" + repository;
 
   const fs = new FsHelper(organization);
   const git = new GitHelper(fs.fs, gitRoot);
-  await git.clone(repositoryPath);
+  await git.clone(path);
 
-  const entries = await fs.fs.promises.readdir(gitRoot + "/queries");
-  const queries = [];
-  for (const entry of entries) {
-    const path = gitRoot + "/queries/" + entry;
-    const stat = await fs.fs.promises.stat(path);
-    if (stat.isDirectory()) {
-      const query = await loadQuery(fs, path);
-      queries.push(query);
-    } else {
-      console.error(path, "is not a directory");
-    }
-  }
-
-  return queries;
-  //   console.log(queries);
+  const queries = await load(fs, git, queryStoreConfig);
+  const dbs = await load(fs, git, databaseDefinitionStoreConfig);
+  importQueryStore(info, queries);
+  importDatabaseDefinitionStore(info, dbs);
 };
 /*
 - create query: add file
