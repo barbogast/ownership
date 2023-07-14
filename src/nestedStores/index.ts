@@ -68,16 +68,13 @@ class NestedStore<
   hydrate = (info: RepositoryInfo) => {
     this.info = info;
     this.store.persist.setOptions({ name: this.#getStoragePath(this.info) });
-    console.log(1111, this.#getStoragePath(this.info));
     this.store.persist.rehydrate();
   };
 
   import = (info: RepositoryInfo, entities: Entity[]) => {
-    const content = {
-      queries: Object.fromEntries(
-        entities.map((entity) => [entity.id, entity])
-      ),
-    };
+    const content = Object.fromEntries(
+      entities.map((entity) => [entity.id, entity])
+    );
     localStorage.setItem(
       this.#getStoragePath(info),
       JSON.stringify({
