@@ -34,20 +34,20 @@ function App() {
                     <Query {...props} key={props.params.queryId} />
                   )}
                 ></Route>
+
+                <Route
+                  path="/report/edit/:reportId"
+                  component={(props) => (
+                    // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
+                    // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
+                    <Report
+                      reportId={props.params.reportId}
+                      key={props.params.reportId}
+                    />
+                  )}
+                />
               </NestedRoutes>
             </WithNestedStores>
-          )}
-        />
-
-        <Route
-          path="/report/edit/:reportId"
-          component={(props) => (
-            // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
-            // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-            <Report
-              reportId={props.params.reportId}
-              key={props.params.reportId}
-            />
           )}
         />
       </MainMenu>
