@@ -33,7 +33,7 @@ export const reportToFiles = (report: Report): ReportFiles => {
   const { blocks, ...partialReport } = report;
   const fileContents = {
     "index.json": stringify(partialReport, null, 2),
-    "blocks.json": stringify(blocks, null, 2),
+    "blocks.json": blocks ? stringify(blocks, null, 2) : "",
   };
   return fileContents;
 };
@@ -41,7 +41,9 @@ export const reportToFiles = (report: Report): ReportFiles => {
 export const filesToReport = (fileContents: ReportFiles): Report => {
   return {
     ...JSON.parse(fileContents["index.json"]),
-    sqlStatement: JSON.parse(fileContents["blocks.json"]),
+    sqlStatement: fileContents["blocks.json"]
+      ? JSON.parse(fileContents["blocks.json"])
+      : [],
   };
 };
 
