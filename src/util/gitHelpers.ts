@@ -5,15 +5,6 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import git from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 
-import { GH_TOKEN } from "../secrets";
-
-const onAuth = () => {
-  return {
-    username: "barbogast",
-    password: GH_TOKEN,
-  };
-};
-
 const author = {
   name: "Mr. Test",
   email: "mrtest@example.com",
@@ -28,14 +19,14 @@ export default class GitHelper {
     this.root = root;
   }
 
-  clone = (repositoryPath: string) =>
+  clone = (repositoryPath: string, username: string, password: string) =>
     git.clone({
       fs: this.fs,
       http,
       dir: this.root,
       url: "https://github.com/" + repositoryPath,
       corsProxy: "https://cors.isomorphic-git.org", // TODO: we probably can't keep using this
-      onAuth,
+      onAuth: () => ({ username, password }),
     });
 
   commit = () =>
@@ -56,5 +47,11 @@ export default class GitHelper {
     }
   };
 
-  push = () => git.push({ fs: this.fs, dir: this.root, http, onAuth });
+  push = (username: string, password: string) =>
+    git.push({
+      fs: this.fs,
+      dir: this.root,
+      http,
+      onAuth: () => ({ username, password }),
+    });
 }

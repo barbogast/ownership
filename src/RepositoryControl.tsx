@@ -1,21 +1,41 @@
 import { useState } from "react";
-import { Button, Col, Row, Select } from "antd";
+import { Button, Col, Input, Row, Select } from "antd";
 
 import { saveToGit, loadFromGit } from "./util/gitStorage";
-import useModifiedStore from "./modifiedStore";
 import useRepositoryStore from "./repository/repositoryStore";
 import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
+import AsyncModal from "./AsyncModal";
 
 const RepositoryControl: React.FC = () => {
   const [, setLocation] = useLocation();
   const repositoryInfo = useRepoInfo();
   const projects = useRepositoryStore().repositories;
-  const [isSaving, setIsSaving] = useState(false);
+
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
 
   if (!repositoryInfo) {
     return;
   }
+
+  const inputs = (
+    <>
+      <Input
+        placeholder="Username"
+        addonBefore="Username"
+        value={user}
+        onChange={(event) => setUser(event.target.value)}
+      />
+      <Input
+        placeholder="Passwort"
+        type="password"
+        addonBefore="Password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+      />
+    </>
+  );
 
   return (
     <>
@@ -39,22 +59,22 @@ const RepositoryControl: React.FC = () => {
       </Row>
 
       <Row justify="space-between" style={{ marginTop: 10 }}>
-        <Button
-          loading={isSaving}
-          onClick={async () => {
-            setIsSaving(true);
-            await saveToGit(repositoryInfo.path);
-            useModifiedStore.setState(() => ({ modifiedQueries: [] }));
-            setIsSaving(false);
-          }}
+        <AsyncModal
+          label="Loading repository"
+          render={(openModal) => <Button onClick={openModal}>Load ...</Button>}
+          onSubmit={() => loadFromGit(repositoryInfo, user, password)}
         >
-          Save
-        </Button>
-        <Button
-          onClick={() => loadFromGit(repositoryInfo).catch(console.error)}
+          Only necessary for private repositories.
+          {inputs}
+        </AsyncModal>
+
+        <AsyncModal
+          label="Saving repository"
+          render={(openModal) => <Button onClick={openModal}>Save ...</Button>}
+          onSubmit={() => saveToGit(repositoryInfo.path, user, password)}
         >
-          Load
-        </Button>
+          {inputs}
+        </AsyncModal>
       </Row>
     </>
   );

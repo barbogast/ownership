@@ -64,13 +64,17 @@ const load = async <
   return entities;
 };
 
-export const saveToGit = async (repositoryPath: string) => {
+export const saveToGit = async (
+  repositoryPath: string,
+  username: string,
+  password: string
+) => {
   const [organization, repository] = repositoryPath.split("/");
   const gitRoot = "/" + repository;
 
   const fsHelper = new FsHelper(organization);
   const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
-  await gitHelper.clone(repositoryPath);
+  await gitHelper.clone(repositoryPath, username, password);
 
   await save(fsHelper, gitHelper, useQueryStore.getState(), queryStoreConfig);
   await save(
@@ -82,16 +86,20 @@ export const saveToGit = async (repositoryPath: string) => {
   await save(fsHelper, gitHelper, useReportStore.getState(), reportStoreConfig);
 
   await gitHelper.commit();
-  await gitHelper.push();
+  await gitHelper.push(username, password);
 };
 
-export const loadFromGit = async (info: RepositoryInfo) => {
+export const loadFromGit = async (
+  info: RepositoryInfo,
+  username: string,
+  password: string
+) => {
   const { repository, organization, path } = info;
   const gitRoot = "/" + repository;
 
   const fs = new FsHelper(organization);
   const git = new GitHelper(fs.fs, gitRoot);
-  await git.clone(path);
+  await git.clone(path, username, password);
 
   const queries = await load(fs, git, queryStoreConfig);
   const dbs = await load(fs, git, databaseDefinitionStoreConfig);
