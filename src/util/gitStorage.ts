@@ -65,16 +65,16 @@ const load = async <
 };
 
 export const saveToGit = async (
-  repositoryPath: string,
+  repositoryInfo: RepositoryInfo,
   username: string,
   password: string
 ) => {
-  const [organization, repository] = repositoryPath.split("/");
+  const { organization, repository } = repositoryInfo;
   const gitRoot = "/" + repository;
 
   const fsHelper = new FsHelper(organization);
   const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
-  await gitHelper.clone(repositoryPath, username, password);
+  await gitHelper.clone(repositoryInfo.path, username, password);
 
   await save(fsHelper, gitHelper, useQueryStore.getState(), queryStoreConfig);
   await save(

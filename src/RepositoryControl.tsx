@@ -71,7 +71,7 @@ const RepositoryControl: React.FC = () => {
         <AsyncModal
           label="Saving repository"
           render={(openModal) => <Button onClick={openModal}>Save ...</Button>}
-          onSubmit={() => saveToGit(repositoryInfo.path, user, password)}
+          onSubmit={() => saveToGit(repositoryInfo, user, password)}
         >
           {inputs}
         </AsyncModal>
