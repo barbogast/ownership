@@ -52,7 +52,7 @@ const AsyncModal: React.FC<Props> = ({ children, onSubmit, render, label }) => {
       {contextHolder}
       {isOpen && (
         <Modal
-          title="Basic Modal"
+          title={label}
           open={isOpen}
           onOk={() => submit()}
           onCancel={() => setIsOpen(false)}

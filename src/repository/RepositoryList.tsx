@@ -7,6 +7,7 @@ import useRepositoryStore, {
 import { Link } from "wouter";
 import { loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
+import SyncRepositoryButton from "../SyncRepositoryButton";
 
 const RepositoryList: React.FC = () => {
   const repositories = useRepositoryStore().repositories;
@@ -19,8 +20,6 @@ const RepositoryList: React.FC = () => {
     id: "",
   };
   const [editRepo, setEditRepo] = useState(initialEditRepoState);
-
-  const [isImporting, setIsImporting] = useState(false);
 
   return (
     <>
@@ -124,22 +123,19 @@ const RepositoryList: React.FC = () => {
           >
             Create
           </Button>
-          <Button
-            loading={isImporting}
-            onClick={async () => {
-              setIsImporting(true);
-              const info = getRepoInfo(
-                newRepo.organization,
-                newRepo.repository
-              );
-              await loadFromGit(info);
-              addRepository(info);
+          <SyncRepositoryButton
+            buttonLabel="Import from Github"
+            label="Importing from Github"
+            callback={async (repositoryInfo, username, password) => {
+              await loadFromGit(repositoryInfo, username, password);
+              addRepository(repositoryInfo);
               setNewRepo(initialNewRepoState);
-              setIsImporting(false);
             }}
-          >
-            Import from Github
-          </Button>
+            repositoryInfo={getRepoInfo(
+              newRepo.organization,
+              newRepo.repository
+            )}
+          />
         </Col>
       </Row>
     </>
