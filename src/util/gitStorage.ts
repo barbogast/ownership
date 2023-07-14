@@ -11,6 +11,10 @@ import { RepositoryInfo } from "../types";
 import { FileContents } from "./fsHelper";
 import FsHelper from "./fsHelper";
 import GitHelper from "./gitHelpers";
+import useReportStore, {
+  reportStore,
+  reportStoreConfig,
+} from "../report/reportStore";
 
 const save = async <
   Entity extends Record<"id" | string, unknown>,
@@ -50,7 +54,6 @@ const load = async <
       const contents = await fsHelper.readFilesInDirectory<FileContents<Files>>(
         path
       );
-      console.log(path, contents);
       const entity = await config.filesToEntity(contents);
       entities.push(entity);
     } else {
@@ -76,6 +79,7 @@ export const saveToGit = async (repositoryPath: string) => {
     useDatabaseDefinitionStore.getState(),
     databaseDefinitionStoreConfig
   );
+  await save(fsHelper, gitHelper, useReportStore.getState(), reportStoreConfig);
 
   await gitHelper.commit();
   await gitHelper.push();
@@ -91,8 +95,10 @@ export const loadFromGit = async (info: RepositoryInfo) => {
 
   const queries = await load(fs, git, queryStoreConfig);
   const dbs = await load(fs, git, databaseDefinitionStoreConfig);
+  const reports = await load(fs, git, reportStoreConfig);
   queryStore.import(info, queries);
   databaseDefinitionStore.import(info, dbs);
+  reportStore.import(info, reports);
 };
 /*
 - create query: add file

@@ -121,7 +121,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         setLocation(`${basepath}/report/edit/${id}`);
       }
     },
-    children: Object.values(reportStore.reports)
+    children: Object.values(reportStore)
       .map((report): { key: string; label: ReactElement | string } => ({
         key: `${basepath}/report/edit/${report.id}`,
         label: (

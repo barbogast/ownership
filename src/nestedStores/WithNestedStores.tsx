@@ -3,7 +3,7 @@ import { useRepoInfo } from "../util/utils";
 import Logger from "../util/logger";
 import { queryStore } from "../query/queryStore";
 import { databaseDefinitionStore } from "../databaseDefinitionStore";
-import * as reportStore from "../report/reportStore";
+import { reportStore } from "../report/reportStore";
 
 const logger = new Logger("main");
 type Props = {
@@ -19,7 +19,7 @@ const WithNestedStores: React.FC<Props> = ({ children }) => {
 
       queryStore.hydrate(info);
       databaseDefinitionStore.hydrate(info);
-      reportStore.enable(info);
+      reportStore.hydrate(info);
       setIsInitialized(true);
     }
   }, [info]);
