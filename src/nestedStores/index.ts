@@ -47,9 +47,9 @@ class NestedStore<
       skipHydration: true,
       version: config.version,
       migrate: config.migrate,
-      merge: (persistedState, currentState) =>
+      merge: (persistedState) =>
         (persistedState as State) || // Drop previous state when rehydrating
-        currentState, // ... or use the initialState if there is no previous state
+        config.initialState, // ... or use the initialState if there is no previous state
     };
 
     const devToolsConfig: DevtoolsOptions = {
