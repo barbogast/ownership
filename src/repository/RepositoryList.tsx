@@ -1,7 +1,8 @@
-import { Button, Col, Input, Row } from "antd";
+import { Button, Col, Input, Popconfirm, Row } from "antd";
 import { useState } from "react";
 import useRepositoryStore, {
   addRepository,
+  deleteRepository,
   updateRepository,
 } from "./repositoryStore";
 import { Link } from "wouter";
@@ -82,6 +83,12 @@ const RepositoryList: React.FC = () => {
                 >
                   Edit
                 </Button>
+                <Popconfirm
+                  title="Delete the repository?"
+                  onConfirm={() => deleteRepository(repo.id)}
+                >
+                  <Button danger>Delete</Button>
+                </Popconfirm>
               </Col>
             </>
           )}
@@ -112,7 +119,7 @@ const RepositoryList: React.FC = () => {
             }
           />
         </Col>
-        <Col span={3}>
+        <Col span={6}>
           <Button
             onClick={() => {
               addRepository(

@@ -55,3 +55,9 @@ export const updateRepository = (
     Object.assign(state.repositories[repositoryId], update);
   });
 };
+
+export const deleteRepository = (repositoryId: string) => {
+  useRepositoryStore.setState((state) => {
+    delete state.repositories[repositoryId];
+  });
+};
