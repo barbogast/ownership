@@ -1,4 +1,4 @@
-import { Query, getDefaults } from "./queryStore";
+import { Query, getDefaults } from "../query/queryStore";
 
 const code1 = `
 type Value = string | number | null

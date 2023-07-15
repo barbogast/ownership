@@ -141,7 +141,12 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     label: <Link href="/ownership">Ownership (old)</Link>,
   };
 
-  const items = [databases, queries, reports, ownership];
+  const devTools = {
+    key: `/dev-tools`,
+    label: <Link href={`${basepath}/dev-tools`}>DevTools</Link>,
+  };
+
+  const items = [databases, queries, reports, ownership, devTools];
 
   return (
     <PanelGroup direction="horizontal">

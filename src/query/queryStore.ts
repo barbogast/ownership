@@ -4,7 +4,6 @@ import stringify from "safe-stable-stringify";
 import { deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
-import getQueryTestData from "./queryStoreTestData";
 import { ChartType } from "../display/Index";
 import useDatabaseDefinitionStore from "../databaseDefinitionStore";
 import { FileContents } from "../util/fsHelper";
@@ -66,7 +65,7 @@ export const getDefaults = () => ({
   transformCode: defaultTransformCode,
 });
 
-const initialState: QueryState = getQueryTestData();
+const initialState: QueryState = {};
 
 const CURRENT_VERSION = 2;
 

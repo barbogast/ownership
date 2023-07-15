@@ -9,6 +9,7 @@ import DatabaseDisplay from "./DatabaseDisplay";
 import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";
+import DevTools from "./DevTools";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
                     />
                   )}
                 />
+                <Route path="/dev-tools" component={DevTools} />
               </NestedRoutes>
             </WithNestedStores>
           )}

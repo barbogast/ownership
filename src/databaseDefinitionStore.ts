@@ -10,7 +10,7 @@ export type DatabaseDefinition = {
   columns: ColumnDefinition[];
 };
 
-type DatabaseState = Record<string, DatabaseDefinition>;
+export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
