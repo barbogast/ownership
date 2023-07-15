@@ -13,12 +13,14 @@ type Props = {
   ) => Promise<void>;
   label: string;
   buttonLabel: string;
+  buttonStyle?: React.CSSProperties;
 };
 const SyncRepositoryButton: React.FC<Props> = ({
   repositoryInfo,
   label,
   buttonLabel,
   callback,
+  buttonStyle,
 }) => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +28,11 @@ const SyncRepositoryButton: React.FC<Props> = ({
   return (
     <AsyncModal
       label={label}
-      render={(openModal) => <Button onClick={openModal}>{buttonLabel}</Button>}
+      render={(openModal) => (
+        <Button style={buttonStyle} onClick={openModal}>
+          {buttonLabel}
+        </Button>
+      )}
       onSubmit={() => callback(repositoryInfo, user, password)}
     >
       <Input

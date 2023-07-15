@@ -10,6 +10,10 @@ import { loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
 import SyncRepositoryButton from "../SyncRepositoryButton";
 
+const LEFT_COLUMNS = 6;
+const RIGHT_COLUMN = 3;
+const BUTTON_STYLE = { width: 75 };
+
 const RepositoryList: React.FC = () => {
   const repositories = useRepositoryStore().repositories;
   const initialNewRepoState = { organization: "", repository: "" };
@@ -23,12 +27,12 @@ const RepositoryList: React.FC = () => {
   const [editRepo, setEditRepo] = useState(initialEditRepoState);
 
   return (
-    <>
+    <Row gutter={[16, 16]} style={{ width: 700 }}>
       {Object.values(repositories).map((repo) => (
-        <Row gutter={[24, 24]} key={repo.id}>
+        <>
           {editRepo.id === repo.id ? (
             <>
-              <Col span={3}>
+              <Col span={LEFT_COLUMNS}>
                 <Input
                   value={editRepo.organization}
                   onChange={(event) =>
@@ -39,7 +43,7 @@ const RepositoryList: React.FC = () => {
                   }
                 />
               </Col>
-              <Col span={3}>
+              <Col span={LEFT_COLUMNS}>
                 <Input
                   value={editRepo.repository}
                   onChange={(event) =>
@@ -50,28 +54,39 @@ const RepositoryList: React.FC = () => {
                   }
                 />
               </Col>
-              <Col span={3}>
+              <Col span={RIGHT_COLUMN}>
                 <Button
                   onClick={() => {
                     updateRepository(editRepo.id, editRepo);
                     setEditRepo(initialEditRepoState);
                   }}
+                  style={BUTTON_STYLE}
                 >
                   Save
                 </Button>
-                <Button onClick={() => setEditRepo(initialEditRepoState)}>
+              </Col>
+              <Col span={RIGHT_COLUMN}>
+                <Button
+                  onClick={() => setEditRepo(initialEditRepoState)}
+                  style={BUTTON_STYLE}
+                >
                   Cancel
                 </Button>
               </Col>
+              <Col span={RIGHT_COLUMN}></Col>
             </>
           ) : (
             <>
-              <Col span={3}>{repo.organization}</Col>
-              <Col span={3}>{repo.repository}</Col>
-              <Col span={3} style={{ display: "flex" }}>
+              <Col span={LEFT_COLUMNS}>{repo.organization}</Col>
+              <Col span={LEFT_COLUMNS}>{repo.repository}</Col>
+              <Col span={RIGHT_COLUMN}>
                 <Link href={`/${repo.organization}/${repo.repository}`}>
-                  <Button type="primary">Open</Button>
+                  <Button type="primary" style={BUTTON_STYLE}>
+                    Open
+                  </Button>
                 </Link>
+              </Col>
+              <Col span={RIGHT_COLUMN}>
                 <Button
                   onClick={() => {
                     setEditRepo({
@@ -80,22 +95,27 @@ const RepositoryList: React.FC = () => {
                       repository: repo.repository,
                     });
                   }}
+                  style={BUTTON_STYLE}
                 >
                   Edit
                 </Button>
+              </Col>
+              <Col span={RIGHT_COLUMN}>
                 <Popconfirm
                   title="Delete the repository?"
                   onConfirm={() => deleteRepository(repo.id)}
                 >
-                  <Button danger>Delete</Button>
+                  <Button danger style={BUTTON_STYLE}>
+                    Delete
+                  </Button>
                 </Popconfirm>
               </Col>
             </>
           )}
-        </Row>
+        </>
       ))}
-      <Row gutter={[16, 16]}>
-        <Col span={3}>
+      <>
+        <Col span={LEFT_COLUMNS}>
           <Input
             placeholder="Organization"
             value={newRepo.organization}
@@ -107,7 +127,7 @@ const RepositoryList: React.FC = () => {
             }
           />
         </Col>
-        <Col span={3}>
+        <Col span={LEFT_COLUMNS}>
           <Input
             placeholder="Repository"
             value={newRepo.repository}
@@ -119,7 +139,7 @@ const RepositoryList: React.FC = () => {
             }
           />
         </Col>
-        <Col span={6}>
+        <Col span={RIGHT_COLUMN}>
           <Button
             onClick={() => {
               addRepository(
@@ -127,11 +147,15 @@ const RepositoryList: React.FC = () => {
               );
               setNewRepo(initialNewRepoState);
             }}
+            style={BUTTON_STYLE}
           >
             Create
           </Button>
+        </Col>
+        <Col span={RIGHT_COLUMN}>
           <SyncRepositoryButton
-            buttonLabel="Import from Github"
+            buttonLabel="Import"
+            buttonStyle={BUTTON_STYLE}
             label="Importing from Github"
             callback={async (repositoryInfo, username, password) => {
               await loadFromGit(repositoryInfo, username, password);
@@ -144,8 +168,8 @@ const RepositoryList: React.FC = () => {
             )}
           />
         </Col>
-      </Row>
-    </>
+      </>
+    </Row>
   );
 };
 
