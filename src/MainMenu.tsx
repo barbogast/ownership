@@ -73,7 +73,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     key: `query`,
     label: `Queries`,
     onClick: ({ key }: { key: string }) => {
-      if (key === `${basepath}/new-query`) {
+      if (key === `new-query`) {
         const id = addQuery();
         setLocation(`${basepath}/query/${id}`);
       }
