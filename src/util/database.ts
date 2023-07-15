@@ -15,7 +15,6 @@ const sqlLogger = new Logger("sql");
 export type ColumnDefinition = {
   csvName: string;
   dbName: string;
-  csvIndex: number;
   type: "integer" | "real" | "text";
 };
 

@@ -77,7 +77,7 @@ const CreateDatabase2: React.FC = () => {
 
   const saveDatabase = sqlLogger.time("insertTable", async () => {
     // TODO: validate that dbName only contains letters, numbers and -
-    addDatabaseDefinition(dbName, csvText);
+    addDatabaseDefinition(dbName, csvText, tableName, columns);
   });
 
   return (

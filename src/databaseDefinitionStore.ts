@@ -1,10 +1,13 @@
 import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "./nestedStores";
 import { FileContents } from "./util/fsHelper";
+import { ColumnDefinition } from "./util/database";
 
 export type DatabaseDefinition = {
   id: string;
   csvContent: string;
+  tableName: string;
+  columns: ColumnDefinition[];
 };
 
 type DatabaseState = Record<string, DatabaseDefinition>;
@@ -47,6 +50,14 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
   name: "databases",
   initialState,
   version: CURRENT_VERSION,
+  migrate: (oldState) => {
+    const state = oldState as DatabaseState;
+    for (const db of Object.values(state as DatabaseState)) {
+      db.columns = db.columns || [];
+      db.tableName = db.tableName || "";
+    }
+    return state;
+  },
 };
 
 export const databaseDefinitionStore = new NestedStore(
@@ -54,9 +65,14 @@ export const databaseDefinitionStore = new NestedStore(
 );
 const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
-export const addDatabaseDefinition = (id: string, csvContent: string) => {
+export const addDatabaseDefinition = (
+  id: string,
+  csvContent: string,
+  tableName: string,
+  columns: ColumnDefinition[]
+) => {
   useDatabaseDefinitionStore.setState((state) => {
-    state[id] = { id, csvContent };
+    state[id] = { id, csvContent, tableName, columns };
   });
 };
 
