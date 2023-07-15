@@ -1,5 +1,6 @@
 import { FileContents } from "../util/fsHelper";
 import {
+  DevtoolsOptions,
   PersistOptions,
   createJSONStorage,
   devtools,
@@ -51,13 +52,18 @@ class NestedStore<
         currentState, // ... or use the initialState if there is no previous state
     };
 
+    const devToolsConfig: DevtoolsOptions = {
+      store: config.name,
+    };
+
     this.config = config;
     this.store = create(
       devtools(
         persist(
           immer<State>(() => config.initialState),
           persistConfig
-        )
+        ),
+        devToolsConfig
       )
     );
   }
