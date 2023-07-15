@@ -167,7 +167,7 @@ export const remove = (queryId: string) => {
   if (answer === true) {
     useQueryStore.setState((state) => {
       delete state[queryId];
-    });
+    }, true);
     return true;
   }
   return false;
