@@ -13,6 +13,8 @@ import { useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
 import useDatabaseDefinitionStore from "./databaseDefinitionStore";
+import getSteps from "./createDatabaseWizard";
+import WizardModal from "./wizard/WizardModal";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -64,7 +66,18 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       .concat({
         key: "new-database",
         label: (
-          <Link href={`${basepath}/new-database`}>+ Create new database</Link>
+          <WizardModal
+            steps={getSteps(false)}
+            initialResult={{
+              name: "",
+              tableName: "",
+              csvContent: "",
+              columns: [],
+            }}
+            render={(openModal) => (
+              <a onClick={openModal}>+ Create new database</a>
+            )}
+          />
         ),
       }),
   };

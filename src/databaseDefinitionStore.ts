@@ -77,6 +77,12 @@ export const addDatabaseDefinition = (
   });
 };
 
+export const updateDatabaseDefinition = (
+  id: string,
+  data: Partial<DatabaseDefinition>
+) => {
+  useDatabaseDefinitionStore.setState((state) => {
+    Object.assign(state[id], data);
   });
 };
 

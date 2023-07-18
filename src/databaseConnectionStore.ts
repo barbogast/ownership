@@ -41,3 +41,9 @@ export const useDatabaseConnection = (key: string): DatabaseConnection => {
   }
   return db;
 };
+
+export const deleteConnection = (key: string) => {
+  useDatabaseConnectionStore.setState((state) => {
+    delete state.databases[key];
+  });
+};

@@ -8,6 +8,9 @@ import TableDisplay from "./display/TableDisplay";
 import { rowsToObjects } from "./util/transform";
 import { initialize } from "./util/database";
 import useDatabaseDefinitionStore from "./databaseDefinitionStore";
+import { Button } from "antd";
+import getSteps from "./createDatabaseWizard";
+import WizardModal from "./wizard/WizardModal";
 
 type Props = {
   params: {
@@ -45,6 +48,11 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
 
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
+      <WizardModal
+        steps={getSteps(true)}
+        initialResult={databaseDefintion}
+        render={(openModal) => <Button onClick={openModal}>Edit</Button>}
+      />
       {queryResults.map((queryResult, i) => (
         <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
       ))}
