@@ -20,7 +20,7 @@ export type StoreConfig<
   name: string;
   initialState: State;
   version: number;
-  migrate?: (state: unknown) => State;
+  migrate?: PersistOptions<State>["migrate"];
 };
 
 class NestedStore<
