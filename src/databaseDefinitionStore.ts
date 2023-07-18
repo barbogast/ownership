@@ -5,6 +5,7 @@ import { ColumnDefinition } from "./util/database";
 
 export type DatabaseDefinition = {
   id: string;
+  name: string;
   csvContent: string;
   tableName: string;
   columns: ColumnDefinition[];
@@ -14,7 +15,7 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-const CURRENT_VERSION = 1;
+const CURRENT_VERSION = 2;
 
 type Files = "content.csv" | "index.json";
 
@@ -72,7 +73,10 @@ export const addDatabaseDefinition = (
   columns: ColumnDefinition[]
 ) => {
   useDatabaseDefinitionStore.setState((state) => {
-    state[id] = { id, csvContent, tableName, columns };
+    state[id] = { name: id, id, csvContent, tableName, columns };
+  });
+};
+
   });
 };
 

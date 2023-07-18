@@ -1,6 +1,6 @@
 import { DatabaseState } from "../databaseDefinitionStore";
 import { ColumnDefinition } from "../util/database";
-const csvContent = `Year	TOTAL	Residents	Central bank	OMFIs	Other financial institutions	Other residents	Non-residents
+export const csvContent = `Year	TOTAL	Residents	Central bank	OMFIs	Other financial institutions	Other residents	Non-residents
 1995	276344	211032	2217	158189	30667	19960	65311
 1996	276440	215048	2318	160798	32361	19573	61392
 1997	278493	213717	2418	157935	34137	19226	64776
@@ -48,6 +48,7 @@ const columns: ColumnDefinition[] = [
 
 export const testTable = {
   id: "db1",
+  name: "db1",
   csvContent,
   tableName: "aaa",
   columns,
