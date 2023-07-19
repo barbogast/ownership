@@ -3,12 +3,8 @@ import { QueryExecResult } from "sql.js";
 import * as ts from "typescript/lib/typescript";
 import sourceMap from "source-map-js";
 
-import { useQuery, TransformConfig } from "./query/queryStore";
-import {
-  rowsToObjects,
-  columnsToObjects,
-  singleRowColumnsToObjects,
-} from "./util/transform";
+import { useQuery } from "./query/queryStore";
+import { applyTransformConfig } from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
@@ -101,30 +97,6 @@ const useQueryController = (queryId: string) => {
     }
   };
 
-  const applyTransformConfig = (
-    transformConfig: TransformConfig,
-    queryResults: QueryExecResult[]
-  ) => {
-    if (!queryResults.length) {
-      return;
-    }
-    const { dataOrientation, labelColumn } = transformConfig;
-
-    let data;
-    if (dataOrientation === "column") {
-      data = rowsToObjects(queryResults[0]);
-    } else {
-      if (labelColumn === "--no-label-column--") {
-        data = singleRowColumnsToObjects(queryResults[0]);
-      } else {
-        data = columnsToObjects(queryResults[0], labelColumn);
-      }
-    }
-
-    setTransformResult(data);
-    setProgress({ queried: true, transformed: true });
-  };
-
   useEffect(() => {
     if (!query.databaseSource || !databaseDefintion) {
       return;
@@ -152,7 +124,9 @@ const useQueryController = (queryId: string) => {
         runTransform(results, query.transformCode);
       }
     } else {
-      applyTransformConfig(query.transformConfig, results);
+      const data = applyTransformConfig(query.transformConfig, results);
+      setTransformResult(data);
+      setProgress({ queried: true, transformed: true });
     }
   }, [db, databaseDefintion, query]);
 

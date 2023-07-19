@@ -1,6 +1,8 @@
 import { QueryExecResult, SqlValue } from "sql.js";
 import { TransformResult } from "../types";
 import Logger from "./logger";
+import { Query, TransformConfig } from "../query/queryStore";
+import { SINGLE_DATASET_CHART_TYPES } from "../display/Index";
 
 const logger = new Logger("transform");
 
@@ -60,3 +62,43 @@ export const extractSingleDataset = logger.wrap(
       }));
   }
 );
+
+export const applyTransformConfig = (
+  transformConfig: TransformConfig,
+  queryResults: QueryExecResult[]
+): TransformResult => {
+  if (!queryResults.length) {
+    return [];
+  }
+  const { dataOrientation, labelColumn } = transformConfig;
+
+  let data;
+  if (dataOrientation === "column") {
+    data = rowsToObjects(queryResults[0]);
+  } else {
+    if (labelColumn === "--no-label-column--") {
+      data = singleRowColumnsToObjects(queryResults[0]);
+    } else {
+      data = columnsToObjects(queryResults[0], labelColumn);
+    }
+  }
+
+  return data;
+};
+
+export const transform2 = (transformResult: TransformResult, query: Query) => {
+  const { chartType, transformConfig } = query;
+  const { labelColumn, dataRowIndex, dataOrientation } = transformConfig;
+
+  const tranformResult2 =
+    SINGLE_DATASET_CHART_TYPES.includes(chartType!) &&
+    dataRowIndex !== undefined
+      ? extractSingleDataset(
+          transformResult,
+          dataRowIndex,
+          dataOrientation === "row" ? "label" : labelColumn
+        )
+      : transformResult;
+
+  return tranformResult2;
+};

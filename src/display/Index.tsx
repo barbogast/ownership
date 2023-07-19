@@ -6,7 +6,7 @@ import LineChartDisplay from "./LineChartDisplay";
 import { ChartProps, TransformResult } from "../types";
 import StackedBarChart from "./StackedBarChartDisplay";
 import StackedPieChart from "./StackedPieChartDisplay";
-import { extractSingleDataset } from "../util/transform";
+import { transform2 } from "../util/transform";
 
 export type ChartType =
   | "table"
@@ -34,28 +34,21 @@ const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
 };
 
 const ChartDisplay: React.FC<Props> = ({ queryId, transformResult }) => {
-  const { chartType, transformConfig } = useQuery(queryId);
+  const query = useQuery(queryId);
 
-  const { labelColumn, dataRowIndex, dataOrientation } = transformConfig;
-  const ChartComponent = chartType ? chartComponents[chartType] : undefined;
+  if (!query.chartType) {
+    return null;
+  }
+  const ChartComponent = chartComponents[query.chartType];
 
-  const tranformResult2 =
-    chartType &&
-    SINGLE_DATASET_CHART_TYPES.includes(chartType) &&
-    dataRowIndex !== undefined
-      ? extractSingleDataset(
-          transformResult,
-          dataRowIndex,
-          dataOrientation === "row" ? "label" : labelColumn
-        )
-      : transformResult;
+  const tranformResult2 = transform2(transformResult, query);
 
   return (
     <>
       {tranformResult2.length
         ? ChartComponent && (
             <ChartComponent
-              transformConfig={transformConfig}
+              transformConfig={query.transformConfig}
               transformResult={tranformResult2}
             />
           )
