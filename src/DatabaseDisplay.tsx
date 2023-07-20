@@ -21,6 +21,7 @@ type Props = {
 const DiplayDatabase: React.FC<Props> = ({ params }) => {
   const conn = useDatabaseConnection(params.name);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
+  const [tables, setTables] = useState<string[]>([]);
   const databaseDefintion = useDatabaseDefinitionStore()[params.name];
 
   useEffect(() => {
@@ -35,7 +36,9 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
 
     const tables = conn.db
       .exec(`SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name`)
-      .map((row) => row.values[0]);
+      .map((row) => row.values[0] as unknown as string);
+
+    setTables(tables);
 
     const query = tables.map((table) => `select * from ${table}`).join(";\n");
 
@@ -51,7 +54,10 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
         render={(openModal) => <Button onClick={openModal}>Edit</Button>}
       />
       {queryResults.map((queryResult, i) => (
-        <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
+        <>
+          <h2>{tables[i]}</h2>
+          <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
+        </>
       ))}
     </div>
   );
