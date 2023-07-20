@@ -148,7 +148,7 @@ const useQueryController = (queryId: string) => {
     error,
     progress,
     queryResults,
-    runQuery: () => runQuery(db, query.sqlStatement),
+    runQuery: (statement: string) => runQuery(db, statement),
     runTransform,
     transformResult,
     transformError,

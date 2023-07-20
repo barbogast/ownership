@@ -13,7 +13,7 @@ import useDatabaseDefinitionStore from "../../databaseDefinitionStore";
 
 type Props = {
   queryId: string;
-  runQuery: (stmt?: string) => void;
+  runQuery: (stmt: string) => void;
   queryResults: QueryExecResult[];
 };
 
@@ -25,8 +25,9 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
   const run = () => {
     const sel = editorRef.current!.getSelection();
     if (sel) {
-      const text = editorRef.current!.getModel()!.getValueInRange(sel);
-      runQuery(text || sqlStatement);
+      const selectedText = editorRef.current!.getModel()!.getValueInRange(sel);
+      const fullText = editorRef.current!.getModel()!.getValue();
+      runQuery(selectedText || fullText);
     }
   };
 
