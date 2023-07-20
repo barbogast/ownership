@@ -89,6 +89,10 @@ class NestedStore<
       })
     );
   };
+
+  delete = (info: RepositoryInfo) => {
+    localStorage.removeItem(this.#getStoragePath(info));
+  };
 }
 
 export default NestedStore;

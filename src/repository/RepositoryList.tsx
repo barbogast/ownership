@@ -9,6 +9,9 @@ import { Link } from "wouter";
 import { loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
 import SyncRepositoryButton from "../SyncRepositoryButton";
+import { queryStore } from "../query/queryStore";
+import { databaseDefinitionStore } from "../databaseDefinitionStore";
+import { reportStore } from "../report/reportStore";
 
 const LEFT_COLUMNS = 6;
 const RIGHT_COLUMN = 3;
@@ -103,7 +106,16 @@ const RepositoryList: React.FC = () => {
               <Col span={RIGHT_COLUMN}>
                 <Popconfirm
                   title="Delete the repository?"
-                  onConfirm={() => deleteRepository(repo.id)}
+                  onConfirm={() => {
+                    deleteRepository(repo.id);
+                    const info = getRepoInfo(
+                      repo.organization,
+                      repo.repository
+                    );
+                    queryStore.delete(info);
+                    reportStore.delete(info);
+                    databaseDefinitionStore.delete(info);
+                  }}
                 >
                   <Button danger style={BUTTON_STYLE}>
                     Delete
