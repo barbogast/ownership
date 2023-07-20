@@ -130,7 +130,19 @@ const useQueryController = (queryId: string) => {
       setTransformResult(data);
       setProgress({ queried: true, transformed: true });
     }
-  }, [db, databaseDefintion, query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    db,
+    databaseDefintion,
+    query.databaseSource,
+    query.transformCode,
+    query.transformConfig,
+    query.transformType,
+
+    // query.sqlStatement,
+    // This entry is missing from the dependencies on purpose. Otherwise, the
+    // sql query would be run on every keystroke.
+  ]);
 
   return {
     error,
