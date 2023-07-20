@@ -3,27 +3,28 @@ import { Checkbox, Select } from "antd";
 
 import { QueryExecResult } from "../databaseConnectionStore";
 import { updateTransformConfig, useQuery } from "./queryStore";
+import { TransformResult } from "../types";
 
 type Props = {
   queryId: string;
   queryResults: QueryExecResult[];
+  transformResult: TransformResult;
 };
 
-const TransformConfigForm: React.FC<Props> = ({ queryId, queryResults }) => {
+const TransformConfigForm: React.FC<Props> = ({
+  queryId,
+  queryResults,
+  transformResult,
+}) => {
   const { transformConfig } = useQuery(queryId);
 
   const { dataOrientation, selectedColumns, labelColumn } = transformConfig;
 
   const { columns } = queryResults[0];
 
-  const selectedColumnOptions =
-    dataOrientation === "row"
-      ? labelColumn && columns.indexOf(labelColumn) !== -1
-        ? queryResults[0].values.map((row) =>
-            String(row[columns.indexOf(labelColumn)])
-          )
-        : []
-      : columns;
+  const selectedColumnOptions = Object.keys(transformResult[0]).filter(
+    (col) => col !== labelColumn
+  );
 
   return (
     <>

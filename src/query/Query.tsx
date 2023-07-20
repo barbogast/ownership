@@ -95,6 +95,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                     <TransformConfigForm
                       queryId={queryId}
                       queryResults={queryResults}
+                      transformResult={transformResult}
                     />
                   ),
                 },

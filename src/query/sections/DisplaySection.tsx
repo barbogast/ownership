@@ -45,7 +45,11 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
               }}
               options={transformResult.map((row, i) => ({
                 value: i,
-                label: `Row ${i + 1}: "${row[labelColumn]}"`,
+                label:
+                  `Row ${i + 1}` +
+                  (labelColumn !== "--no-label-column--"
+                    ? ` ${row[labelColumn]}`
+                    : ""),
               }))}
               style={{ width: 220 }}
             />
