@@ -32,7 +32,18 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
 
   const onEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, run);
+
+    editor.addAction({
+      id: "executeQuery",
+      label: "Execute query",
+      keybindings: [
+        // On macOS, listen to Command (⌘) + Enter key combination
+        monaco.KeyMod.WinCtrl | monaco.KeyCode.Enter,
+        // On Windows and Linux, you can use Ctrl + Enter key combination
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+      ],
+      run,
+    });
   };
 
   return (
