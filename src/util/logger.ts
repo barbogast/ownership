@@ -36,9 +36,14 @@ class Logger {
 
   wrap<T extends Array<unknown>, U>(name: string, func: (...args: T) => U) {
     return (...args: T): U => {
-      const result = func(...args);
-      this.log(name + "()", { args, result });
-      return result;
+      try {
+        const result = func(...args);
+        this.log(name + "()", { args, result });
+        return result;
+      } catch (e) {
+        this.log(name + "()", { args });
+        throw e;
+      }
     };
   }
 
