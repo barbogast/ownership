@@ -1,5 +1,5 @@
 import { Button, Col, Input, Popconfirm, Row } from "antd";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import useRepositoryStore, {
   addRepository,
   deleteRepository,
@@ -28,8 +28,8 @@ const RepositoryList: React.FC = () => {
 
   return (
     <Row gutter={[16, 16]} style={{ width: 700 }}>
-      {Object.values(repositories).map((repo) => (
-        <>
+      {Object.values(repositories).map((repo, i) => (
+        <Fragment key={i}>
           {editRepo.id === repo.id ? (
             <>
               <Col span={LEFT_COLUMNS}>
@@ -112,7 +112,7 @@ const RepositoryList: React.FC = () => {
               </Col>
             </>
           )}
-        </>
+        </Fragment>
       ))}
       <>
         <Col span={LEFT_COLUMNS}>
