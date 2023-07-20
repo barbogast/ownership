@@ -38,7 +38,6 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     transformResult,
     transformError,
   } = useQueryController(queryId);
-  console.log("query transformResult", transformResult);
 
   const exportQuery = () => {
     downloadFile(
