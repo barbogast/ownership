@@ -4,7 +4,7 @@ import * as ts from "typescript/lib/typescript";
 import sourceMap from "source-map-js";
 
 import { useQuery } from "./query/queryStore";
-import { applyTransformConfig } from "./util/transform";
+import { columnsToObjects, rowsToObjects } from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
@@ -124,7 +124,11 @@ const useQueryController = (queryId: string) => {
         runTransform(results, query.transformCode);
       }
     } else {
-      const data = applyTransformConfig(query.transformConfig, results);
+      const { dataOrientation, labelColumn } = query.transformConfig;
+      const data =
+        dataOrientation === "row"
+          ? rowsToObjects(results[0])
+          : columnsToObjects(results[0], labelColumn);
       setTransformResult(data);
       setProgress({ queried: true, transformed: true });
     }

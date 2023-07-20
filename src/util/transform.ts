@@ -1,8 +1,6 @@
 import { QueryExecResult, SqlValue } from "sql.js";
 import { TransformResult } from "../types";
 import Logger from "./logger";
-import { Query, TransformConfig } from "../query/queryStore";
-import { SINGLE_DATASET_CHART_TYPES } from "../display/Index";
 
 const logger = new Logger("transform");
 
@@ -34,16 +32,6 @@ export const columnsToObjects = logger.wrap(
   }
 );
 
-export const singleRowColumnsToObjects = logger.wrap(
-  "singleRowColumnsToObjects",
-  (queryResults: QueryExecResult) => {
-    return queryResults.columns.map((col, i) => ({
-      label: col,
-      value: queryResults.values[0][i],
-    }));
-  }
-);
-
 export const extractSingleDataset = logger.wrap(
   "extractSingleDataset",
   (
@@ -63,42 +51,12 @@ export const extractSingleDataset = logger.wrap(
   }
 );
 
-export const applyTransformConfig = (
-  transformConfig: TransformConfig,
-  queryResults: QueryExecResult[]
-): TransformResult => {
-  if (!queryResults.length) {
-    return [];
+export const objectToArray = logger.wrap(
+  "objectToArray",
+  (transformResult: TransformResult, index: number): TransformResult => {
+    return Object.entries(transformResult[index]).map(([label, value]) => ({
+      label,
+      value,
+    }));
   }
-  const { dataOrientation, labelColumn } = transformConfig;
-
-  let data;
-  if (dataOrientation === "column") {
-    data = rowsToObjects(queryResults[0]);
-  } else {
-    if (labelColumn === "--no-label-column--") {
-      data = singleRowColumnsToObjects(queryResults[0]);
-    } else {
-      data = columnsToObjects(queryResults[0], labelColumn);
-    }
-  }
-
-  return data;
-};
-
-export const transform2 = (transformResult: TransformResult, query: Query) => {
-  const { chartType, transformConfig } = query;
-  const { labelColumn, dataRowIndex, dataOrientation } = transformConfig;
-
-  const transformResult2 =
-    SINGLE_DATASET_CHART_TYPES.includes(chartType!) &&
-    dataRowIndex !== undefined
-      ? extractSingleDataset(
-          transformResult,
-          dataRowIndex,
-          dataOrientation === "row" ? "label" : labelColumn
-        )
-      : transformResult;
-
-  return transformResult;
-};
+);

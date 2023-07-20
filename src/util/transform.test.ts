@@ -1,9 +1,5 @@
 import { describe, expect, test } from "vitest";
-import {
-  columnsToObjects,
-  rowsToObjects,
-  singleRowColumnsToObjects,
-} from "./transform";
+import { columnsToObjects, objectToArray, rowsToObjects } from "./transform";
 
 describe("transform", () => {
   const source = {
@@ -34,13 +30,29 @@ describe("transform", () => {
     expect(columnsToObjects(source, "col_a")).toEqual(expected);
   });
 
-  test("singleRowColumnsToObjects", () => {
-    const expected = [
+  test("objectToArray", () => {
+    // Result of rowsToObjects() or columnsToObjects()
+    const transformedAsRows = [
+      { col_a: "A1", col_b: "B1", col_c: "C1", col_d: "D1" },
+      { col_a: "A2", col_b: "B2", col_c: "C2", col_d: "D2" },
+      { col_a: "A3", col_b: "B3", col_c: "C3", col_d: "D3" },
+    ];
+
+    const expected1 = [
       { label: "col_a", value: "A1" },
       { label: "col_b", value: "B1" },
       { label: "col_c", value: "C1" },
       { label: "col_d", value: "D1" },
     ];
-    expect(singleRowColumnsToObjects(source)).toEqual(expected);
+
+    const expected2 = [
+      { label: "col_a", value: "A3" },
+      { label: "col_b", value: "B3" },
+      { label: "col_c", value: "C3" },
+      { label: "col_d", value: "D3" },
+    ];
+
+    expect(objectToArray(transformedAsRows, 0)).toEqual(expected1);
+    expect(objectToArray(transformedAsRows, 2)).toEqual(expected2);
   });
 });
