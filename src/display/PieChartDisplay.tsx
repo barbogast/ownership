@@ -12,12 +12,9 @@ const PieChartDisplay: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
-  const isSingleRow =
-    transformConfig.dataOrientation === "row" &&
-    Object.keys(transformResult[0]).length === 2;
+  const hasLabelColumn = transformConfig.labelColumn !== "--no-label-column--";
 
-  const columns = isSingleRow ? ["value"] : transformConfig.selectedColumns;
-  const cells = Object.keys(transformResult[0]);
+  const columns = hasLabelColumn ? Object.keys(transformResult[0]) : ["value"];
 
   return (
     <>
@@ -46,7 +43,6 @@ const PieChartDisplay: React.FC<Props> = ({
 
               const x = cx + radius * Math.cos(-midAngle * RADIAN);
               const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
               return (
                 <text
                   x={x}
@@ -54,14 +50,14 @@ const PieChartDisplay: React.FC<Props> = ({
                   textAnchor={x > cx ? "start" : "end"}
                   dominantBaseline="central"
                 >
-                  {transformConfig.dataOrientation === "row"
-                    ? props["label"]
-                    : props[transformConfig.labelColumn]}
+                  {hasLabelColumn
+                    ? props[transformConfig.labelColumn]
+                    : props["label"]}
                 </text>
               );
             }}
           >
-            {cells.map((_, index) => (
+            {transformResult.map((_, index) => (
               <Cell key={`cell-${index}`} fill={getColor(index)} />
             ))}
           </Pie>

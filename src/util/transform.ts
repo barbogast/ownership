@@ -57,7 +57,7 @@ export const extractSingleDataset = logger.wrap(
     return Object.entries(transformResult[dataRowIndex])
       .filter(([key]) => key !== labelColumn)
       .map(([key, value]) => ({
-        name: key,
+        label: key,
         value,
       }));
   }
@@ -90,7 +90,7 @@ export const transform2 = (transformResult: TransformResult, query: Query) => {
   const { chartType, transformConfig } = query;
   const { labelColumn, dataRowIndex, dataOrientation } = transformConfig;
 
-  const tranformResult2 =
+  const transformResult2 =
     SINGLE_DATASET_CHART_TYPES.includes(chartType!) &&
     dataRowIndex !== undefined
       ? extractSingleDataset(
@@ -100,5 +100,5 @@ export const transform2 = (transformResult: TransformResult, query: Query) => {
         )
       : transformResult;
 
-  return tranformResult2;
+  return transformResult;
 };
