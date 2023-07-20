@@ -103,9 +103,7 @@ const useQueryController = (queryId: string) => {
     }
 
     if (db.status === "uninitialized") {
-      initialize(query.databaseSource, databaseDefintion.csvContent).catch(
-        console.error
-      );
+      initialize(query.databaseSource, databaseDefintion).catch(console.error);
       return;
     }
 

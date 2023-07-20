@@ -25,10 +25,7 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
 
   useEffect(() => {
     if (conn.status === "uninitialized") {
-      initialize(
-        { type: "local", url: params.name },
-        databaseDefintion.csvContent
-      );
+      initialize({ type: "local", url: params.name }, databaseDefintion);
       return;
     }
 

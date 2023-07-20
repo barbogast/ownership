@@ -1,6 +1,6 @@
 import { Database } from "sql.js";
 import Logger from "./logger";
-import { CsvRecords, analyzeCsvHeader } from "./csv";
+import { CsvRecords } from "./csv";
 import initSqlJs from "sql.js";
 
 import useDatabaseConnectionStore, {
@@ -8,6 +8,7 @@ import useDatabaseConnectionStore, {
 } from "../databaseConnectionStore";
 import { DatabaseSource } from "../query/queryStore";
 import Papa from "papaparse";
+import { DatabaseDefinition } from "../databaseDefinitionStore";
 
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");
@@ -47,18 +48,22 @@ const initializeDbFromUrl = dbLogger.wrap(
 
 const initializeDbFromCsv = dbLogger.time(
   "initializeFromCsv",
-  async (columns: ColumnDefinition[], csvContent: CsvRecords) => {
+  async (
+    tableName: string,
+    columns: ColumnDefinition[],
+    csvContent: CsvRecords
+  ) => {
     const SQL = await init();
     const db = new SQL.Database();
-    await createTable(db, "aaa", columns);
-    await insertIntoTable(db, "aaa", columns, csvContent);
+    await createTable(db, tableName, columns);
+    await insertIntoTable(db, tableName, columns, csvContent);
     return db;
   }
 );
 
 export const initialize = async (
   databaseSource: DatabaseSource,
-  csvContent: string
+  databaseDefinition: DatabaseDefinition
 ) => {
   useDatabaseConnectionStore.setState((state) => {
     state.databases[databaseSource.url] = {
@@ -74,9 +79,12 @@ export const initialize = async (
     if (databaseSource.type === "remote") {
       db = await initializeDbFromUrl(databaseSource.url);
     } else {
-      const result = Papa.parse<string[]>(csvContent);
-      const columns = analyzeCsvHeader(result.data);
-      db = await initializeDbFromCsv(columns, result.data);
+      const result = Papa.parse<string[]>(databaseDefinition.csvContent);
+      db = await initializeDbFromCsv(
+        databaseDefinition.tableName,
+        databaseDefinition.columns,
+        result.data
+      );
     }
     connection = { key, status: "loaded", db };
   } catch (err) {

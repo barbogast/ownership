@@ -19,7 +19,6 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { initialize } from "../util/database";
 
 const log = (msg: string, category: "sql") => {
   console.log(category, ": ", msg);
@@ -205,7 +204,7 @@ const CsvImport: React.FC = () => {
     if (db.status !== "uninitialized") {
       return;
     }
-    initialize({ type: "local", url: id }, "").catch(console.error);
+    // initialize({ type: "local", url: id }, "").catch(console.error);
   }, [id, db.status]);
 
   console.log(queryResult);
