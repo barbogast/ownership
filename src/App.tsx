@@ -10,6 +10,8 @@ import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";
 import DevTools from "./DevTools";
+import ReportDisplay from "./report/ReportDisplay";
+import WithReportFromLocalStorage from "./WithReportFromLocalStorage";
 
 function App() {
   return (
@@ -41,10 +43,17 @@ function App() {
                   component={(props) => (
                     // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
                     // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-                    <Report
-                      reportId={props.params.reportId}
+                    <WithReportFromLocalStorage
                       key={props.params.reportId}
-                    />
+                      reportId={props.params.reportId}
+                      child={(report) => (
+                        <Report
+                          key={props.params.reportId}
+                          displayComponent={ReportDisplay}
+                          report={report}
+                        />
+                      )}
+                    ></WithReportFromLocalStorage>
                   )}
                 />
                 <Route path="/dev-tools" component={DevTools} />
@@ -59,11 +68,18 @@ function App() {
         component={(props) => (
           // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
           // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-          <Report
-            reportId={props.params.reportId}
-            readOnly
+          <WithReportFromLocalStorage
             key={props.params.reportId}
-          />
+            reportId={props.params.reportId}
+            child={(report) => (
+              <Report
+                key={props.params.reportId}
+                displayComponent={ReportDisplay}
+                report={report}
+                readOnly
+              />
+            )}
+          ></WithReportFromLocalStorage>
         )}
       />
     </Router>

@@ -1,4 +1,4 @@
-import { useQuery } from "../query/queryStore";
+import { Query } from "../query/queryStore";
 import TableDisplay from "./TableDisplay";
 import BarChartDisplay from "./BarChartDisplay";
 import PieChartDisplay from "./PieChartDisplay";
@@ -17,7 +17,7 @@ export type ChartType =
   | "lineChart";
 
 type Props = {
-  queryId: string;
+  query: Query;
   transformResult: TransformResult;
 };
 
@@ -33,9 +33,7 @@ const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
   table: TableDisplay,
 };
 
-const ChartDisplay: React.FC<Props> = ({ queryId, transformResult }) => {
-  const query = useQuery(queryId);
-
+const ChartDisplay: React.FC<Props> = ({ query, transformResult }) => {
   if (!query.chartType) {
     return null;
   }

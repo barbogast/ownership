@@ -13,64 +13,67 @@ import {
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
-import ReportDisplay from "./ReportDisplay";
-import { updateBlocks, updateLabel, useReport } from "./reportStore";
+import { updateBlocks, updateLabel, Report } from "./reportStore";
 import { ReadOnly, useReadOnly } from "./ReadonlyContext";
 import { Input } from "antd";
 import useQueryStore from "../query/queryStore";
+import React from "react";
 
-const ChartBlock = createReactBlockSpec({
-  type: "dataDisplay",
-  propSchema: {
-    ...defaultProps,
-    queryId: {
-      default: "",
+type DisplayComponent = React.FC<{ queryId: string; showEditLink: boolean }>;
+
+const getChartBlock = (DisplayComponent: DisplayComponent) =>
+  createReactBlockSpec({
+    type: "dataDisplay",
+    propSchema: {
+      ...defaultProps,
+      queryId: {
+        default: "",
+      },
     },
-  },
-  containsInlineContent: true,
-  render: ({ block, editor }): React.ReactElement => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const queries = Object.values(useQueryStore());
+    containsInlineContent: true,
+    render: ({ block, editor }): React.ReactElement => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const queries = Object.values(useQueryStore());
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const readOnly = useReadOnly();
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {!readOnly && (
-          <select
-            value={block.props.queryId}
-            onChange={(event) =>
-              editor.updateBlock(block.id, {
-                ...block,
-                props: { ...block.props, queryId: event.target.value },
-              })
-            }
-          >
-            {queries.map((q) => (
-              <option value={q.id}>{q.label}</option>
-            ))}
-          </select>
-        )}
-        {block.props.queryId && (
-          <ReportDisplay
-            queryId={block.props.queryId}
-            showEditLink={!readOnly}
-          />
-        )}
-        <InlineContent />
-      </div>
-    );
-  },
-});
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const readOnly = useReadOnly();
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {!readOnly && (
+            <select
+              value={block.props.queryId}
+              onChange={(event) =>
+                editor.updateBlock(block.id, {
+                  ...block,
+                  props: { ...block.props, queryId: event.target.value },
+                })
+              }
+            >
+              {queries.map((q) => (
+                <option value={q.id}>{q.label}</option>
+              ))}
+            </select>
+          )}
+          {block.props.queryId && (
+            <DisplayComponent
+              queryId={block.props.queryId}
+              showEditLink={!readOnly}
+            />
+          )}
+          <InlineContent />
+        </div>
+      );
+    },
+  });
 
 // Creates a slash menu item for inserting an image block.
 const insertImage = new ReactSlashMenuItem<
-  DefaultBlockSchema & { dataDisplay: typeof ChartBlock }
+  DefaultBlockSchema & { dataDisplay: ReturnType<typeof getChartBlock> }
 >(
   "Insert Chart",
   (editor) => {
@@ -94,11 +97,16 @@ const insertImage = new ReactSlashMenuItem<
 );
 
 type Props = {
-  reportId: string;
+  report: Report;
   readOnly?: boolean;
+  displayComponent: DisplayComponent;
 };
-const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
-  const { blocks, label, id } = useReport(reportId);
+const Report: React.FC<Props> = ({
+  report,
+  readOnly = false,
+  displayComponent,
+}) => {
+  const { blocks, label, id } = report;
 
   // Creates a new editor instance.
   // @ts-expect-error Seems to be an issue with @blocknote
@@ -106,7 +114,7 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
     editable: !readOnly,
     blockSchema: {
       ...defaultBlockSchema,
-      dataDisplay: ChartBlock,
+      dataDisplay: getChartBlock(displayComponent),
     },
     slashCommands: [...defaultReactSlashMenuItems, insertImage],
     // @ts-expect-error Seems to be an issue with @blocknote
@@ -125,7 +133,7 @@ const Report: React.FC<Props> = ({ reportId, readOnly = false }) => {
             <Input
               addonBefore="Label"
               value={label}
-              onChange={(event) => updateLabel(reportId, event.target.value)}
+              onChange={(event) => updateLabel(report.id, event.target.value)}
             />
           </>
         )}

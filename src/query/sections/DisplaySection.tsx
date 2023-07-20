@@ -10,14 +10,14 @@ type Props = {
 };
 
 const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
-  const { chartType, transformConfig } = useQuery(queryId);
+  const query = useQuery(queryId);
 
-  const { labelColumn, dataRowIndex } = transformConfig;
+  const { labelColumn, dataRowIndex } = query.transformConfig;
 
   return (
     <>
       <Select
-        value={chartType}
+        value={query.chartType}
         onChange={(chartType) => updateQuery(queryId, { chartType })}
         options={[
           { value: "barChart", label: "Bar chart" },
@@ -30,8 +30,8 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
         style={{ width: 200 }}
       />
       <br />
-      {chartType &&
-        SINGLE_DATASET_CHART_TYPES.includes(chartType) &&
+      {query.chartType &&
+        SINGLE_DATASET_CHART_TYPES.includes(query.chartType) &&
         transformResult.length > 1 && (
           <>
             <br />
@@ -54,7 +54,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
       <br />
       <br />
 
-      <ChartDisplay queryId={queryId} transformResult={transformResult} />
+      <ChartDisplay query={query} transformResult={transformResult} />
     </>
   );
 };

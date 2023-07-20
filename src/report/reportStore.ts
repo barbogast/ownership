@@ -5,7 +5,7 @@ import NestedStore, { StoreConfig } from "../nestedStores";
 // import { Block } from "@blocknote/core";
 
 type Block = string[];
-type Report = {
+export type Report = {
   id: string;
   label: string;
   blocks: Block[];
