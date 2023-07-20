@@ -12,11 +12,6 @@ const StackedBarChart: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
-  const dataKey =
-    transformConfig.dataOrientation === "row"
-      ? "label"
-      : transformConfig.labelColumn;
-
   return (
     <>
       <BarChart
@@ -31,7 +26,7 @@ const StackedBarChart: React.FC<Props> = ({
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={dataKey} />
+        <XAxis dataKey={transformConfig.labelColumn} />
         <YAxis />
         <Tooltip />
         <Legend />

@@ -20,10 +20,6 @@ const LineChartDisplay: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
-  const lines = Object.keys(transformResult[0]).filter(
-    (c) => transformConfig.selectedColumns.indexOf(c) !== -1
-  );
-
   return (
     <>
       X axis: <br />
@@ -40,7 +36,7 @@ const LineChartDisplay: React.FC<Props> = ({
         <Tooltip />
         <Legend />
 
-        {lines.map((c, i) => (
+        {transformConfig.selectedColumns.map((c, i) => (
           <Line key={i} type="monotone" dataKey={c} stroke={getColor(i)} />
         ))}
       </LineChart>

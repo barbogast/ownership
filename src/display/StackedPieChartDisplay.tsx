@@ -12,16 +12,12 @@ const StackedPieChart: React.FC<Props> = ({
   transformResult,
   transformConfig,
 }) => {
-  const isSingleRow =
-    transformConfig.dataOrientation === "row" &&
-    Object.keys(transformResult[0]).length === 2;
-
-  const columns = isSingleRow ? ["value"] : transformConfig.selectedColumns;
   return (
     <>
       <PieChart width={600} height={320}>
-        {columns.map((column, i) => (
+        {transformConfig.selectedColumns.map((column, i) => (
           <Pie
+            key={i}
             data={transformResult}
             dataKey={column}
             nameKey="name"
@@ -51,14 +47,12 @@ const StackedPieChart: React.FC<Props> = ({
                   textAnchor={x > cx ? "start" : "end"}
                   dominantBaseline="central"
                 >
-                  {transformConfig.dataOrientation === "row"
-                    ? props["label"]
-                    : props[transformConfig.labelColumn]}
+                  {props[transformConfig.labelColumn]}
                 </text>
               );
             }}
           >
-            {Object.keys(transformResult[0]).map((_, index) => (
+            {transformConfig.selectedColumns.map((_, index) => (
               <Cell key={`cell-${index}`} fill={getColor(i)} />
             ))}
           </Pie>

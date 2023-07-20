@@ -14,7 +14,7 @@ const BarChartDisplay: React.FC<Pick<ChartProps, "transformResult">> = ({
         ))}
       </Bar>
 
-      <XAxis dataKey="name" />
+      <XAxis dataKey="label" />
       <YAxis />
       <Tooltip />
     </BarChart>
