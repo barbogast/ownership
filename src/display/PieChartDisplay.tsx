@@ -8,12 +8,17 @@ type Props = {
   transformResult: TransformResult;
   transformConfig: TransformConfig;
 };
-const PieChartDisplay: React.FC<Props> = ({ transformResult }) => {
+const PieChartDisplay: React.FC<Props> = ({
+  transformResult,
+  transformConfig,
+}) => {
   return (
     <>
       <PieChart width={600} height={320}>
         <Pie
-          data={transformResult}
+          data={transformResult.filter(
+            ({ label }) => label !== transformConfig.labelColumn
+          )}
           dataKey="value"
           cx="50%"
           cy="50%"
