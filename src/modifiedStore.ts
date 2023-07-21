@@ -28,4 +28,7 @@ export const add = (queryId: string) =>
       state.modifiedQueries.push(queryId);
     }
   });
+
+export const reset = () => useModifiedStore.setState(() => initialState);
+
 export default useModifiedStore;

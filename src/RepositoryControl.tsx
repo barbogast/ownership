@@ -5,6 +5,7 @@ import useRepositoryStore from "./repository/repositoryStore";
 import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
 import SyncRepositoryButton from "./SyncRepositoryButton";
+import { reset } from "./modifiedStore";
 
 const RepositoryControl: React.FC = () => {
   const [, setLocation] = useLocation();
@@ -46,7 +47,10 @@ const RepositoryControl: React.FC = () => {
         <SyncRepositoryButton
           buttonLabel="Save ..."
           label="Saving repository"
-          callback={saveToGit}
+          callback={async (info, user, pw) => {
+            await saveToGit(info, user, pw);
+            reset();
+          }}
           repositoryInfo={repositoryInfo}
         />
       </Row>
