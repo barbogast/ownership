@@ -18,9 +18,13 @@ const TransformConfigForm: React.FC<Props> = ({
 }) => {
   const { transformConfig } = useQuery(queryId);
 
+  if (!queryResults.length || !transformResult.length) {
+    return null;
+  }
+
   const { dataOrientation, selectedColumns, labelColumn } = transformConfig;
 
-  const { columns } = queryResults[0];
+  const columns = queryResults[0].columns;
 
   const selectedColumnOptions = Object.keys(transformResult[0]).filter(
     (col) => col !== labelColumn
