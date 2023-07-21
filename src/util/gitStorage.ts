@@ -45,6 +45,10 @@ const load = async <
   config: StoreConfig<Entity, State, Files>
 ) => {
   const directory = `${gitHelper.root}/${config.name}`;
+  const gitRootEntries = await fsHelper.fs.promises.readdir(gitHelper.root);
+  if (!gitRootEntries.includes(config.name)) {
+    return [];
+  }
   const entries = await fsHelper.fs.promises.readdir(directory);
   const entities = [];
   for (const entry of entries) {
@@ -94,12 +98,12 @@ export const loadFromGit = async (
   username: string,
   password: string
 ) => {
-  const { repository, organization, path } = info;
-  const gitRoot = "/" + repository;
+  const { organization, path } = info;
+  const gitRoot = "/" + path;
 
   const fs = new FsHelper(organization);
   const git = new GitHelper(fs.fs, gitRoot);
-  await git.clone(path, username, password);
+  await git.clone(gitRoot, username, password);
 
   const queries = await load(fs, git, queryStoreConfig);
   const dbs = await load(fs, git, databaseDefinitionStoreConfig);
