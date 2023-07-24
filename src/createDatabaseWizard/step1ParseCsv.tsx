@@ -18,7 +18,6 @@ const getStep = () => {
           csvContent: inputRef.current!.value,
         }),
       }));
-      console.log("render");
 
       return (
         <textarea
