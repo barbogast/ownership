@@ -8,7 +8,7 @@ import TableDisplay from "./display/TableDisplay";
 import { rowsToObjects } from "./util/transform";
 import { initialize } from "./util/database";
 import useDatabaseDefinitionStore from "./databaseDefinitionStore";
-import { Button } from "antd";
+import { Alert, Button } from "antd";
 import getSteps from "./createDatabaseWizard";
 import WizardModal from "./wizard/WizardModal";
 
@@ -53,12 +53,20 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
         initialResult={databaseDefintion}
         render={(openModal) => <Button onClick={openModal}>Edit</Button>}
       />
-      {queryResults.map((queryResult, i) => (
-        <>
-          <h2>{tables[i]}</h2>
-          <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
-        </>
-      ))}
+      {conn.status === "loaded" &&
+        queryResults.map((queryResult, i) => (
+          <>
+            <h2>{tables[i]}</h2>
+            <TableDisplay
+              transformResult={rowsToObjects(queryResult)}
+              key={i}
+            />
+          </>
+        ))}
+
+      {conn.status === "error" && (
+        <Alert message={conn.error.message} type="error" />
+      )}
     </div>
   );
 };

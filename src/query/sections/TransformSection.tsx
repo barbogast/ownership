@@ -6,20 +6,20 @@ import Editor, { OnMount } from "@monaco-editor/react";
 import { updateQuery, useQuery } from "../queryStore";
 import { QueryExecResult } from "../../databaseConnectionStore";
 import { editorDefaultOptions } from "../../constants";
-import { TransformError } from "../../useQueryController";
+import { QueryState } from "../../useQueryController";
 
 type Props = {
   queryId: string;
   queryResults: QueryExecResult[];
+  queryState: QueryState;
   runTransform: (queryResults: QueryExecResult[]) => void;
-  error: TransformError | undefined;
 };
 
 const TransformSection: React.FC<Props> = ({
   queryId,
   runTransform,
   queryResults,
-  error,
+  queryState,
 }) => {
   const { transformCode } = useQuery(queryId);
   const editorRef = useRef<monaco.IStandaloneCodeEditor>();
@@ -34,21 +34,25 @@ const TransformSection: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (error?.position && monacoInstances) {
+    if (
+      queryState.state === "transformError" &&
+      queryState.position &&
+      monacoInstances
+    ) {
       const model = monacoInstances.editor.getModel()!;
       const marker = {
-        message: error.error.message || "Error",
+        message: queryState.error.message || "Error",
         severity: MarkerSeverity.Error,
-        startLineNumber: error.position.line,
-        endLineNumber: error.position.line,
+        startLineNumber: queryState.position.line,
+        endLineNumber: queryState.position.line,
         startColumn: 0,
-        endColumn: transformCode.split("\n")[error.position.line]?.length,
+        endColumn: transformCode.split("\n")[queryState.position.line]?.length,
       };
       monacoInstances.monaco.editor.setModelMarkers(model, "owner", [marker]);
     } else {
       monacoInstances?.monaco.editor.removeAllMarkers("owner");
     }
-  }, [error, monacoInstances, transformCode]);
+  }, [queryState, monacoInstances, transformCode]);
 
   return (
     <>

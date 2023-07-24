@@ -19,9 +19,28 @@ type Progress = {
   transformed?: boolean;
 };
 
-export type TransformError = {
-  position?: { line: number; column: number };
-  error: Error;
+export type QueryState =
+  | {
+      state: "ready" | "dbInitializing" | "dbQueryRunning" | "transformRunning";
+    }
+  | { state: "dbInitError"; errorMessage: string }
+  | { state: "dbQueryError"; errorMessage: string }
+  | {
+      state: "transformError";
+      position?: { line: number; column: number };
+      error: Error;
+    };
+
+const getStateFromDbState = (db: DatabaseConnection): QueryState => {
+  switch (db.status) {
+    case "uninitialized":
+    case "loading":
+      return { state: "dbInitializing" };
+    case "error":
+      return { state: "dbInitError", errorMessage: db.error.message };
+    case "loaded":
+      return { state: "ready" };
+  }
 };
 
 const useQueryController = (queryId: string) => {
@@ -35,12 +54,9 @@ const useQueryController = (queryId: string) => {
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
 
-  const [error, setError] = useState<TransformError>();
-
-  const [transformError, setTransformError] = useState<{
-    position?: { line: number; column: number };
-    error: Error;
-  }>();
+  const [queryState, setQueryState] = useState<QueryState>(
+    getStateFromDbState(db)
+  );
 
   const runQuery = (
     db: DatabaseConnection,
@@ -50,14 +66,18 @@ const useQueryController = (queryId: string) => {
       throw new Error(`Db status should be "loaded" but is "${db.status}"`);
 
     try {
-      setError(undefined);
+      setQueryState({ state: "dbQueryRunning" });
       const results = db.db.exec(statement);
       setQueryResults(results);
       setProgress({ queried: true });
+      setQueryState({ state: "ready" });
       return results;
     } catch (err) {
       console.error(err);
-      setError({ error: err as Error });
+      setQueryState({
+        state: "dbQueryError",
+        errorMessage: (err as Error).message,
+      });
       setQueryResults([]);
       return [];
     }
@@ -75,11 +95,12 @@ const useQueryController = (queryId: string) => {
     `;
 
     try {
-      setTransformError(undefined);
+      setQueryState({ state: "transformRunning" });
       const func = new Function("queryResult", finalCode);
       const result = func(results);
       setTransformResult(result || []);
       setProgress({ queried: true, transformed: true });
+      setQueryState({ state: "ready" });
     } catch (err) {
       console.error(err);
 
@@ -93,21 +114,35 @@ const useQueryController = (queryId: string) => {
       const position = transpiledPosition
         ? smc.originalPositionFor(transpiledPosition)
         : undefined;
-      setTransformError({ error: err as Error, position });
+      setQueryState({ state: "transformError", error: err as Error, position });
     }
   };
 
   useEffect(() => {
+    if (db.status === "error") {
+      // This code branch is relevant when the query was initialized with a
+      // valid DB and dthen switched to a failed one
+      setQueryState({ state: "dbInitError", errorMessage: db.error.message });
+      return;
+    }
     if (!query.databaseSource || !databaseDefintion) {
       return;
     }
 
     if (db.status === "uninitialized") {
-      initialize(query.databaseSource, databaseDefintion).catch(console.error);
+      setQueryState({ state: "dbInitializing" });
+      initialize(query.databaseSource, databaseDefintion).then((conn) => {
+        if (conn.status === "error") {
+          setQueryState({
+            state: "dbInitError",
+            errorMessage: conn.error.message,
+          });
+        }
+      });
       return;
     }
 
-    if (db.status === "loading" || !query.sqlStatement) {
+    if (db.status !== "loaded" || !query.sqlStatement) {
       return;
     }
 
@@ -138,20 +173,18 @@ const useQueryController = (queryId: string) => {
     query.transformCode,
     query.transformConfig,
     query.transformType,
-
     // query.sqlStatement,
     // This entry is missing from the dependencies on purpose. Otherwise, the
     // sql query would be run on every keystroke.
   ]);
 
   return {
-    error,
+    queryState,
     progress,
     queryResults,
     runQuery: (statement: string) => runQuery(db, statement),
     runTransform,
     transformResult,
-    transformError,
   };
 };
 

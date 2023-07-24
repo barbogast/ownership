@@ -30,13 +30,12 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   const { label, transformCode, transformType } = query;
 
   const {
-    error,
+    queryState,
     progress,
     queryResults,
     runQuery,
     runTransform,
     transformResult,
-    transformError,
   } = useQueryController(queryId);
 
   const exportQuery = () => {
@@ -68,6 +67,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           queryId={queryId}
           runQuery={runQuery}
           queryResults={queryResults}
+          queryState={queryState}
         />
       ),
     },
@@ -108,7 +108,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                       runTransform={() =>
                         runTransform(queryResults, transformCode)
                       }
-                      error={transformError}
+                      queryState={queryState}
                     />
                   ),
                 },
@@ -159,9 +159,6 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
         <br /> <br />
         <Collapse items={items} />
       </>
-      <pre style={{ color: "red" }}>
-        {(error?.error.message || "").toString()}
-      </pre>
     </div>
   );
 };

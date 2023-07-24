@@ -11,13 +11,11 @@ type Props = {
 };
 
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
-  const { error, transformResult } = useQueryController(queryId);
+  const { transformResult } = useQueryController(queryId);
   const query = useQuery(queryId);
 
   return (
     <>
-      <pre style={{ color: "red" }}>{(error || "").toString()}</pre>
-
       <ChartDisplay query={query} transformResult={transformResult} />
 
       {showEditLink && (

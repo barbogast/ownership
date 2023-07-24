@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Button, Select } from "antd";
+import { Alert, Button, Select } from "antd";
 import { editor } from "monaco-editor";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
@@ -10,14 +10,21 @@ import { editorDefaultOptions } from "../../constants";
 import { rowsToObjects } from "../../util/transform";
 import { Editor, OnMount } from "@monaco-editor/react";
 import useDatabaseDefinitionStore from "../../databaseDefinitionStore";
+import { QueryState } from "../../useQueryController";
 
 type Props = {
   queryId: string;
   runQuery: (stmt: string) => void;
   queryResults: QueryExecResult[];
+  queryState: QueryState;
 };
 
-const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
+const QuerySection: React.FC<Props> = ({
+  queryId,
+  runQuery,
+  queryResults,
+  queryState,
+}) => {
   const { sqlStatement, databaseSource } = useQuery(queryId);
   const databases = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
@@ -65,22 +72,36 @@ const QuerySection: React.FC<Props> = ({ queryId, runQuery, queryResults }) => {
           placeholder="Select database..."
         />
         <br />
-        SQL:
-        <Editor
-          height="200px"
-          defaultLanguage="sql"
-          defaultValue={sqlStatement}
-          onMount={onEditorMount}
-          onChange={(sqlStatement) =>
-            sqlStatement && updateQuery(queryId, { sqlStatement })
-          }
-          options={editorDefaultOptions}
-        />
-        <br />
-        <br />
-        <Button type="primary" onClick={run}>
-          Run query
-        </Button>
+        {queryState.state === "dbInitError" ? (
+          <>
+            Error initializing database
+            <Alert message={queryState.errorMessage} type="error" />
+          </>
+        ) : (
+          <>
+            SQL:
+            <Editor
+              height="200px"
+              defaultLanguage="sql"
+              defaultValue={sqlStatement}
+              onMount={onEditorMount}
+              onChange={(sqlStatement) =>
+                sqlStatement && updateQuery(queryId, { sqlStatement })
+              }
+              options={editorDefaultOptions}
+            />
+            <br />
+            <br />
+            <Button type="primary" onClick={run}>
+              Run query
+            </Button>
+            <br />
+            <br />
+            {queryState.state === "dbQueryError" && (
+              <Alert message={queryState.errorMessage} type="error" />
+            )}
+          </>
+        )}
       </Panel>
       <PanelResizeHandle
         style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
