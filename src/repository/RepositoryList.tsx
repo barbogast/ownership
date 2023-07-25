@@ -9,9 +9,7 @@ import { Link } from "wouter";
 import { loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
 import SyncRepositoryButton from "../SyncRepositoryButton";
-import { queryStore } from "../query/queryStore";
-import { databaseDefinitionStore } from "../databaseDefinitionStore";
-import { reportStore } from "../report/reportStore";
+import stores from "../nestedStores/stores";
 
 const LEFT_COLUMNS = 6;
 const RIGHT_COLUMN = 3;
@@ -112,9 +110,9 @@ const RepositoryList: React.FC = () => {
                       repo.organization,
                       repo.repository
                     );
-                    queryStore.delete(info);
-                    reportStore.delete(info);
-                    databaseDefinitionStore.delete(info);
+                    for (const store of stores) {
+                      store.delete(info);
+                    }
                   }}
                 >
                   <Button danger style={BUTTON_STYLE}>

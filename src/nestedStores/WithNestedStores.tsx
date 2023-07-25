@@ -1,9 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { useRepoInfo } from "../util/utils";
 import Logger from "../util/logger";
-import { queryStore } from "../query/queryStore";
-import { databaseDefinitionStore } from "../databaseDefinitionStore";
-import { reportStore } from "../report/reportStore";
+import stores from "./stores";
 
 const logger = new Logger("main");
 type Props = {
@@ -17,9 +15,9 @@ const WithNestedStores: React.FC<Props> = ({ children }) => {
     if (info) {
       logger.log("rehydrate stores", info);
 
-      queryStore.hydrate(info);
-      databaseDefinitionStore.hydrate(info);
-      reportStore.hydrate(info);
+      for (const store of stores) {
+        store.hydrate(info);
+      }
       setIsInitialized(true);
     }
   }, [info]);
