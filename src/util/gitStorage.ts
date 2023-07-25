@@ -1,72 +1,64 @@
-import useDatabaseDefinitionStore, {
-  databaseDefinitionStore,
-  databaseDefinitionStoreConfig,
-} from "../databaseDefinitionStore";
-import { StoreConfig } from "../nestedStores";
-import useQueryStore, {
-  queryStore,
-  queryStoreConfig,
-} from "../query/queryStore";
+import { databaseDefinitionStore } from "../databaseDefinitionStore";
+import { queryStore } from "../query/queryStore";
 import { RepositoryInfo } from "../types";
-import { FileContents } from "./fsHelper";
-import FsHelper from "./fsHelper";
+import FsHelper, { FileContents } from "./fsHelper";
 import GitHelper from "./gitHelpers";
-import useReportStore, {
-  reportStore,
-  reportStoreConfig,
-} from "../report/reportStore";
+import { reportStore } from "../report/reportStore";
 
-const save = async <
-  Entity extends Record<"id" | string, unknown>,
-  State extends Record<string, Entity>
->(
+const getEntryFolderPath = (gitRoot: string, entryName: string) =>
+  `${gitRoot}/${entryName}`;
+
+const getRelativeEntryPath = (entryName: string, entryId: string) =>
+  `${entryName}/${entryId}`;
+
+const getEntryPath = (gitRoot: string, entryName: string, entryId: string) =>
+  `${gitRoot}/${entryName}/${entryId}`;
+
+const save = async (
   fsHelper: FsHelper,
   gitHelper: GitHelper,
-  data: Record<string, Entity>,
-  config: StoreConfig<Entity, State>
+  entryName: string,
+  entityFolders: Record<string, FileContents<string>>
 ) => {
-  for (const entity of Object.values(data)) {
-    const folder = `${config.name}/${entity.id}`;
-    await fsHelper.mkdir_p(`${gitHelper.root}/${folder}`);
-
-    const files = config.entityToFiles(entity);
-    await fsHelper.writeFilesToDirectory(`${gitHelper.root}/${folder}`, files);
-    await gitHelper.addFiles(folder, Object.keys(files));
+  for (const [id, files] of Object.entries(entityFolders)) {
+    const folder = getEntryPath(gitHelper.root, entryName, id);
+    await fsHelper.mkdir_p(folder);
+    console.log(files);
+    await fsHelper.writeFilesToDirectory(folder, files);
+    await gitHelper.addFiles(
+      getRelativeEntryPath(entryName, id),
+      Object.keys(files)
+    );
   }
 };
 
-const load = async <
-  Entity extends Record<"id" | string, unknown>,
-  State extends Record<string, Entity>,
-  Files extends string
->(
+const load = async (
   fsHelper: FsHelper,
   gitHelper: GitHelper,
-  config: StoreConfig<Entity, State, Files>
+  folder: string
 ) => {
-  const directory = `${gitHelper.root}/${config.name}`;
   const gitRootEntries = await fsHelper.fs.promises.readdir(gitHelper.root);
-  if (!gitRootEntries.includes(config.name)) {
+  if (!gitRootEntries.includes(folder)) {
     return [];
   }
+  const directory = getEntryFolderPath(gitHelper.root, folder);
   const entries = await fsHelper.fs.promises.readdir(directory);
-  const entities = [];
+  const folders = [];
   for (const entry of entries) {
-    const path = `${directory}/${entry}`;
+    const path = getEntryPath(gitHelper.root, folder, entry);
     const stat = await fsHelper.fs.promises.stat(path);
     if (stat.isDirectory()) {
-      const contents = await fsHelper.readFilesInDirectory<FileContents<Files>>(
-        path
-      );
-      const entity = await config.filesToEntity(contents);
-      entities.push(entity);
+      const contents = await fsHelper.readFilesInDirectory(path);
+      folders.push(contents);
     } else {
       console.error(path, "is not a directory");
     }
   }
 
-  return entities;
+  return folders;
 };
+
+const stores = [queryStore, databaseDefinitionStore, reportStore];
 
 export const saveToGit = async (
   repositoryInfo: RepositoryInfo,
@@ -80,14 +72,9 @@ export const saveToGit = async (
   const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
   await gitHelper.clone(repositoryInfo.path, username, password);
 
-  await save(fsHelper, gitHelper, useQueryStore.getState(), queryStoreConfig);
-  await save(
-    fsHelper,
-    gitHelper,
-    useDatabaseDefinitionStore.getState(),
-    databaseDefinitionStoreConfig
-  );
-  await save(fsHelper, gitHelper, useReportStore.getState(), reportStoreConfig);
+  for (const store of stores) {
+    await save(fsHelper, gitHelper, store.config.name, store.export());
+  }
 
   await gitHelper.commit();
   await gitHelper.push(username, password);
@@ -105,12 +92,10 @@ export const loadFromGit = async (
   const git = new GitHelper(fs.fs, gitRoot);
   await git.clone(gitRoot, username, password);
 
-  const queries = await load(fs, git, queryStoreConfig);
-  const dbs = await load(fs, git, databaseDefinitionStoreConfig);
-  const reports = await load(fs, git, reportStoreConfig);
-  queryStore.import(info, queries);
-  databaseDefinitionStore.import(info, dbs);
-  reportStore.import(info, reports);
+  for (const store of stores) {
+    const entityFolders = await load(fs, git, queryStore.config.name);
+    store.import(info, entityFolders);
+  }
 };
 /*
 - create query: add file

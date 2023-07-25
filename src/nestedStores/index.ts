@@ -24,8 +24,9 @@ export type StoreConfig<
 };
 
 class NestedStore<
-  Entity extends Record<"id" | string, unknown>,
-  State extends Record<string, Entity>
+  Entity extends { id: string } & Record<string, unknown>,
+  State extends Record<string, Entity>,
+  Files extends string = string
 > {
   store: ReturnType<
     typeof create<
@@ -37,7 +38,7 @@ class NestedStore<
       ]
     >
   >;
-  config: StoreConfig<Entity, State>;
+  config: StoreConfig<Entity, State, Files>;
   info: RepositoryInfo | undefined;
 
   constructor(config: StoreConfig<Entity, State>) {
@@ -77,17 +78,28 @@ class NestedStore<
     this.store.persist.rehydrate();
   };
 
-  import = (info: RepositoryInfo, entities: Entity[]) => {
-    const content = Object.fromEntries(
-      entities.map((entity) => [entity.id, entity])
-    );
+  import = (info: RepositoryInfo, folders: FileContents<Files>[]) => {
+    const state: Record<string, Entity> = {};
+    for (const fileContent of folders) {
+      const entity = this.config.filesToEntity(fileContent);
+      state[entity.id] = entity;
+    }
+
     localStorage.setItem(
       this.#getStoragePath(info),
       JSON.stringify({
-        state: content,
+        state,
         version: this.config.version,
       })
     );
+  };
+
+  export = () => {
+    const files: Record<string, FileContents<Files>> = {};
+    for (const entry of Object.values<Entity>(this.store.getState())) {
+      files[entry.id] = this.config.entityToFiles(entry);
+    }
+    return files;
   };
 
   delete = (info: RepositoryInfo) => {

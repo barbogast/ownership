@@ -32,14 +32,14 @@ export default class FsHelper {
     }
   };
 
-  readFilesInDirectory = async <T>(directory: string) => {
-    const fileContents: Record<string, string> = {};
+  readFilesInDirectory = async (directory: string) => {
+    const fileContents: FileContents<string> = {};
     const files = await this.fs.promises.readdir(directory);
     for (const file of files) {
       const content = await this.readFile(directory + "/" + file);
       fileContents[file] = content as string;
     }
-    return fileContents as T;
+    return fileContents;
   };
 
   writeFilesToDirectory = async <T extends string>(
@@ -47,7 +47,9 @@ export default class FsHelper {
     fileContents: FileContents<T>
   ) => {
     for (const [filename, contents] of Object.entries<string>(fileContents)) {
-      await this.fs.promises.writeFile(directory + "/" + filename, contents);
+      if (contents) {
+        await this.fs.promises.writeFile(directory + "/" + filename, contents);
+      }
     }
   };
 }
