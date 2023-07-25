@@ -1,9 +1,7 @@
-import { databaseDefinitionStore } from "../databaseDefinitionStore";
-import { queryStore } from "../query/queryStore";
+import stores from "../nestedStores/stores";
 import { RepositoryInfo } from "../types";
 import FsHelper, { FileContents } from "./fsHelper";
 import GitHelper from "./gitHelpers";
-import { reportStore } from "../report/reportStore";
 
 const getEntryFolderPath = (gitRoot: string, entryName: string) =>
   `${gitRoot}/${entryName}`;
@@ -57,8 +55,6 @@ const load = async (
 
   return folders;
 };
-
-const stores = [queryStore, databaseDefinitionStore, reportStore];
 
 export const saveToGit = async (
   repositoryInfo: RepositoryInfo,
