@@ -29,7 +29,11 @@ const getStep = () => {
     }),
     onNext: (results: StepResult) => {
       const result = Papa.parse<string[]>(results.csvContent);
-      return { ...results, columns: analyzeCsvHeader(result.data) };
+      return {
+        ...results,
+        parsedCsvContent: result.data,
+        columns: analyzeCsvHeader(result.data),
+      };
     },
   };
   return step;

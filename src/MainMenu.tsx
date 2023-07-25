@@ -73,6 +73,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               tableName: "",
               csvContent: "",
               columns: [],
+              parsedCsvContent: [],
             }}
             render={(openModal) => (
               <a onClick={openModal}>+ Create new database</a>

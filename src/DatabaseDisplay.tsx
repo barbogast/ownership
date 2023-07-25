@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import {
   QueryExecResult,
@@ -50,7 +50,7 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
     <div style={{ display: "block", flexDirection: "column" }}>
       <WizardModal
         steps={getSteps(true)}
-        initialResult={databaseDefintion}
+        initialResult={{ ...databaseDefintion, parsedCsvContent: [] }}
         render={(openModal) => <Button onClick={openModal}>Edit</Button>}
       />
       {conn.status === "loaded" &&

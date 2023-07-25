@@ -1,4 +1,6 @@
 import { Input, Space } from "antd";
+import Papa from "papaparse";
+
 import { Step } from "../wizard/types";
 import { StepResult } from "./types";
 import {
@@ -50,7 +52,7 @@ const getStep = (isExistingDb: boolean) => {
       } else {
         addDatabaseDefinition(
           results.name,
-          results.csvContent,
+          Papa.unparse(results.parsedCsvContent),
           results.tableName,
           results.columns
         );
