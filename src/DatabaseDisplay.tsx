@@ -55,13 +55,10 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
       />
       {conn.status === "loaded" &&
         queryResults.map((queryResult, i) => (
-          <>
+          <Fragment key={i}>
             <h2>{tables[i]}</h2>
-            <TableDisplay
-              transformResult={rowsToObjects(queryResult)}
-              key={i}
-            />
-          </>
+            <TableDisplay transformResult={rowsToObjects(queryResult)} />
+          </Fragment>
         ))}
 
       {conn.status === "error" && (
