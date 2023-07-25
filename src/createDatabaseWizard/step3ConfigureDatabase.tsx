@@ -44,18 +44,21 @@ const getStep = (isExistingDb: boolean) => {
       );
     },
     onNext: (results) => {
+      const databaseDefinition = {
+        name: results.name,
+        id: results.name,
+        csvContent: Papa.unparse(results.parsedCsvContent),
+        tableName: results.tableName,
+        columns: results.columns,
+      };
+
       if (isExistingDb) {
-        updateDatabaseDefinition(results.name, results);
+        updateDatabaseDefinition(results.name, databaseDefinition);
 
         // Force recreating the database with new data
         deleteConnection(results.name);
       } else {
-        addDatabaseDefinition(
-          results.name,
-          Papa.unparse(results.parsedCsvContent),
-          results.tableName,
-          results.columns
-        );
+        addDatabaseDefinition(databaseDefinition);
         const basepath = getBasePath();
         window.history.pushState(null, "", `${basepath}/db/${results.name}`);
       }

@@ -66,14 +66,9 @@ export const databaseDefinitionStore = new NestedStore(
 );
 const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
-export const addDatabaseDefinition = (
-  id: string,
-  csvContent: string,
-  tableName: string,
-  columns: ColumnDefinition[]
-) => {
+export const addDatabaseDefinition = (data: DatabaseDefinition) => {
   useDatabaseDefinitionStore.setState((state) => {
-    state[id] = { name: id, id, csvContent, tableName, columns };
+    state[data.id] = data;
   });
 };
 
