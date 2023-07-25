@@ -1,6 +1,5 @@
 import { Route, Router } from "wouter";
 
-import CreateDatabase from "./CreateDatebase";
 import Ownership from "./ownership/Index";
 import MainMenu from "./MainMenu";
 import Query from "./query/Query";
@@ -26,7 +25,6 @@ function App() {
               <NestedRoutes
                 base={`/${params.organization}/${params.repository}`}
               >
-                <Route path="/new-database" component={CreateDatabase}></Route>
                 <Route path="/db/:name" component={DatabaseDisplay}></Route>
 
                 <Route
