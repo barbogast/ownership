@@ -93,7 +93,7 @@ export const loadFromGit = async (
   await git.clone(gitRoot, username, password);
 
   for (const store of stores) {
-    const entityFolders = await load(fs, git, queryStore.config.name);
+    const entityFolders = await load(fs, git, store.config.name);
     store.import(info, entityFolders);
   }
 };
