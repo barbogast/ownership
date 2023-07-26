@@ -123,6 +123,13 @@ export default useQueryStore;
 
 export const useQuery = (id: string) => useQueryStore((state) => state[id]);
 
+export const useQueriesByDatabase = (databaseId: string) =>
+  useQueryStore((state) =>
+    Object.values(state).filter(
+      (query) => query.databaseSource.url === databaseId
+    )
+  );
+
 export const addQuery = () => {
   const id = uuidv4();
   useQueryStore.setState((state) => {

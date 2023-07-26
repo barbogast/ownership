@@ -2,6 +2,8 @@ import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "./nestedStores";
 import { FileContents } from "./util/fsHelper";
 import { ColumnDefinition } from "./util/database";
+import { getNewLabel } from "./util/labels";
+import { deepCopy } from "./util/utils";
 
 export type DatabaseDefinition = {
   id: string;
@@ -79,6 +81,31 @@ export const updateDatabaseDefinition = (
   useDatabaseDefinitionStore.setState((state) => {
     Object.assign(state[id], data);
   });
+};
+
+export const deleteDatabaseDefinition = (id: string) => {
+  useDatabaseDefinitionStore.setState((state) => {
+    delete state[id];
+  }, true);
+};
+
+export const duplicateDatabaseDefinition = (id: string) => {
+  const sourceDef = useDatabaseDefinitionStore.getState()[id];
+
+  const existingNames = Object.values(
+    useDatabaseDefinitionStore.getState()
+  ).map((d) => d.name);
+
+  const newName = getNewLabel(existingNames, sourceDef.name);
+
+  useDatabaseDefinitionStore.setState((state) => {
+    state[id + "copy"] = {
+      ...deepCopy(sourceDef),
+      id: id + "copy",
+      name: newName,
+    };
+  });
+  return id;
 };
 
 export default useDatabaseDefinitionStore;
