@@ -58,10 +58,14 @@ const QuerySection: React.FC<Props> = ({
     <PanelGroup direction="horizontal">
       <Panel defaultSize={50} minSize={10}>
         <Select
-          value={databaseSource?.url}
+          value={
+            databaseSource.type === "local"
+              ? databaseSource.id
+              : databaseSource.url
+          }
           onChange={(name) =>
             updateQuery(queryId, {
-              databaseSource: { type: "local", url: name },
+              databaseSource: { type: "local", id: name },
             })
           }
           options={Object.values(databases).map((db) => ({

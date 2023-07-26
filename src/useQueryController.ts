@@ -47,9 +47,14 @@ const useQueryController = (queryId: string) => {
   const [progress, setProgress] = useState<Progress>({});
 
   const query = useQuery(queryId);
-  const db = useDatabaseConnection(query.databaseSource.url);
+  if (query.databaseSource.type !== "local") {
+    throw new Error(
+      `databaseSource.type "${query.databaseSource.type}" not supported}`
+    );
+  }
+  const db = useDatabaseConnection(query.databaseSource.id);
   const databaseDefintion =
-    useDatabaseDefinitionStore()[query.databaseSource.url];
+    useDatabaseDefinitionStore()[query.databaseSource.id];
 
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);

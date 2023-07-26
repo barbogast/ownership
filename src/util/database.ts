@@ -65,15 +65,13 @@ export const initialize = async (
   databaseSource: DatabaseSource,
   databaseDefinition: DatabaseDefinition
 ) => {
+  const key =
+    databaseSource.type === "local" ? databaseSource.id : databaseSource.url;
   useDatabaseConnectionStore.setState((state) => {
-    state.databases[databaseSource.url] = {
-      key: databaseSource.url,
-      status: "loading",
-    };
+    state.databases[key] = { key, status: "loading" };
   });
 
   let connection: DatabaseConnection;
-  const key = databaseSource.url;
   try {
     let db: Database;
     if (databaseSource.type === "remote") {

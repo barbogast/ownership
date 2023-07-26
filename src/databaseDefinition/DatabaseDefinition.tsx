@@ -64,7 +64,7 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
 
   useEffect(() => {
     if (conn.status === "uninitialized") {
-      initialize({ type: "local", url: id }, databaseDefintion);
+      initialize({ type: "local", id }, databaseDefintion);
       return;
     }
 

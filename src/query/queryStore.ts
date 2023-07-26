@@ -19,10 +19,15 @@ export type TransformConfig = {
   dataRowIndex: number;
 };
 
-export type DatabaseSource = {
-  type: "remote" | "local";
-  url: string;
-};
+export type DatabaseSource =
+  | {
+      type: "local";
+      id: string;
+    }
+  | {
+      type: "remote";
+      url: string;
+    };
 
 export type Query = {
   id: string;
@@ -52,7 +57,7 @@ export const getDefaults = () => ({
   transformType: "config" as const,
   databaseSource: {
     type: "local" as const,
-    url: Object.values(useDatabaseDefinitionStore.getState())[0]?.id,
+    id: Object.values(useDatabaseDefinitionStore.getState())[0]?.id,
   },
   transformConfig: {
     dataOrientation: "row" as const,
@@ -67,21 +72,33 @@ export const getDefaults = () => ({
 
 const initialState: QueryState = {};
 
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 
-const migrate = (unknownState: unknown) => {
+const migrate = (unknownState: unknown, oldVersion: number) => {
+  console.log("migrate", unknownState, oldVersion);
   const state = unknownState as QueryState;
-  Object.keys(state.queries).forEach((id) => {
+  Object.keys(state).forEach((id) => {
     state[id] = {
       ...getDefaults(),
       ...state[id],
     };
   });
-
-  Object.keys(state.queries).forEach((id) => {
+  Object.keys(state).forEach((id) => {
     state[id].transformConfig.selectedColumns =
       state[id].transformConfig.selectedColumns || [];
   });
+
+  if (oldVersion < 3) {
+    Object.values(state).forEach((query) => {
+      if (query.databaseSource.type === "local") {
+        // @ts-expect-error query.databaseSource.url was available in version 2
+        query.databaseSource.id = query.databaseSource.url;
+        // @ts-expect-error query.databaseSource.url was available in version 2
+        delete query.databaseSource.url;
+      }
+    });
+  }
+
   return state as QueryState;
 };
 
@@ -126,7 +143,9 @@ export const useQuery = (id: string) => useQueryStore((state) => state[id]);
 export const useQueriesByDatabase = (databaseId: string) =>
   useQueryStore((state) =>
     Object.values(state).filter(
-      (query) => query.databaseSource.url === databaseId
+      (query) =>
+        query.databaseSource.type === "local" &&
+        query.databaseSource.id === databaseId
     )
   );
 
