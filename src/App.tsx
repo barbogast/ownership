@@ -4,7 +4,7 @@ import Ownership from "./ownership/Index";
 import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
-import DatabaseDisplay from "./DatabaseDisplay";
+import DatabaseDefinition from "./DatabaseDefinition";
 import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";
@@ -25,7 +25,7 @@ function App() {
               <NestedRoutes
                 base={`/${params.organization}/${params.repository}`}
               >
-                <Route path="/db/:name" component={DatabaseDisplay}></Route>
+                <Route path="/db/:name" component={DatabaseDefinition}></Route>
 
                 <Route
                   path="/query/:queryId"

@@ -55,7 +55,7 @@ type Props = {
   };
 };
 
-const DiplayDatabase: React.FC<Props> = ({ params }) => {
+const DatabaseDefinition: React.FC<Props> = ({ params }) => {
   const conn = useDatabaseConnection(params.name);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [tables, setTables] = useState<string[]>([]);
@@ -138,4 +138,4 @@ const DiplayDatabase: React.FC<Props> = ({ params }) => {
   );
 };
 
-export default DiplayDatabase;
+export default DatabaseDefinition;
