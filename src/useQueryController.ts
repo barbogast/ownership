@@ -146,37 +146,29 @@ const useQueryController = (queryId: string) => {
       return;
     }
 
-    const results = runQuery(db, query.sqlStatement);
-    if (!results.length) {
-      // DB query most probably resulted in an error
+    runQuery(db, query.sqlStatement);
+    // query.sqlStatement is missing from the dependencies on purpose. Otherwise, the
+    // sql query would be run on every keystroke.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [db, databaseDefintion, query.databaseSource]);
+
+  useEffect(() => {
+    if (!queryResults.length) {
       return;
     }
 
     if (query.transformType === "code") {
-      if (results.length) {
-        runTransform(results, query.transformCode);
-      }
+      runTransform(queryResults, query.transformCode);
     } else {
       const { dataOrientation, labelColumn } = query.transformConfig;
       const data =
         dataOrientation === "row"
-          ? rowsToObjects(results[0])
-          : columnsToObjects(results[0], labelColumn);
+          ? rowsToObjects(queryResults[0])
+          : columnsToObjects(queryResults[0], labelColumn);
       setTransformResult(data);
       setProgress({ queried: true, transformed: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    db,
-    databaseDefintion,
-    query.databaseSource,
-    query.transformCode,
-    query.transformConfig,
-    query.transformType,
-    // query.sqlStatement,
-    // This entry is missing from the dependencies on purpose. Otherwise, the
-    // sql query would be run on every keystroke.
-  ]);
+  }, [db, query, queryResults]);
 
   return {
     queryState,
