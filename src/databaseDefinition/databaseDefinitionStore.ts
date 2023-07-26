@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { FileContents } from "../util/fsHelper";
@@ -7,7 +8,7 @@ import { deepCopy } from "../util/utils";
 
 export type DatabaseDefinition = {
   id: string;
-  name: string;
+  label: string;
   csvContent: string;
   tableName: string;
   columns: ColumnDefinition[];
@@ -17,7 +18,7 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 
 type Files = "content.csv" | "index.json";
 
@@ -53,11 +54,22 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
   name: "databases",
   initialState,
   version: CURRENT_VERSION,
-  migrate: (oldState) => {
+  migrate: (oldState, oldVersion) => {
     const state = oldState as DatabaseState;
     for (const db of Object.values(state as DatabaseState)) {
       db.columns = db.columns || [];
       db.tableName = db.tableName || "";
+    }
+
+    if (oldVersion < 3) {
+      for (const db of Object.values(state as DatabaseState)) {
+        // @ts-expect-error db.name was available in version 2
+        db.label = db.label || db.name;
+        // @ts-expect-error db.name was available in version 2
+        db.id = db.name;
+        // @ts-expect-error db.name was available in version 2
+        delete db.name;
+      }
     }
     return state;
   },
@@ -68,10 +80,15 @@ export const databaseDefinitionStore = new NestedStore(
 );
 const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
-export const addDatabaseDefinition = (data: DatabaseDefinition) => {
+export const addDatabaseDefinition = (data: Omit<DatabaseDefinition, "id">) => {
+  const id = uuidv4();
   useDatabaseDefinitionStore.setState((state) => {
-    state[data.id] = data;
+    state[id] = {
+      ...data,
+      id,
+    };
   });
+  return id;
 };
 
 export const updateDatabaseDefinition = (
@@ -89,20 +106,21 @@ export const deleteDatabaseDefinition = (id: string) => {
   }, true);
 };
 
-export const duplicateDatabaseDefinition = (id: string) => {
-  const sourceDef = useDatabaseDefinitionStore.getState()[id];
+export const duplicateDatabaseDefinition = (sourceId: string) => {
+  const sourceDef = useDatabaseDefinitionStore.getState()[sourceId];
+  const id = uuidv4();
 
-  const existingNames = Object.values(
+  const existingLabels = Object.values(
     useDatabaseDefinitionStore.getState()
-  ).map((d) => d.name);
+  ).map((d) => d.label);
 
-  const newName = getNewLabel(existingNames, sourceDef.name);
+  const label = getNewLabel(existingLabels, sourceDef.label);
 
   useDatabaseDefinitionStore.setState((state) => {
-    state[id + "copy"] = {
+    state[id] = {
       ...deepCopy(sourceDef),
-      id: id + "copy",
-      name: newName,
+      id,
+      label,
     };
   });
   return id;

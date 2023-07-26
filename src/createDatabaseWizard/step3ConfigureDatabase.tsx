@@ -29,38 +29,36 @@ const getStep = (isExistingDb: boolean) => {
           />
 
           <Input
-            key="asdf"
-            value={results.name}
+            value={results.label}
             onChange={(event) =>
               setResults((results) => ({
                 ...results,
-                name: event.target.value,
+                label: event.target.value,
               }))
             }
-            addonBefore="Database name"
-            disabled={isExistingDb}
+            addonBefore="Database label"
           />
         </Space>
       );
     },
     onNext: (results) => {
       const databaseDefinition = {
-        name: results.name,
-        id: results.name,
+        id: results.id,
+        label: results.label,
         csvContent: Papa.unparse(results.parsedCsvContent),
         tableName: results.tableName,
         columns: results.columns,
       };
 
       if (isExistingDb) {
-        updateDatabaseDefinition(results.name, databaseDefinition);
+        updateDatabaseDefinition(results.id, databaseDefinition);
 
         // Force recreating the database with new data
-        deleteConnection(results.name);
+        deleteConnection(results.id);
       } else {
-        addDatabaseDefinition(databaseDefinition);
+        const id = addDatabaseDefinition(databaseDefinition);
         const basepath = getBasePath();
-        window.history.pushState(null, "", `${basepath}/db/${results.name}`);
+        window.history.pushState(null, "", `${basepath}/db/${id}`);
       }
       return results;
     },

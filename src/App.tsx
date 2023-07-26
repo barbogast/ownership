@@ -25,7 +25,10 @@ function App() {
               <NestedRoutes
                 base={`/${params.organization}/${params.repository}`}
               >
-                <Route path="/db/:name" component={DatabaseDefinition}></Route>
+                <Route
+                  path="/db/:databaseDefinitionId"
+                  component={DatabaseDefinition}
+                ></Route>
 
                 <Route
                   path="/query/:queryId"

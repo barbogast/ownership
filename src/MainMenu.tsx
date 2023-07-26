@@ -60,7 +60,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     children: Object.values(databaseStore)
       .map((db) => ({
         key: `${basepath}/db/${db.id}`,
-        label: <Link href={`${basepath}/db/${db.id}`}>{db.id}</Link>,
+        label: <Link href={`${basepath}/db/${db.id}`}>{db.label}</Link>,
       }))
 
       .concat({
@@ -69,7 +69,8 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           <WizardModal
             steps={getSteps(false)}
             initialResult={{
-              name: "",
+              id: "",
+              label: "",
               tableName: "",
               csvContent: "",
               columns: [],

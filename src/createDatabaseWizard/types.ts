@@ -5,5 +5,6 @@ export type StepResult = {
   parsedCsvContent: string[][];
   columns: ColumnDefinition[];
   tableName: string;
-  name: string;
+  label: string;
+  id: string;
 };

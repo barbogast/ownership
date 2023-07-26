@@ -48,7 +48,7 @@ const columns: ColumnDefinition[] = [
 
 export const testTable = {
   id: "db1",
-  name: "db1",
+  label: "Database 1",
   csvContent,
   tableName: "aaa",
   columns,

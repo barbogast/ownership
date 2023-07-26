@@ -49,20 +49,22 @@ const DeleteDatabaseDefinitionModal: React.FC<{
 
 type Props = {
   params: {
-    name: string;
+    databaseDefinitionId: string;
   };
 };
 
 const DatabaseDefinition: React.FC<Props> = ({ params }) => {
-  const conn = useDatabaseConnection(params.name);
+  const id = params.databaseDefinitionId;
+  const conn = useDatabaseConnection(id);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [tables, setTables] = useState<string[]>([]);
-  const databaseDefintion = useDatabaseDefinitionStore()[params.name];
+  const databaseDefintion = useDatabaseDefinitionStore()[id];
+
   const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (conn.status === "uninitialized") {
-      initialize({ type: "local", url: params.name }, databaseDefintion);
+      initialize({ type: "local", url: id }, databaseDefintion);
       return;
     }
 
@@ -80,7 +82,7 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
 
     const result = conn.db.exec(query);
     setQueryResults(result);
-  }, [conn, params.name, databaseDefintion]);
+  }, [conn, id, databaseDefintion]);
 
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
@@ -88,10 +90,10 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
         <Col span={12}>
           <Input
             addonBefore="Label"
-            value={databaseDefintion.name}
+            value={databaseDefintion.label}
             onChange={(event) =>
-              updateDatabaseDefinition(params.name, {
-                name: event.target.value,
+              updateDatabaseDefinition(id, {
+                label: event.target.value,
               })
             }
             style={{ width: 500 }}
@@ -103,20 +105,20 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
             initialResult={{ ...databaseDefintion, parsedCsvContent: [] }}
             render={(openModal) => <Button onClick={openModal}>Edit</Button>}
           />{" "}
-          <Button onClick={() => duplicateDatabaseDefinition(params.name)}>
+          <Button onClick={() => duplicateDatabaseDefinition(id)}>
             Duplicate
           </Button>{" "}
           <AsyncModal
-            label={`Are you sure you want to delete the database "${params.name}"?`}
+            label={`Are you sure you want to delete the database "${databaseDefintion.label}"?`}
             render={(openModal) => (
               <Button onClick={openModal}>Delete...</Button>
             )}
             onSubmit={() => {
-              deleteDatabaseDefinition(params.name);
+              deleteDatabaseDefinition(id);
               setLocation("/");
             }}
           >
-            <DeleteDatabaseDefinitionModal id={params.name} />
+            <DeleteDatabaseDefinitionModal id={id} />
           </AsyncModal>
         </Col>
       </Row>
