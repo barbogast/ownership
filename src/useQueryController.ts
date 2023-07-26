@@ -8,7 +8,7 @@ import { columnsToObjects, rowsToObjects } from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
-import useDatabaseDefinitionStore from "./databaseDefinitionStore";
+import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import {
   DatabaseConnection,
   useDatabaseConnection,

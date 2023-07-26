@@ -8,7 +8,7 @@ import useDatabaseConnectionStore, {
 } from "../databaseConnectionStore";
 import { DatabaseSource } from "../query/queryStore";
 import Papa from "papaparse";
-import { DatabaseDefinition } from "../databaseDefinitionStore";
+import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
 
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");

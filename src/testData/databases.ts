@@ -1,4 +1,4 @@
-import { DatabaseState } from "../databaseDefinitionStore";
+import { DatabaseState } from "../databaseDefinition/databaseDefinitionStore";
 import { ColumnDefinition } from "../util/database";
 export const csvContent = `Year	TOTAL	Residents	Central bank	OMFIs	Other financial institutions	Other residents	Non-residents
 1995	276344	211032	2217	158189	30667	19960	65311

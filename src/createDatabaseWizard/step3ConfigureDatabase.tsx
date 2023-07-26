@@ -6,7 +6,7 @@ import { StepResult } from "./types";
 import {
   addDatabaseDefinition,
   updateDatabaseDefinition,
-} from "../databaseDefinitionStore";
+} from "../databaseDefinition/databaseDefinitionStore";
 import { getBasePath } from "../util/utils";
 import { deleteConnection } from "../databaseConnectionStore";
 

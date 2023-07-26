@@ -12,7 +12,7 @@ import useReportStore, { addReport } from "./report/reportStore";
 import { useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
-import useDatabaseDefinitionStore from "./databaseDefinitionStore";
+import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import getSteps from "./createDatabaseWizard";
 import WizardModal from "./wizard/WizardModal";
 

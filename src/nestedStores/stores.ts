@@ -1,4 +1,4 @@
-import { databaseDefinitionStore } from "../databaseDefinitionStore";
+import { databaseDefinitionStore } from "../databaseDefinition/databaseDefinitionStore";
 import { queryStore } from "../query/queryStore";
 import { reportStore } from "../report/reportStore";
 

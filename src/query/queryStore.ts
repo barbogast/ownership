@@ -5,7 +5,7 @@ import { deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
 import { ChartType } from "../display/Index";
-import useDatabaseDefinitionStore from "../databaseDefinitionStore";
+import useDatabaseDefinitionStore from "../databaseDefinition/databaseDefinitionStore";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
 

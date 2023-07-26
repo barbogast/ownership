@@ -4,7 +4,7 @@ import getQueryTestData from "./testData/queries";
 import useModifiedStore from "./modifiedStore";
 import useReportStore from "./report/reportStore";
 import getReportTestData from "./testData/reports";
-import useDatabaseDefinitionStore from "./databaseDefinitionStore";
+import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import getDatabasesTestData from "./testData/databases";
 
 const DevTools: React.FC = () => {

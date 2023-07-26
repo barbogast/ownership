@@ -9,7 +9,7 @@ import TableDisplay from "../../display/TableDisplay";
 import { editorDefaultOptions } from "../../constants";
 import { rowsToObjects } from "../../util/transform";
 import { Editor, OnMount } from "@monaco-editor/react";
-import useDatabaseDefinitionStore from "../../databaseDefinitionStore";
+import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinitionStore";
 import { QueryState } from "../../useQueryController";
 
 type Props = {

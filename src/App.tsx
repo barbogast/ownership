@@ -4,7 +4,7 @@ import Ownership from "./ownership/Index";
 import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
-import DatabaseDefinition from "./DatabaseDefinition";
+import DatabaseDefinition from "./databaseDefinition/DatabaseDefinition";
 import RepositoryList from "./repository/RepositoryList";
 import NestedRoutes from "./NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";

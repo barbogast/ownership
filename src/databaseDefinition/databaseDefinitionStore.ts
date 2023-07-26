@@ -1,9 +1,9 @@
 import stringify from "safe-stable-stringify";
-import NestedStore, { StoreConfig } from "./nestedStores";
-import { FileContents } from "./util/fsHelper";
-import { ColumnDefinition } from "./util/database";
-import { getNewLabel } from "./util/labels";
-import { deepCopy } from "./util/utils";
+import NestedStore, { StoreConfig } from "../nestedStores";
+import { FileContents } from "../util/fsHelper";
+import { ColumnDefinition } from "../util/database";
+import { getNewLabel } from "../util/labels";
+import { deepCopy } from "../util/utils";
 
 export type DatabaseDefinition = {
   id: string;

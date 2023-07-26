@@ -3,27 +3,25 @@ import React, { Fragment, useEffect, useState } from "react";
 import {
   QueryExecResult,
   useDatabaseConnection,
-} from "./databaseConnectionStore";
-import TableDisplay from "./display/TableDisplay";
-import { rowsToObjects } from "./util/transform";
-import { initialize } from "./util/database";
+} from "../databaseConnectionStore";
+import TableDisplay from "../display/TableDisplay";
+import { rowsToObjects } from "../util/transform";
+import { initialize } from "../util/database";
 import useDatabaseDefinitionStore, {
   duplicateDatabaseDefinition,
   deleteDatabaseDefinition,
   updateDatabaseDefinition,
 } from "./databaseDefinitionStore";
 import { Alert, Button, Col, Input, Row } from "antd";
-import getSteps from "./createDatabaseWizard";
-import WizardModal from "./wizard/WizardModal";
-import AsyncModal from "./AsyncModal";
-import { useQueriesByDatabase } from "./query/queryStore";
+import getSteps from "../createDatabaseWizard";
+import WizardModal from "../wizard/WizardModal";
+import AsyncModal from "../AsyncModal";
+import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
 
-type Props2 = {
+const DeleteDatabaseDefinitionModal: React.FC<{
   id: string;
-};
-
-const DeleteDatabaseDefinitionModal: React.FC<Props2> = ({ id }) => {
+}> = ({ id }) => {
   const queries = useQueriesByDatabase(id);
   return (
     <>
