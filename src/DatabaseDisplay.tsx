@@ -9,7 +9,6 @@ import { rowsToObjects } from "./util/transform";
 import { initialize } from "./util/database";
 import useDatabaseDefinitionStore, {
   duplicateDatabaseDefinition,
-  exportDatabaseDefinition,
   deleteDatabaseDefinition,
   updateDatabaseDefinition,
 } from "./databaseDefinitionStore";

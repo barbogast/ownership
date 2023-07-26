@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import useQueryController from "../useQueryController";
-import useQueryStore, {
+import {
   TransformType,
   duplicate,
   remove,
@@ -79,11 +79,9 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
         <PanelGroup direction="horizontal">
           <Panel defaultSize={50} minSize={10}>
             <Tabs
-              onChange={(key) => {
-                useQueryStore.setState((state) => {
-                  state[queryId].transformType = key as TransformType;
-                });
-              }}
+              onChange={(key) =>
+                updateQuery(queryId, { transformType: key as TransformType })
+              }
               activeKey={transformType}
               type="card"
               items={[
