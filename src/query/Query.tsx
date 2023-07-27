@@ -10,7 +10,7 @@ import {
   duplicate,
   remove,
   updateQuery,
-  useQuery,
+  Query,
 } from "./queryStore";
 import { downloadFile } from "../util/utils";
 import QuerySection from "./sections/QuerySection";
@@ -20,15 +20,15 @@ import TransformConfigForm from "./TransformConfigForm";
 import TableDisplay from "../display/TableDisplay";
 
 type Props = {
-  params: { queryId: string };
+  query: Query;
 };
 
-const Query: React.FC<Props> = ({ params: { queryId } }) => {
+const Query: React.FC<Props> = ({ query }) => {
   const [, setLocation] = useLocation();
 
-  const query = useQuery(queryId);
-  const { label, transformCode, transformType } = query;
+  const controller = useQueryController(query);
 
+  const { label, transformCode, transformType } = query;
   const {
     queryState,
     progress,
@@ -36,7 +36,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
     runQuery,
     runTransform,
     transformResult,
-  } = useQueryController(queryId);
+  } = controller;
 
   const exportQuery = () => {
     downloadFile(
@@ -47,14 +47,14 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
   };
 
   const removeQuery = () => {
-    const removed = remove(queryId);
+    const removed = remove(query.id);
     if (removed) {
       setLocation("/");
     }
   };
 
   const duplicateQuery = () => {
-    const id = duplicate(queryId);
+    const id = duplicate(query.id);
     setLocation(`/query/${id}`);
   };
 
@@ -64,7 +64,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
       label: "Data Selection",
       children: (
         <QuerySection
-          queryId={queryId}
+          query={query}
           runQuery={runQuery}
           queryResults={queryResults}
           queryState={queryState}
@@ -80,7 +80,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
           <Panel defaultSize={50} minSize={10}>
             <Tabs
               onChange={(key) =>
-                updateQuery(queryId, { transformType: key as TransformType })
+                updateQuery(query.id, { transformType: key as TransformType })
               }
               activeKey={transformType}
               type="card"
@@ -90,7 +90,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                   key: "config",
                   children: (
                     <TransformConfigForm
-                      queryId={queryId}
+                      query={query}
                       queryResults={queryResults}
                       transformResult={transformResult}
                     />
@@ -101,7 +101,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
                   key: "code",
                   children: (
                     <TransformSection
-                      queryId={queryId}
+                      query={query}
                       queryResults={queryResults}
                       runTransform={() =>
                         runTransform(queryResults, transformCode)
@@ -129,7 +129,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
       label: "Data Display",
       collapsible: progress.transformed ? undefined : "disabled",
       children: (
-        <DisplaySection queryId={queryId} transformResult={transformResult} />
+        <DisplaySection query={query} transformResult={transformResult} />
       ),
     } as const,
   ];
@@ -143,7 +143,7 @@ const Query: React.FC<Props> = ({ params: { queryId } }) => {
               addonBefore="Label"
               value={label}
               onChange={(event) =>
-                updateQuery(queryId, { label: event.target.value })
+                updateQuery(query.id, { label: event.target.value })
               }
               style={{ width: 500 }}
             />

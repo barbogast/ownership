@@ -11,6 +11,7 @@ import WithNestedStores from "./nestedStores/WithNestedStores";
 import DevTools from "./DevTools";
 import ReportDisplay from "./report/ReportDisplay";
 import WithReportFromLocalStorage from "./WithReportFromLocalStorage";
+import WithQueryFromLocalStorage from "./WithQueryFromLocalStorage";
 
 function App() {
   return (
@@ -35,7 +36,11 @@ function App() {
                   component={(props) => (
                     // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
                     // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-                    <Query {...props} key={props.params.queryId} />
+                    <WithQueryFromLocalStorage
+                      key={props.params.queryId}
+                      queryId={props.params.queryId}
+                      child={(query) => <Query query={query} />}
+                    />
                   )}
                 ></Route>
 

@@ -3,20 +3,28 @@ import React from "react";
 import { Link } from "wouter";
 import useQueryController from "../useQueryController";
 import ChartDisplay from "../display/Index";
-import { useQuery } from "../query/queryStore";
+import { Query } from "../query/queryStore";
+import WithQueryFromLocalStorage from "../WithQueryFromLocalStorage";
 
 type Props = {
   queryId: string;
   showEditLink: boolean;
 };
 
-const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
-  const { transformResult } = useQueryController(queryId);
-  const query = useQuery(queryId);
+const Inner: React.FC<{ query: Query }> = ({ query }) => {
+  const { transformResult } = useQueryController(query);
+  return transformResult.length ? (
+    <ChartDisplay query={query} transformResult={transformResult} />
+  ) : null;
+};
 
+const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   return (
     <>
-      <ChartDisplay query={query} transformResult={transformResult} />
+      <WithQueryFromLocalStorage
+        queryId={queryId}
+        child={(query) => <Inner query={query} />}
+      />
 
       {showEditLink && (
         <div style={{ textAlign: "right" }}>

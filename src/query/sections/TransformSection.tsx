@@ -3,25 +3,25 @@ import { useEffect, useRef, useState } from "react";
 import { editor as monaco, MarkerSeverity } from "monaco-editor";
 import Editor, { OnMount } from "@monaco-editor/react";
 
-import { updateQuery, useQuery } from "../queryStore";
+import { Query, updateQuery } from "../queryStore";
 import { QueryExecResult } from "../../databaseConnectionStore";
 import { editorDefaultOptions } from "../../constants";
 import { QueryState } from "../../useQueryController";
 
 type Props = {
-  queryId: string;
+  query: Query;
   queryResults: QueryExecResult[];
   queryState: QueryState;
   runTransform: (queryResults: QueryExecResult[]) => void;
 };
 
 const TransformSection: React.FC<Props> = ({
-  queryId,
+  query,
   runTransform,
   queryResults,
   queryState,
 }) => {
-  const { transformCode } = useQuery(queryId);
+  const { transformCode } = query;
   const editorRef = useRef<monaco.IStandaloneCodeEditor>();
   const [monacoInstances, setMonacoInstances] = useState<{
     editor: monaco.IStandaloneCodeEditor;
@@ -61,7 +61,7 @@ const TransformSection: React.FC<Props> = ({
         defaultLanguage="typescript"
         defaultValue={transformCode}
         onChange={(transformCode) =>
-          transformCode && updateQuery(queryId, { transformCode })
+          transformCode && updateQuery(query.id, { transformCode })
         }
         onMount={onEditorMount}
         options={editorDefaultOptions}

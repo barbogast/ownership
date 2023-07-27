@@ -2,21 +2,21 @@ import React from "react";
 import { Checkbox, Select } from "antd";
 
 import { QueryExecResult } from "../databaseConnectionStore";
-import { updateTransformConfig, useQuery } from "./queryStore";
+import { Query, updateTransformConfig } from "./queryStore";
 import { TransformResult } from "../types";
 
 type Props = {
-  queryId: string;
+  query: Query;
   queryResults: QueryExecResult[];
   transformResult: TransformResult;
 };
 
 const TransformConfigForm: React.FC<Props> = ({
-  queryId,
+  query,
   queryResults,
   transformResult,
 }) => {
-  const { transformConfig } = useQuery(queryId);
+  const { transformConfig } = query;
 
   if (!queryResults.length || !transformResult.length) {
     return null;
@@ -36,7 +36,7 @@ const TransformConfigForm: React.FC<Props> = ({
       <Select
         value={dataOrientation}
         onChange={(dataOrientation) =>
-          updateTransformConfig(queryId, { dataOrientation })
+          updateTransformConfig(query.id, { dataOrientation })
         }
         options={[
           { value: "column", label: "Values are in one column" },
@@ -51,7 +51,7 @@ const TransformConfigForm: React.FC<Props> = ({
         <Select
           value={labelColumn}
           onChange={(labelColumn) => {
-            updateTransformConfig(queryId, { labelColumn });
+            updateTransformConfig(query.id, { labelColumn });
           }}
           options={columns
             .map((col) => ({ value: col, label: col }))
@@ -66,7 +66,7 @@ const TransformConfigForm: React.FC<Props> = ({
           options={selectedColumnOptions}
           value={selectedColumns}
           onChange={(values) => {
-            updateTransformConfig(queryId, {
+            updateTransformConfig(query.id, {
               selectedColumns: values as string[],
             });
           }}

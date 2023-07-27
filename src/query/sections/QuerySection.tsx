@@ -3,7 +3,7 @@ import { Alert, Button, Select } from "antd";
 import { editor } from "monaco-editor";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
-import { updateQuery, useQuery } from "./../queryStore";
+import { Query, updateQuery } from "./../queryStore";
 import { QueryExecResult } from "../../databaseConnectionStore";
 import TableDisplay from "../../display/TableDisplay";
 import { editorDefaultOptions } from "../../constants";
@@ -13,19 +13,19 @@ import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinit
 import { QueryState } from "../../useQueryController";
 
 type Props = {
-  queryId: string;
+  query: Query;
   runQuery: (stmt: string) => void;
   queryResults: QueryExecResult[];
   queryState: QueryState;
 };
 
 const QuerySection: React.FC<Props> = ({
-  queryId,
+  query,
   runQuery,
   queryResults,
   queryState,
 }) => {
-  const { sqlStatement, databaseSource } = useQuery(queryId);
+  const { sqlStatement, databaseSource } = query;
   const databases = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
 
@@ -64,7 +64,7 @@ const QuerySection: React.FC<Props> = ({
               : databaseSource.url
           }
           onChange={(name) =>
-            updateQuery(queryId, {
+            updateQuery(query.id, {
               databaseSource: { type: "local", id: name },
             })
           }
@@ -90,7 +90,7 @@ const QuerySection: React.FC<Props> = ({
               defaultValue={sqlStatement}
               onMount={onEditorMount}
               onChange={(sqlStatement) =>
-                sqlStatement && updateQuery(queryId, { sqlStatement })
+                sqlStatement && updateQuery(query.id, { sqlStatement })
               }
               options={editorDefaultOptions}
             />

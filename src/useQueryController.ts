@@ -3,7 +3,7 @@ import { QueryExecResult } from "sql.js";
 import * as ts from "typescript/lib/typescript";
 import sourceMap from "source-map-js";
 
-import { useQuery } from "./query/queryStore";
+import { Query } from "./query/queryStore";
 import { columnsToObjects, rowsToObjects } from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
@@ -43,10 +43,9 @@ const getStateFromDbState = (db: DatabaseConnection): QueryState => {
   }
 };
 
-const useQueryController = (queryId: string) => {
+const useQueryController = (query: Query) => {
   const [progress, setProgress] = useState<Progress>({});
 
-  const query = useQuery(queryId);
   if (query.databaseSource.type !== "local") {
     throw new Error(
       `databaseSource.type "${query.databaseSource.type}" not supported}`

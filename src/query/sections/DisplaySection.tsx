@@ -1,24 +1,22 @@
 import { Select } from "antd";
 
-import useQueryStore, { useQuery, updateQuery } from "../queryStore";
+import useQueryStore, { updateQuery, Query } from "../queryStore";
 import { TransformResult } from "../../types";
 import ChartDisplay, { SINGLE_DATASET_CHART_TYPES } from "../../display/Index";
 
 type Props = {
-  queryId: string;
+  query: Query;
   transformResult: TransformResult;
 };
 
-const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
-  const query = useQuery(queryId);
-
+const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
   const { labelColumn, dataRowIndex } = query.transformConfig;
 
   return (
     <>
       <Select
         value={query.chartType}
-        onChange={(chartType) => updateQuery(queryId, { chartType })}
+        onChange={(chartType) => updateQuery(query.id, { chartType })}
         options={[
           { value: "barChart", label: "Bar chart" },
           { value: "stackedBarChart", label: "Stacked Bar chart" },
@@ -40,7 +38,7 @@ const DisplaySection: React.FC<Props> = ({ queryId, transformResult }) => {
               value={dataRowIndex}
               onChange={(value) => {
                 useQueryStore.setState((state) => {
-                  state[queryId].transformConfig.dataRowIndex = value;
+                  state[query.id].transformConfig.dataRowIndex = value;
                 });
               }}
               options={transformResult.map((row, i) => ({
