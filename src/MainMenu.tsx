@@ -9,7 +9,7 @@ import useQueryStore, {
   importQuery,
 } from "./query/queryStore";
 import useReportStore, { addReport } from "./report/reportStore";
-import { useRepoInfo } from "./util/utils";
+import { sortByLabel, useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
@@ -58,6 +58,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     key: `db`,
     label: `Databases`,
     children: Object.values(databaseStore)
+      .sort(sortByLabel)
       .map((db) => ({
         key: `${basepath}/db/${db.id}`,
         label: <Link href={`${basepath}/db/${db.id}`}>{db.label}</Link>,
@@ -102,6 +103,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       }
     },
     children: Object.values(queryStore)
+      .sort(sortByLabel)
       .map((query): { key: string; label: ReactElement | string } => ({
         key: `${basepath}/query/${query.id}`,
         label: (
@@ -137,6 +139,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       }
     },
     children: Object.values(reportStore)
+      .sort(sortByLabel)
       .map((report): { key: string; label: ReactElement | string } => ({
         key: `${basepath}/report/edit/${report.id}`,
         label: (
