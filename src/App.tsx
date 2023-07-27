@@ -12,6 +12,7 @@ import DevTools from "./DevTools";
 import ReportDisplay from "./report/ReportDisplay";
 import WithReportFromLocalStorage from "./WithReportFromLocalStorage";
 import WithQueryFromLocalStorage from "./WithQueryFromLocalStorage";
+import WithDatabaseDefinitionFromLocalStorage from "./WithDatabaseDefinitionFromLocalStorage";
 
 function App() {
   return (
@@ -28,7 +29,19 @@ function App() {
               >
                 <Route
                   path="/db/:databaseDefinitionId"
-                  component={DatabaseDefinition}
+                  component={(props) => (
+                    // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
+                    // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
+                    <WithDatabaseDefinitionFromLocalStorage
+                      key={props.params.databaseDefinitionId}
+                      id={props.params.databaseDefinitionId}
+                      child={(databaseDefinition) => (
+                        <DatabaseDefinition
+                          databaseDefinition={databaseDefinition}
+                        />
+                      )}
+                    />
+                  )}
                 ></Route>
 
                 <Route

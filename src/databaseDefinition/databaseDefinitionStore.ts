@@ -5,6 +5,7 @@ import { FileContents } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
 import { getNewLabel } from "../util/labels";
 import { deepCopy } from "../util/utils";
+import { Draft } from "immer";
 
 export type DatabaseDefinition = {
   id: string;
@@ -91,12 +92,29 @@ export const addDatabaseDefinition = (data: Omit<DatabaseDefinition, "id">) => {
   return id;
 };
 
+const getDbDef = (dbDefId: string) => {
+  const dbDef = useDatabaseDefinitionStore.getState()[dbDefId];
+  if (dbDef === undefined) {
+    throw new Error(`No databaseDefinition with id "${dbDefId}" found`);
+  }
+  return dbDef;
+};
+
+const getDbDefFromDraft = (state: Draft<DatabaseState>, dbDefId: string) => {
+  const dbDef = state[dbDefId];
+  if (dbDef === undefined) {
+    throw new Error(`No query with id "${dbDefId}" found`);
+  }
+  return dbDef;
+};
+
 export const updateDatabaseDefinition = (
   id: string,
   data: Partial<DatabaseDefinition>
 ) => {
   useDatabaseDefinitionStore.setState((state) => {
-    Object.assign(state[id], data);
+    const dbDef = getDbDefFromDraft(state, id);
+    Object.assign(dbDef, data);
   });
 };
 
@@ -107,7 +125,7 @@ export const deleteDatabaseDefinition = (id: string) => {
 };
 
 export const duplicateDatabaseDefinition = (sourceId: string) => {
-  const sourceDef = useDatabaseDefinitionStore.getState()[sourceId];
+  const sourceDef = getDbDef(sourceId);
   const id = uuidv4();
 
   const existingLabels = Object.values(

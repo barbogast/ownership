@@ -7,10 +7,11 @@ import {
 import TableDisplay from "../display/TableDisplay";
 import { rowsToObjects } from "../util/transform";
 import { initialize } from "../util/database";
-import useDatabaseDefinitionStore, {
+import {
   duplicateDatabaseDefinition,
   deleteDatabaseDefinition,
   updateDatabaseDefinition,
+  DatabaseDefinition,
 } from "./databaseDefinitionStore";
 import { Alert, Button, Col, Input, Row } from "antd";
 import getSteps from "../createDatabaseWizard";
@@ -48,23 +49,20 @@ const DeleteDatabaseDefinitionModal: React.FC<{
 };
 
 type Props = {
-  params: {
-    databaseDefinitionId: string;
-  };
+  databaseDefinition: DatabaseDefinition;
 };
 
-const DatabaseDefinition: React.FC<Props> = ({ params }) => {
-  const id = params.databaseDefinitionId;
+const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
+  const id = databaseDefinition.id;
   const conn = useDatabaseConnection(id);
   const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
   const [tables, setTables] = useState<string[]>([]);
-  const databaseDefintion = useDatabaseDefinitionStore()[id];
 
   const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (conn.status === "uninitialized") {
-      initialize({ type: "local", id }, databaseDefintion);
+      initialize({ type: "local", id }, databaseDefinition);
       return;
     }
 
@@ -82,7 +80,7 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
 
     const result = conn.db.exec(query);
     setQueryResults(result);
-  }, [conn, id, databaseDefintion]);
+  }, [conn, id, databaseDefinition]);
 
   return (
     <div style={{ display: "block", flexDirection: "column" }}>
@@ -90,7 +88,7 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
         <Col span={12}>
           <Input
             addonBefore="Label"
-            value={databaseDefintion.label}
+            value={databaseDefinition.label}
             onChange={(event) =>
               updateDatabaseDefinition(id, {
                 label: event.target.value,
@@ -102,14 +100,14 @@ const DatabaseDefinition: React.FC<Props> = ({ params }) => {
         <Col span={12} style={{ textAlign: "right" }}>
           <WizardModal
             steps={getSteps(true)}
-            initialResult={{ ...databaseDefintion, parsedCsvContent: [] }}
+            initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
             render={(openModal) => <Button onClick={openModal}>Edit</Button>}
           />{" "}
           <Button onClick={() => duplicateDatabaseDefinition(id)}>
             Duplicate
           </Button>{" "}
           <AsyncModal
-            label={`Are you sure you want to delete the database "${databaseDefintion.label}"?`}
+            label={`Are you sure you want to delete the database "${databaseDefinition.label}"?`}
             render={(openModal) => (
               <Button onClick={openModal}>Delete...</Button>
             )}
