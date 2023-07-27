@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import stringify from "safe-stable-stringify";
+import { Draft } from "immer";
 
 import { deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
@@ -53,11 +54,11 @@ function transform(queryResult: QueryResult): TransformResult{
 }
 `;
 
-export const getDefaults = () => ({
+export const getDefaults = (dataSourceId: string) => ({
   transformType: "config" as const,
   databaseSource: {
     type: "local" as const,
-    id: Object.values(useDatabaseDefinitionStore.getState())[0]?.id,
+    id: dataSourceId,
   },
   transformConfig: {
     dataOrientation: "row" as const,
@@ -77,16 +78,6 @@ const CURRENT_VERSION = 3;
 const migrate = (unknownState: unknown, oldVersion: number) => {
   console.log("migrate", unknownState, oldVersion);
   const state = unknownState as QueryState;
-  Object.keys(state).forEach((id) => {
-    state[id] = {
-      ...getDefaults(),
-      ...state[id],
-    };
-  });
-  Object.keys(state).forEach((id) => {
-    state[id].transformConfig.selectedColumns =
-      state[id].transformConfig.selectedColumns || [];
-  });
 
   if (oldVersion < 3) {
     Object.values(state).forEach((query) => {
@@ -149,16 +140,35 @@ export const useQueriesByDatabase = (databaseId: string) =>
     )
   );
 
-export const addQuery = () => {
+export const addQuery = (dataSourceId: string) => {
   const id = uuidv4();
   useQueryStore.setState((state) => {
     state[id] = {
-      ...getDefaults(),
+      ...getDefaults(dataSourceId),
       id,
       label: "New query",
     };
   });
   return id;
+};
+
+export const getQuery = (queryId: string) => {
+  const query = useQueryStore.getState()[queryId];
+  if (query === undefined) {
+    throw new Error(`No query with id "${queryId}" found`);
+  }
+  return query;
+};
+
+export const getQueryFromDraft = (
+  state: Draft<QueryState>,
+  queryId: string
+) => {
+  const query = state[queryId];
+  if (query === undefined) {
+    throw new Error(`No query with id "${queryId}" found`);
+  }
+  return query;
 };
 
 export const importQuery = (query: Query) => {
@@ -174,7 +184,7 @@ export const importQuery = (query: Query) => {
 };
 
 export const duplicate = (queryId: string) => {
-  const sourceQuery = useQueryStore.getState()[queryId];
+  const sourceQuery = getQuery(queryId);
   const id = uuidv4();
   const existingLabels = Object.values(useQueryStore.getState()).map(
     (q) => q.label
@@ -188,7 +198,7 @@ export const duplicate = (queryId: string) => {
 };
 
 export const remove = (queryId: string) => {
-  const query = useQueryStore.getState()[queryId];
+  const query = getQuery(queryId);
   const answer = confirm(`Are you sure to delete the query "${query.label}"?`);
   if (answer === true) {
     useQueryStore.setState((state) => {
@@ -196,6 +206,7 @@ export const remove = (queryId: string) => {
     }, true);
     return true;
   }
+
   return false;
 };
 
@@ -205,7 +216,8 @@ export const updateQuery = (
 ) => {
   add(queryId);
   useQueryStore.setState((state) => {
-    Object.assign(state[queryId], newState);
+    const query = getQueryFromDraft(state, queryId);
+    Object.assign(query, newState);
   });
 };
 
@@ -213,8 +225,9 @@ export const updateTransformConfig = (
   queryId: string,
   newState: Partial<TransformConfig>
 ) => {
-  add(queryId);
   useQueryStore.setState((state) => {
-    Object.assign(state[queryId].transformConfig, newState);
+    const query = getQueryFromDraft(state, queryId);
+    Object.assign(query.transformConfig, newState);
   });
+  add(queryId);
 };

@@ -90,7 +90,9 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     label: `Queries`,
     onClick: ({ key }: { key: string }) => {
       if (key === `new-query`) {
-        const id = addQuery();
+        const id = addQuery(
+          Object.values(useDatabaseDefinitionStore.getState())[0]?.id || ""
+        );
         setLocation(`${basepath}/query/${id}`);
       }
 
