@@ -55,7 +55,9 @@ const getChartBlock = (DisplayComponent: DisplayComponent) =>
               }
             >
               {queries.map((q) => (
-                <option value={q.id}>{q.label}</option>
+                <option key={q.id} value={q.id}>
+                  {q.label}
+                </option>
               ))}
             </select>
           )}
@@ -122,7 +124,7 @@ const Report: React.FC<Props> = ({
 
     onEditorContentChange: (editor) =>
       // @ts-expect-error Seems to be an issue with @blocknote
-      updateBlocks(reportId, editor.topLevelBlocks),
+      updateBlocks(id, editor.topLevelBlocks),
   });
 
   return (
