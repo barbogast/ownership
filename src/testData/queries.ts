@@ -66,7 +66,7 @@ function transform(queryResult: QueryResult): TransformResult{
 const getQueryTestData = () =>
   ({
     tableofownershipdetails: {
-      ...getDefaults(),
+      ...getDefaults(""),
       id: "tableofownershipdetails",
       label: "Debt ownership: Details",
       databaseFileName: "database.sqlite",
@@ -76,7 +76,7 @@ const getQueryTestData = () =>
       chartType: "table",
     },
     tableofownershipdistribution: {
-      ...getDefaults(),
+      ...getDefaults(""),
       id: "tableofownershipdistribution",
       label: "Debt ownership: Distribution",
       databaseFileName: "database.sqlite",
@@ -86,7 +86,7 @@ const getQueryTestData = () =>
       chartType: "pieChart",
     },
     tableofownershiptime: {
-      ...getDefaults(),
+      ...getDefaults(""),
       id: "tableofownershiptime",
       label: "Debt ownership: Time",
       databaseFileName: "database.sqlite",
@@ -96,7 +96,7 @@ const getQueryTestData = () =>
       chartType: "barChart",
     },
     categoryanalysis: {
-      ...getDefaults(),
+      ...getDefaults(""),
       id: "categoryanalysis",
       label: "Category Analysis",
       databaseFileName: "database2.sqlite",

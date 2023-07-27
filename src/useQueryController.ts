@@ -164,13 +164,16 @@ const useQueryController = (query: Query) => {
     if (query.transformType === "code") {
       runTransform(queryResults, query.transformCode);
     } else {
-      const { dataOrientation, labelColumn } = query.transformConfig;
-      const data =
-        dataOrientation === "row"
-          ? rowsToObjects(queryResults[0])
-          : columnsToObjects(queryResults[0], labelColumn);
-      setTransformResult(data);
-      setProgress({ queried: true, transformed: true });
+      const firstQueryResult = queryResults[0];
+      if (firstQueryResult) {
+        const { dataOrientation, labelColumn } = query.transformConfig;
+        const data =
+          dataOrientation === "row"
+            ? rowsToObjects(firstQueryResult)
+            : columnsToObjects(firstQueryResult, labelColumn);
+        setTransformResult(data);
+        setProgress({ queried: true, transformed: true });
+      }
     }
   }, [db, query, queryResults]);
 

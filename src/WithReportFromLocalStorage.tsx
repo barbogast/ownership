@@ -8,6 +8,9 @@ type Props = {
 
 const WithReportFromLocalStorage: React.FC<Props> = ({ child, reportId }) => {
   const report = useReport(reportId);
+  if (!report) {
+    return `Query with ID ${reportId} not found.`;
+  }
   return child(report);
 };
 

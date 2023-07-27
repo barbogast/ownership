@@ -5,7 +5,15 @@ import { ColumnDefinition } from "./database";
 export type CsvRecords = string[][];
 
 const guessType = (rows: CsvRecords, headerIndex: number) => {
-  const value = rows[1][headerIndex];
+  const firstDataRow = rows[1];
+  if (!firstDataRow) {
+    return "text";
+  }
+  const value = firstDataRow[headerIndex];
+  if (value === undefined) {
+    return "text";
+  }
+
   if (String(parseInt(value)) === value) {
     return "integer";
   }
@@ -22,7 +30,11 @@ const guessType = (rows: CsvRecords, headerIndex: number) => {
 };
 
 export const analyzeCsvHeader = (records: CsvRecords): ColumnDefinition[] => {
-  const columns = records[0].map(
+  const firstRow = records[0];
+  if (!firstRow) {
+    return [];
+  }
+  const columns = firstRow.map(
     (name, index) =>
       ({
         csvName: name,

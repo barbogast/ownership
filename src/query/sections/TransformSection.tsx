@@ -46,7 +46,8 @@ const TransformSection: React.FC<Props> = ({
         startLineNumber: queryState.position.line,
         endLineNumber: queryState.position.line,
         startColumn: 0,
-        endColumn: transformCode.split("\n")[queryState.position.line]?.length,
+        endColumn:
+          transformCode.split("\n")[queryState.position.line]?.length || 0,
       };
       monacoInstances.monaco.editor.setModelMarkers(model, "owner", [marker]);
     } else {

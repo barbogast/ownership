@@ -18,7 +18,11 @@ const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
 const QueryTable: React.FC<Pick<ChartProps, "transformResult">> = ({
   transformResult,
 }) => {
-  const columns = Object.keys(transformResult[0])
+  const firstTransformResult = transformResult[0];
+  if (!firstTransformResult) {
+    return null;
+  }
+  const columns = Object.keys(firstTransformResult)
     .filter((col) => col !== "children")
     .map((col) => ({
       title: col,
@@ -31,7 +35,7 @@ const QueryTable: React.FC<Pick<ChartProps, "transformResult">> = ({
       scroll={{ x: true }}
       columns={columns}
       rowSelection={
-        "children" in transformResult[0]
+        "children" in firstTransformResult
           ? {
               type: "checkbox",
               // onChange: (_, selectedDataSets) => {

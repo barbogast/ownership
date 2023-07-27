@@ -6,7 +6,6 @@ import { deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
 import { ChartType } from "../display/Index";
-import useDatabaseDefinitionStore from "../databaseDefinition/databaseDefinitionStore";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
 
@@ -152,7 +151,7 @@ export const addQuery = (dataSourceId: string) => {
   return id;
 };
 
-export const getQuery = (queryId: string) => {
+const getQuery = (queryId: string) => {
   const query = useQueryStore.getState()[queryId];
   if (query === undefined) {
     throw new Error(`No query with id "${queryId}" found`);
@@ -160,10 +159,7 @@ export const getQuery = (queryId: string) => {
   return query;
 };
 
-export const getQueryFromDraft = (
-  state: Draft<QueryState>,
-  queryId: string
-) => {
+const getQueryFromDraft = (state: Draft<QueryState>, queryId: string) => {
   const query = state[queryId];
   if (query === undefined) {
     throw new Error(`No query with id "${queryId}" found`);
@@ -178,7 +174,7 @@ export const importQuery = (query: Query) => {
   );
   const label = getNewLabel(existingLabels, query.label);
   useQueryStore.setState((state) => {
-    state[id] = { ...getDefaults(), ...query, id, label };
+    state[id] = { ...query, id, label };
   });
   return id;
 };

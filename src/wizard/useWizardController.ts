@@ -10,6 +10,9 @@ const useWizardController = <T extends Record<string, unknown>>(
   const [currentResults, setCurrentResults] = useState<T>(initialResult);
 
   const currentStep = steps[currentStepIndex];
+  if (!currentStep) {
+    throw new Error(`No step with index ${currentStepIndex} found`);
+  }
 
   const goToNextStep = () => {
     let result = currentResults;

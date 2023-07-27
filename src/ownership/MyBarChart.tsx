@@ -21,10 +21,10 @@ const MyBarChart: React.FC<Props> = ({ data }) => {
 
   const chartData = data.map((item) => ({
     name: item.name,
-    residents: item?.children![0].children?.find(
+    residents: item?.children![0]?.children?.find(
       (subItem) => subItem.name === "Residents"
     )!.value,
-    nonResidents: item?.children![0].children?.find(
+    nonResidents: item?.children![0]?.children?.find(
       (subItem) => subItem.name === "Non-residents"
     )!.value,
   }));

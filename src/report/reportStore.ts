@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { FileContents } from "../util/fsHelper";
 import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "../nestedStores";
+import { Draft } from "immer";
 // import { Block } from "@blocknote/core";
 
 type Block = string[];
@@ -55,6 +56,14 @@ export default useReportStore;
 
 export const useReport = (id: string) => useReportStore((state) => state[id]);
 
+const getReportFromDraft = (state: Draft<ReportState>, reportId: string) => {
+  const repo = state[reportId];
+  if (repo === undefined) {
+    throw new Error(`No repository with id "${reportId}" found`);
+  }
+  return repo;
+};
+
 export const addReport = () => {
   const id = uuidv4();
   useReportStore.setState((state) => {
@@ -67,12 +76,14 @@ export const addReport = () => {
   return id;
 };
 
-export const updateLabel = (queryId: string, label: string) =>
+export const updateLabel = (reportId: string, label: string) =>
   useReportStore.setState((state) => {
-    state[queryId].label = label;
+    const report = getReportFromDraft(state, reportId);
+    report.label = label;
   });
 
-export const updateBlocks = (queryId: string, blocks: Block[]) =>
+export const updateBlocks = (reportId: string, blocks: Block[]) =>
   useReportStore.setState((state) => {
-    state[queryId].blocks = blocks;
+    const report = getReportFromDraft(state, reportId);
+    report.blocks = blocks;
   });

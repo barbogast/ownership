@@ -23,8 +23,8 @@ export const columnsToObjects = logger.wrap(
         Object.fromEntries(
           [["label", col] as [SqlValue, SqlValue]].concat(
             queryResults.values.map((row) => [
-              row[queryResults.columns.indexOf(labelColumn)],
-              row[i],
+              row[queryResults.columns.indexOf(labelColumn)]!,
+              row[i]!,
             ])
           )
         )
@@ -39,10 +39,11 @@ export const extractSingleDataset = logger.wrap(
     dataRowIndex: number,
     labelColumn: string
   ) => {
-    if (dataRowIndex >= transformResult.length) {
+    const row = transformResult[dataRowIndex];
+    if (!row) {
       return [];
     }
-    return Object.entries(transformResult[dataRowIndex])
+    return Object.entries(row)
       .filter(([key]) => key !== labelColumn)
       .map(([key, value]) => ({
         label: key,
@@ -54,7 +55,11 @@ export const extractSingleDataset = logger.wrap(
 export const objectToArray = logger.wrap(
   "objectToArray",
   (transformResult: TransformResult, index: number): TransformResult => {
-    return Object.entries(transformResult[index]).map(([label, value]) => ({
+    const row = transformResult[index];
+    if (!row) {
+      return [];
+    }
+    return Object.entries(row).map(([label, value]) => ({
       label,
       value,
     }));

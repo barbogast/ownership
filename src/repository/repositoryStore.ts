@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "../types";
+import { Draft } from "immer";
 
 type Repository = {
   id: string;
@@ -35,6 +36,14 @@ export default useRepositoryStore;
 export const useRepository = (id: string) =>
   useRepositoryStore((state) => state.repositories[id]);
 
+const getRepoFromDraft = (state: Draft<RepositoryState>, repoId: string) => {
+  const repo = state.repositories[repoId];
+  if (repo === undefined) {
+    throw new Error(`No repository with id "${repoId}" found`);
+  }
+  return repo;
+};
+
 export const addRepository = (info: RepositoryInfo) => {
   const id = uuidv4();
   useRepositoryStore.setState((state) => {
@@ -52,7 +61,8 @@ export const updateRepository = (
   update: Partial<Omit<Repository, "id">>
 ) => {
   useRepositoryStore.setState((state) => {
-    Object.assign(state.repositories[repositoryId], update);
+    const repo = getRepoFromDraft(state, repositoryId);
+    Object.assign(repo, update);
   });
 };
 

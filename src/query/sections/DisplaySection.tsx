@@ -1,6 +1,6 @@
 import { Select } from "antd";
 
-import useQueryStore, { updateQuery, Query } from "../queryStore";
+import { updateQuery, Query, updateTransformConfig } from "../queryStore";
 import { TransformResult } from "../../types";
 import ChartDisplay, { SINGLE_DATASET_CHART_TYPES } from "../../display/Index";
 
@@ -36,11 +36,9 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
             Row to display:{" "}
             <Select
               value={dataRowIndex}
-              onChange={(value) => {
-                useQueryStore.setState((state) => {
-                  state[query.id].transformConfig.dataRowIndex = value;
-                });
-              }}
+              onChange={(value) =>
+                updateTransformConfig(query.id, { dataRowIndex: value })
+              }
               options={transformResult.map((row, i) => ({
                 value: i,
                 label:

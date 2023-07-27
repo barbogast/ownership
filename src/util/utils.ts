@@ -41,8 +41,8 @@ export const getPositionFromStacktrace = (stack: string) => {
     return;
   }
   return {
-    line: parseInt(result[1]) - 2, // No idea but the browser seems to add 2 to the line number
-    column: parseInt(result[2]),
+    line: parseInt(result[1]!) - 2, // No idea but the browser seems to add 2 to the line number
+    column: parseInt(result[2]!),
   };
 };
 
@@ -60,18 +60,17 @@ export const useRepoInfo = (): RepositoryInfo | undefined => {
 
   const [_, organization, repository] = location.split("/");
 
-  const info = useMemo(
-    () => ({
+  const info = useMemo(() => {
+    if (!organization || !repository) {
+      return;
+    }
+
+    return {
       organization,
       repository,
       path: `${organization}/${repository}`,
-    }),
-    [organization, repository]
-  );
-
-  if (!organization || !repository) {
-    return;
-  }
+    };
+  }, [organization, repository]);
 
   return info;
 };
