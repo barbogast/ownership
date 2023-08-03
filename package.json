@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "convert-csv": "(cd data && npx ts-node --esm convertCsv.ts)",
-    "convert-csv2": "(cd data && npx ts-node --esm convertCsv2.ts)"
+    "convert-csv2": "(cd data && npx ts-node --esm convertCsv2.ts)",
+    "analyze-bundle": "npx vite-bundle-visualizer"
   },
   "dependencies": {
     "@blocknote/core": "^0.8.2",
