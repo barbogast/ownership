@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { editor as monaco, MarkerSeverity } from "monaco-editor";
 import Editor, { OnMount } from "@monaco-editor/react";
+import { editor as monaco } from "monaco-editor";
 
 import { Query, updateQuery } from "../queryStore";
 import { QueryExecResult } from "../../databaseConnectionStore";
@@ -42,7 +42,9 @@ const TransformSection: React.FC<Props> = ({
       const model = monacoInstances.editor.getModel()!;
       const marker = {
         message: queryState.error.message || "Error",
-        severity: MarkerSeverity.Error,
+        severity: 8, // equals to monaco-editor/MarkerSeverity.Error
+        // Importing MarkerSeverity is a bad idea as it will make vite bundle the entire monaco-editor package
+        // (which is unnecessary is the files are loaded via CDN anyway)
         startLineNumber: queryState.position.line,
         endLineNumber: queryState.position.line,
         startColumn: 0,
