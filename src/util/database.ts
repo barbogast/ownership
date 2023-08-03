@@ -19,18 +19,15 @@ export type ColumnDefinition = {
   type: "integer" | "real" | "text";
 };
 
-const isLocal =
-  window.location.host.startsWith("127.0.0.1") ||
-  window.location.host.startsWith("localhost");
-
 const init = async () => {
   // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
   // without any configuration, initSqlJs will fetch the wasm files
+  console.log("AAAAA", import.meta.env.MODE, import.meta.env);
   const SQL = await initSqlJs({
     locateFile: () =>
-      isLocal
-        ? "/node_modules/sql.js/dist/sql-wasm.wasm?init"
-        : "/sql-wasm.wasm?init",
+      import.meta.env.MODE === "production"
+        ? "/sql-wasm.wasm?init"
+        : "/node_modules/sql.js/dist/sql-wasm.wasm?init",
   });
   return SQL;
 };
