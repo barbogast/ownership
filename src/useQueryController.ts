@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { QueryExecResult } from "sql.js";
-import * as ts from "typescript/lib/typescript";
 import sourceMap from "source-map-js";
 
 import { Query } from "./query/queryStore";
@@ -87,10 +86,18 @@ const useQueryController = (query: Query) => {
     }
   };
 
-  const runTransform = (results: QueryExecResult[], transformCode: string) => {
+  const runTransform = async (
+    results: QueryExecResult[],
+    transformCode: string
+  ) => {
     // @ts-expect-error Hack for typescript in browser to not crash
     window.process = { versions: {} };
-    const transpiled = ts.transpileModule(transformCode, {
+
+    const ts: { default: typeof import("typescript") } = await import(
+      // @ts-expect-error Didn't find a way to make vscode understand the types for this
+      "https://esm.run/typescript@5.1.6"
+    );
+    const transpiled = ts.default.transpileModule(transformCode, {
       compilerOptions: { sourceMap: true },
     });
 
@@ -157,24 +164,27 @@ const useQueryController = (query: Query) => {
   }, [db, databaseDefintion, query.databaseSource]);
 
   useEffect(() => {
-    if (!queryResults.length) {
-      return;
-    }
-
-    if (query.transformType === "code") {
-      runTransform(queryResults, query.transformCode);
-    } else {
-      const firstQueryResult = queryResults[0];
-      if (firstQueryResult) {
-        const { dataOrientation, labelColumn } = query.transformConfig;
-        const data =
-          dataOrientation === "row"
-            ? rowsToObjects(firstQueryResult)
-            : columnsToObjects(firstQueryResult, labelColumn);
-        setTransformResult(data);
-        setProgress({ queried: true, transformed: true });
+    const run = async () => {
+      if (!queryResults.length) {
+        return;
       }
-    }
+
+      if (query.transformType === "code") {
+        await runTransform(queryResults, query.transformCode);
+      } else {
+        const firstQueryResult = queryResults[0];
+        if (firstQueryResult) {
+          const { dataOrientation, labelColumn } = query.transformConfig;
+          const data =
+            dataOrientation === "row"
+              ? rowsToObjects(firstQueryResult)
+              : columnsToObjects(firstQueryResult, labelColumn);
+          setTransformResult(data);
+          setProgress({ queried: true, transformed: true });
+        }
+      }
+    };
+    run().catch(console.error);
   }, [db, query, queryResults]);
 
   return {
