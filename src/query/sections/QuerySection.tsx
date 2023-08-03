@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Alert, Button, Select } from "antd";
 import { editor } from "monaco-editor";
+import { Editor, OnMount } from "@monaco-editor/react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { Query, updateQuery } from "./../queryStore";
@@ -8,7 +9,6 @@ import { QueryExecResult } from "../../databaseConnectionStore";
 import TableDisplay from "../../display/TableDisplay";
 import { editorDefaultOptions } from "../../constants";
 import { rowsToObjects } from "../../util/transform";
-import { Editor, OnMount } from "@monaco-editor/react";
 import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinitionStore";
 import { QueryState } from "../../useQueryController";
 
