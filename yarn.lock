@@ -1277,6 +1277,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@playwright/test@npm:^1.36.2":
+  version: 1.36.2
+  resolution: "@playwright/test@npm:1.36.2"
+  dependencies:
+    "@types/node": "*"
+    fsevents: 2.3.2
+    playwright-core: 1.36.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 659304e0bbbafb2fa36395fbd8bd2c5db2b7791bbb55fa62409946ec7ec726cf8fff89f2b8a1a74fe831bf50a8780a37a5322a1251a6f7db2a9220a57ac408f0
+  languageName: node
+  linkType: hard
+
 "@popperjs/core@npm:^2.9.0":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
@@ -3860,7 +3876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@npm:~2.3.2":
+"fsevents@npm:2.3.2, fsevents@npm:~2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -3870,7 +3886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
+"fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
@@ -5665,6 +5681,7 @@ __metadata:
     "@blocknote/react": ^0.8.2
     "@isomorphic-git/lightning-fs": ^4.6.0
     "@monaco-editor/react": ^4.5.1
+    "@playwright/test": ^1.36.2
     "@types/lodash": ^4.14.195
     "@types/node": ^20.4.2
     "@types/papaparse": ^5.3.7
@@ -5870,6 +5887,15 @@ __metadata:
     mlly: ^1.2.0
     pathe: ^1.1.0
   checksum: 4b305c834b912ddcc8a0fe77530c0b0321fe340396f84cbb87aecdbc126606f47f2178f23b8639e71a4870f9631c7217aef52ffed0ae17ea2dbbe7e43d116a6e
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:1.36.2":
+  version: 1.36.2
+  resolution: "playwright-core@npm:1.36.2"
+  bin:
+    playwright-core: cli.js
+  checksum: 2193ce802ef93c28b9b5e11a0b1d7b60778c686015659978d1cbf0eb9cda2cdc85ec5575b887c1346e9d161cc2805bf27638d76a2f7f857dffeae968e6ceffcd
   languageName: node
   linkType: hard
 
