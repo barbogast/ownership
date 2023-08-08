@@ -83,6 +83,10 @@ export const getBasePath = () => {
 export const isPromise = <T>(value: unknown): value is Promise<T> =>
   typeof value === "object" && value !== null && "then" in value;
 
+export const isObject = (obj: unknown): obj is Record<string, unknown> => {
+  return typeof obj === "object" && obj !== null;
+};
+
 export const sortByLabel = (a: { label: string }, b: { label: string }) =>
   a.label.toLowerCase() > b.label.toLowerCase()
     ? 1

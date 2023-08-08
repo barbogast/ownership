@@ -26,6 +26,7 @@ const RepositoryControl: React.FC = () => {
         </Col>
         <Col flex={1}>
           <Select
+            data-testid="repository-select"
             options={Object.values(projects).map((project) => ({
               title: `${project.organization}/${project.repository}`,
               value: `${project.organization}/${project.repository}`,

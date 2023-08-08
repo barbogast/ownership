@@ -82,7 +82,7 @@ const RepositoryList: React.FC = () => {
               <Col span={LEFT_COLUMNS}>{repo.repository}</Col>
               <Col span={RIGHT_COLUMN}>
                 <Link href={`/${repo.organization}/${repo.repository}`}>
-                  <Button type="primary" style={BUTTON_STYLE}>
+                  <Button type="primary" style={BUTTON_STYLE} role="button">
                     Open
                   </Button>
                 </Link>
