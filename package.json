@@ -12,8 +12,9 @@
     "convert-csv": "(cd data && npx ts-node --esm convertCsv.ts)",
     "convert-csv2": "(cd data && npx ts-node --esm convertCsv2.ts)",
     "analyze-bundle": "npx vite-bundle-visualizer",
-    "playwright-ui": "yarn playwright test --ui",
-    "playwright-codegen": "yarn playwright codegen http://localhost:5173"
+    "e2e": "yarn playwright test",
+    "e2e-ui": "yarn playwright test --ui",
+    "e2e-codegen": "yarn playwright codegen http://localhost:5173"
   },
   "dependencies": {
     "@blocknote/core": "^0.8.2",
