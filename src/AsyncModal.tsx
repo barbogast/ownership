@@ -22,19 +22,15 @@ const AsyncModal: React.FC<Props> = ({ children, onSubmit, render, label }) => {
       setErrorMessage(undefined);
       maybePromise
         .then(() => {
-          messageApi.open({
+          setIsLoading(false);
+          setIsOpen(false);
+          return messageApi.open({
             type: "success",
             content: label + " was successful.",
           });
-          setIsLoading(false);
-          setIsOpen(false);
         })
         .catch((err) => {
           console.error(err);
-          messageApi.open({
-            type: "error",
-            content: label + " failed.",
-          });
           setErrorMessage(err);
           setIsLoading(false);
           if (err.name === "HttpError") {
@@ -42,6 +38,10 @@ const AsyncModal: React.FC<Props> = ({ children, onSubmit, render, label }) => {
           } else {
             setErrorMessage(err.message);
           }
+          return messageApi.open({
+            type: "error",
+            content: label + " failed.",
+          });
         });
     }
   };

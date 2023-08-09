@@ -75,7 +75,7 @@ class NestedStore<
   hydrate = (info: RepositoryInfo) => {
     this.info = info;
     this.store.persist.setOptions({ name: this.#getStoragePath(this.info) });
-    this.store.persist.rehydrate();
+    void this.store.persist.rehydrate();
   };
 
   import = (info: RepositoryInfo, folders: FileContents<Files>[]) => {

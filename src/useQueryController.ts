@@ -142,14 +142,16 @@ const useQueryController = (query: Query) => {
 
     if (db.status === "uninitialized") {
       setQueryState({ state: "dbInitializing" });
-      initialize(query.databaseSource, databaseDefintion).then((conn) => {
-        if (conn.status === "error") {
-          setQueryState({
-            state: "dbInitError",
-            errorMessage: conn.error.message,
-          });
-        }
-      });
+      initialize(query.databaseSource, databaseDefintion)
+        .then((conn) => {
+          if (conn.status === "error") {
+            setQueryState({
+              state: "dbInitError",
+              errorMessage: conn.error.message,
+            });
+          }
+        })
+        .catch(console.error);
       return;
     }
 

@@ -53,7 +53,7 @@ class Logger {
       const result = func(...args);
 
       if (isPromise(result)) {
-        result.then(() =>
+        void result.then(() =>
           this.log(name + "()", `${Math.round(performance.now() - start)} ms`)
         );
       } else {
