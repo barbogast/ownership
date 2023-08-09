@@ -25,6 +25,11 @@ const getStep = () => {
           ref={inputRef}
           defaultValue={results.csvContent}
           data-testid="csv-textarea"
+          onKeyDown={(event) =>
+            // Not sure why this is necessary, but without it, enter keys and arrow
+            // keys will be propagated to the parent element
+            event.stopPropagation()
+          }
         />
       );
     }),
