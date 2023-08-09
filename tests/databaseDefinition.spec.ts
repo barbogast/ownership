@@ -58,8 +58,7 @@ test("create database definition", async ({
   const defs = await databaseDefinitionStorage.getDbDefs();
   const def = Object.values(defs)[0];
   expect(def).toMatchObject({
-    // The chrome browser used by Playwright seems to use the windows line endings
-    csvContent: csvContent.replaceAll("\n", "\r\n"),
+    csvContent,
     label,
     tableName,
     columns: changedColumnDefinitions,
