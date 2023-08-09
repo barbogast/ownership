@@ -7,6 +7,11 @@ module.exports = {
     "plugin:react-hooks/recommended",
   ],
   parser: "@typescript-eslint/parser",
+
+  // Enabling the @typesciprt-eslint parserService will cause an eslint error in this file (.eslintrc.cjs)
+  // Ignoring this file is the recommended solution (https://typescript-eslint.io/linting/troubleshooting/#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file)
+  ignorePatterns: [".eslintrc.cjs"],
+
   parserOptions: { ecmaVersion: "latest", sourceType: "module", project: true },
   plugins: ["react-refresh"],
   rules: {
