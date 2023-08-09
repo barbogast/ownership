@@ -10,11 +10,13 @@ type Props<ResultType extends Record<string, unknown>> = {
   steps: Step<ResultType>[];
   initialResult: ResultType;
   render: (openModal: () => void) => React.ReactNode;
+  title: string;
 };
 const WizardModal = <ResultType extends Record<string, unknown>>({
   steps,
   initialResult,
   render,
+  title,
 }: Props<ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
@@ -55,7 +57,7 @@ const WizardModal = <ResultType extends Record<string, unknown>>({
           width="80%"
           //   height="80%"
           bodyStyle={{ height: "60vh", overflow: "auto" }}
-          title="Edit Database"
+          title={title}
           open={isOpen}
           onCancel={() => setIsOpen(false)}
           footer={[

@@ -68,6 +68,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         key: "new-database",
         label: (
           <WizardModal
+            title="Create Database"
             steps={getSteps(false)}
             initialResult={{
               id: "",

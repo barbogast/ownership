@@ -101,6 +101,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
         </Col>
         <Col span={12} style={{ textAlign: "right" }}>
           <WizardModal
+            title="Edit Database"
             steps={getSteps(true)}
             initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
             render={(openModal) => <Button onClick={openModal}>Edit</Button>}
