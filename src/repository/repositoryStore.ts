@@ -5,13 +5,13 @@ import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "../types";
 import { Draft } from "immer";
 
-type Repository = {
+export type Repository = {
   id: string;
   organization: string;
   repository: string;
 };
 
-type RepositoryState = {
+export type RepositoryState = {
   repositories: { [repositoryId: string]: Repository };
 };
 

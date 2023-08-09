@@ -24,6 +24,7 @@ const getStep = () => {
           style={{ fontFamily: "monospace", height: "100%", width: "100%" }}
           ref={inputRef}
           defaultValue={results.csvContent}
+          data-testid="csv-textarea"
         />
       );
     }),
