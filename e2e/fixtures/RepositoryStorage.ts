@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from "uuid";
 import { BrowserContext, Page } from "@playwright/test";
 
 import { getLocalStorageContent, setLocalStorageContent } from "../utils";
-import { isObject } from "../../src/util/utils";
+import { createId, isObject } from "../../src/util/utils";
 import { Repository } from "../../src/repository/repositoryStore";
 
 export class RepositoryStorage {
@@ -34,7 +33,7 @@ export class RepositoryStorage {
   }
 
   async addRepository(organization: string, repository: string) {
-    const id = uuidv4();
+    const id = createId();
     const newRepository: Repository = {
       id,
       organization,

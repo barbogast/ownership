@@ -1,4 +1,6 @@
 import { useLocation } from "wouter";
+import { v4 as uuidv4 } from "uuid";
+
 import { COLORS } from "../constants";
 import { RepositoryInfo } from "../types";
 import { useMemo } from "react";
@@ -93,3 +95,5 @@ export const sortByLabel = (a: { label: string }, b: { label: string }) =>
     : b.label.toLowerCase() > a.label.toLowerCase()
     ? -1
     : 0;
+
+export const createId = uuidv4;

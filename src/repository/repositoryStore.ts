@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { v4 as uuidv4 } from "uuid";
 import { immer } from "zustand/middleware/immer";
 import { RepositoryInfo } from "../types";
 import { Draft } from "immer";
+import { createId } from "../util/utils";
 
 export type Repository = {
   id: string;
@@ -45,7 +45,7 @@ const getRepoFromDraft = (state: Draft<RepositoryState>, repoId: string) => {
 };
 
 export const addRepository = (info: RepositoryInfo) => {
-  const id = uuidv4();
+  const id = createId();
   useRepositoryStore.setState((state) => {
     state.repositories[id] = {
       id,

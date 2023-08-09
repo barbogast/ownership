@@ -1,10 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
 import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { FileContents } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
 import { getNewLabel } from "../util/labels";
-import { deepCopy } from "../util/utils";
+import { createId, deepCopy } from "../util/utils";
 import { Draft } from "immer";
 
 export type DatabaseDefinition = {
@@ -82,7 +81,7 @@ export const databaseDefinitionStore = new NestedStore(
 const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
 export const addDatabaseDefinition = (data: Omit<DatabaseDefinition, "id">) => {
-  const id = uuidv4();
+  const id = createId();
   useDatabaseDefinitionStore.setState((state) => {
     state[id] = {
       ...data,
@@ -126,7 +125,7 @@ export const deleteDatabaseDefinition = (id: string) => {
 
 export const duplicateDatabaseDefinition = (sourceId: string) => {
   const sourceDef = getDbDef(sourceId);
-  const id = uuidv4();
+  const id = createId();
 
   const existingLabels = Object.values(
     useDatabaseDefinitionStore.getState()

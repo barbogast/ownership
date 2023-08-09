@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from "uuid";
 import stringify from "safe-stable-stringify";
 import { Draft } from "immer";
 
-import { deepCopy } from "../util/utils";
+import { createId, deepCopy } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
 import { ChartType } from "../display/Index";
@@ -140,7 +139,7 @@ export const useQueriesByDatabase = (databaseId: string) =>
   );
 
 export const addQuery = (dataSourceId: string) => {
-  const id = uuidv4();
+  const id = createId();
   useQueryStore.setState((state) => {
     state[id] = {
       ...getDefaults(dataSourceId),
@@ -168,7 +167,7 @@ const getQueryFromDraft = (state: Draft<QueryState>, queryId: string) => {
 };
 
 export const importQuery = (query: Query) => {
-  const id = uuidv4();
+  const id = createId();
   const existingLabels = Object.values(useQueryStore.getState()).map(
     (q) => q.label
   );
@@ -181,7 +180,7 @@ export const importQuery = (query: Query) => {
 
 export const duplicate = (queryId: string) => {
   const sourceQuery = getQuery(queryId);
-  const id = uuidv4();
+  const id = createId();
   const existingLabels = Object.values(useQueryStore.getState()).map(
     (q) => q.label
   );

@@ -1,8 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
 import { FileContents } from "../util/fsHelper";
 import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { Draft } from "immer";
+import { createId } from "../util/utils";
 // import { Block } from "@blocknote/core";
 
 type Block = string[];
@@ -65,7 +65,7 @@ const getReportFromDraft = (state: Draft<ReportState>, reportId: string) => {
 };
 
 export const addReport = () => {
-  const id = uuidv4();
+  const id = createId();
   useReportStore.setState((state) => {
     state[id] = {
       id,
