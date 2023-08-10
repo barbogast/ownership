@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { QueryExecResult } from "sql.js";
-import sourceMap from "source-map-js";
 
 import { Query } from "./query/queryStore";
 import { flipArrayOfObjects, rowsToObjects } from "./util/transform";
 import { TransformResult } from "./types";
-import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import {
   DatabaseConnection,
   useDatabaseConnection,
 } from "./databaseConnectionStore";
+import { executeTypescriptCode } from "./util/codeExecution";
 
 type Progress = {
   queried?: boolean;
@@ -86,46 +85,23 @@ const useQueryController = (query: Query) => {
     }
   };
 
-  const runTransform = async (
+  const runTransformCode = async (
     results: TransformResult[],
     transformCode: string
   ) => {
-    // @ts-expect-error Hack for typescript in browser to not crash
-    window.process = { versions: {} };
-
-    const ts: { default: typeof import("typescript") } = await import(
-      // @ts-expect-error Didn't find a way to make vscode understand the types for this
-      "https://esm.run/typescript@5.1.6"
-    );
-    const transpiled = ts.default.transpileModule(transformCode, {
-      compilerOptions: { sourceMap: true },
-    });
-
-    const finalCode = `${transpiled.outputText}
-      return transform(queryResult)
-    `;
-
-    try {
-      setQueryState({ state: "transformRunning" });
-      const func = new Function("queryResult", finalCode);
-      const result = func(results);
-      setTransformResult(result || []);
+    setQueryState({ state: "transformRunning" });
+    const result = await executeTypescriptCode(transformCode, results);
+    if (result.success) {
+      setTransformResult((result.returnValue as TransformResult) || []);
       setProgress({ queried: true, transformed: true });
       setQueryState({ state: "ready" });
-    } catch (err) {
-      console.error(err);
-
-      const smc = new sourceMap.SourceMapConsumer(
-        JSON.parse(transpiled.sourceMapText!)
-      );
-
-      const transpiledPosition = getPositionFromStacktrace(
-        (err as Error).stack!
-      );
-      const position = transpiledPosition
-        ? smc.originalPositionFor(transpiledPosition)
-        : undefined;
-      setQueryState({ state: "transformError", error: err as Error, position });
+    } else {
+      console.error(result.error);
+      setQueryState({
+        state: "transformError",
+        error: result.error,
+        position: result.position,
+      });
     }
   };
 
@@ -172,7 +148,7 @@ const useQueryController = (query: Query) => {
       }
 
       if (query.transformType === "code") {
-        await runTransform(queryResults, query.transformCode);
+        await runTransformCode(queryResults, query.transformCode);
       } else {
         const firstQueryResult = queryResults[0];
         if (firstQueryResult) {
@@ -194,7 +170,7 @@ const useQueryController = (query: Query) => {
     progress,
     queryResults,
     runQuery: (statement: string) => runQuery(db, statement),
-    runTransform,
+    runTransform: runTransformCode,
     transformResult,
   };
 };
