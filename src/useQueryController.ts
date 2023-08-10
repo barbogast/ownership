@@ -3,7 +3,7 @@ import { QueryExecResult } from "sql.js";
 import sourceMap from "source-map-js";
 
 import { Query } from "./query/queryStore";
-import { columnsToObjects, rowsToObjects } from "./util/transform";
+import { flipArrayOfObjects, rowsToObjects } from "./util/transform";
 import { TransformResult } from "./types";
 import { getPositionFromStacktrace } from "./util/utils";
 import { initialize } from "./util/database";
@@ -54,7 +54,7 @@ const useQueryController = (query: Query) => {
   const databaseDefintion =
     useDatabaseDefinitionStore()[query.databaseSource.id];
 
-  const [queryResults, setQueryResults] = useState<QueryExecResult[]>([]);
+  const [queryResults, setQueryResults] = useState<TransformResult[]>([]);
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
 
   const [queryState, setQueryState] = useState<QueryState>(
@@ -71,7 +71,7 @@ const useQueryController = (query: Query) => {
     try {
       setQueryState({ state: "dbQueryRunning" });
       const results = db.db.exec(statement);
-      setQueryResults(results);
+      setQueryResults(results.map(rowsToObjects));
       setProgress({ queried: true });
       setQueryState({ state: "ready" });
       return results;
@@ -87,7 +87,7 @@ const useQueryController = (query: Query) => {
   };
 
   const runTransform = async (
-    results: QueryExecResult[],
+    results: TransformResult[],
     transformCode: string
   ) => {
     // @ts-expect-error Hack for typescript in browser to not crash
@@ -179,8 +179,8 @@ const useQueryController = (query: Query) => {
           const { dataOrientation, labelColumn } = query.transformConfig;
           const data =
             dataOrientation === "row"
-              ? rowsToObjects(firstQueryResult)
-              : columnsToObjects(firstQueryResult, labelColumn);
+              ? firstQueryResult
+              : flipArrayOfObjects(firstQueryResult, labelColumn);
           setTransformResult(data);
           setProgress({ queried: true, transformed: true });
         }

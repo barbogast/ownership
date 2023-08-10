@@ -5,17 +5,16 @@ import { Editor, OnMount } from "@monaco-editor/react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { Query, updateQuery } from "./../queryStore";
-import { QueryExecResult } from "../../databaseConnectionStore";
 import TableDisplay from "../../display/TableDisplay";
 import { editorDefaultOptions } from "../../constants";
-import { rowsToObjects } from "../../util/transform";
 import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinitionStore";
 import { QueryState } from "../../useQueryController";
+import { TransformResult } from "../../types";
 
 type Props = {
   query: Query;
   runQuery: (stmt: string) => void;
-  queryResults: QueryExecResult[];
+  queryResults: TransformResult[];
   queryState: QueryState;
 };
 
@@ -112,7 +111,7 @@ const QuerySection: React.FC<Props> = ({
       />
       <Panel minSize={10}>
         {queryResults.map((queryResult, i) => (
-          <TableDisplay transformResult={rowsToObjects(queryResult)} key={i} />
+          <TableDisplay transformResult={queryResult} key={i} />
         ))}
       </Panel>
     </PanelGroup>

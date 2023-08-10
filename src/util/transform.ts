@@ -1,4 +1,4 @@
-import { QueryExecResult, SqlValue } from "sql.js";
+import { QueryExecResult } from "sql.js";
 import { TransformResult } from "../types";
 import Logger from "./logger";
 
@@ -13,23 +13,18 @@ export const rowsToObjects = logger.wrap(
   }
 );
 
-export const columnsToObjects = logger.wrap(
-  "columnsToObjects",
-  (queryResults: QueryExecResult, labelColumn: string) => {
-    return queryResults.columns
-      .map((col, i) => [col, i] as [string, number])
-      .filter(([col]) => col !== labelColumn)
-      .map(([col, i]) =>
+export const flipArrayOfObjects = logger.wrap(
+  "flipArrayOfObjects",
+  (queryResult: TransformResult, labelColumn: string) =>
+    Object.keys(queryResult[0]!)
+      .filter((col) => col !== labelColumn)
+      .map((key) =>
         Object.fromEntries(
-          [["label", col] as [SqlValue, SqlValue]].concat(
-            queryResults.values.map((row) => [
-              row[queryResults.columns.indexOf(labelColumn)]!,
-              row[i]!,
-            ])
+          ([["label", key]] as [string, unknown][]).concat(
+            queryResult.map((row) => [row[labelColumn] as string, row[key]])
           )
         )
-      );
-  }
+      )
 );
 
 export const extractSingleDataset = logger.wrap(

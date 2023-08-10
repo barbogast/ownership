@@ -4,21 +4,18 @@ import { editor as monaco } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 
 import { Query, updateQuery } from "../queryStore";
-import { QueryExecResult } from "../../databaseConnectionStore";
 import { editorDefaultOptions } from "../../constants";
 import { QueryState } from "../../useQueryController";
 
 type Props = {
   query: Query;
-  queryResults: QueryExecResult[];
   queryState: QueryState;
-  runTransform: (queryResults: QueryExecResult[]) => void;
+  runTransform: () => void;
 };
 
 const TransformSection: React.FC<Props> = ({
   query,
   runTransform,
-  queryResults,
   queryState,
 }) => {
   const { transformCode } = query;
@@ -70,7 +67,7 @@ const TransformSection: React.FC<Props> = ({
         options={editorDefaultOptions}
       />
       <br />
-      <Button type="primary" onClick={() => runTransform(queryResults)}>
+      <Button type="primary" onClick={runTransform}>
         Transform
       </Button>
     </>

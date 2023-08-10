@@ -91,7 +91,6 @@ const Query: React.FC<Props> = ({ query }) => {
                   children: (
                     <TransformConfigForm
                       query={query}
-                      queryResults={queryResults}
                       transformResult={transformResult}
                     />
                   ),
@@ -102,7 +101,6 @@ const Query: React.FC<Props> = ({ query }) => {
                   children: (
                     <TransformSection
                       query={query}
-                      queryResults={queryResults}
                       runTransform={() =>
                         runTransform(queryResults, transformCode)
                       }

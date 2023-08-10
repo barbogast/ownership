@@ -43,12 +43,13 @@ export type Query = {
 type QueryState = { [queryId: string]: Query };
 
 const defaultTransformCode = `
-type Value = string | number | null | TransformResult
-type QueryResult = {values: Value[][], columns: string[]}[]
-type TransformResult = Record<string, Value>[]
+type Value = string | number | null | Row[]
+type Row = Record<string, Value>
+type Table = Row[]
 
-function transform(queryResult: QueryResult): TransformResult{
+function transform(tables: Table[]): Table {
   // Your code here ...
+  return tables[0]
 }
 `;
 
