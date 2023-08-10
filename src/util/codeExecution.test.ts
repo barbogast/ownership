@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { getPositionFromStacktrace } from "./utils";
+import { getPositionFromStacktrace } from "./codeExecution";
 
 describe("getPositionFromStacktrace", () => {
   test("should return position", () => {

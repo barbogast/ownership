@@ -1,5 +1,4 @@
 import sourceMap from "source-map-js";
-import { getPositionFromStacktrace } from "./utils";
 
 type ExecutionResult =
   | { success: true; returnValue: unknown }
@@ -8,6 +7,28 @@ type ExecutionResult =
       error: Error;
       position?: { line: number; column: number };
     };
+
+export const getPositionFromStacktrace = (stack: string) => {
+  const line = stack
+    .split("\n")
+    .find((e) => e.includes("<anonymous>:") || e.includes("Function:"));
+
+  if (!line) {
+    return;
+  }
+
+  const re = line.includes("<anonymous>:")
+    ? /<anonymous>:(\d+):(\d+)/
+    : /Function:(\d+):(\d+)/;
+  const result = re.exec(line);
+  if (!result) {
+    return;
+  }
+  return {
+    line: parseInt(result[1]!) - 2, // No idea but the browser seems to add 2 to the line number
+    column: parseInt(result[2]!),
+  };
+};
 
 export const executeTypescriptCode = async (
   code: string,
