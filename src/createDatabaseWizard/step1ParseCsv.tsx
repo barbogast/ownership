@@ -1,7 +1,7 @@
 import { forwardRef, useRef, useImperativeHandle } from "react";
 import Papa from "papaparse";
 
-import { Step } from "../wizard/types";
+import { Step } from "../components/wizard/types";
 import { analyzeCsvHeader } from "../util/csv";
 import { StepResult } from "./types";
 

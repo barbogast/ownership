@@ -14,7 +14,7 @@ import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import getSteps from "./createDatabaseWizard";
-import WizardModal from "./wizard/WizardModal";
+import WizardModal from "./components/wizard/WizardModal";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;

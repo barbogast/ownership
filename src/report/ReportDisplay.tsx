@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import useQueryController from "../useQueryController";
 import ChartDisplay from "../display/Index";
 import { Query, useQuery } from "../query/queryStore";
-import InjectFromStore from "../InjectFromStore";
+import InjectFromStore from "../components/InjectFromStore";
 
 type Props = {
   queryId: string;

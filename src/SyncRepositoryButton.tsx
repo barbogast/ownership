@@ -1,6 +1,6 @@
 import { Button, Input } from "antd";
 
-import AsyncModal from "./AsyncModal";
+import AsyncModal from "./components/AsyncModal";
 import { useState } from "react";
 import { RepositoryInfo } from "./types";
 

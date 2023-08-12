@@ -1,5 +1,5 @@
 import { Input, Row, Col, Select, Space } from "antd";
-import { Step } from "../wizard/types";
+import { Step } from "../components/wizard/types";
 import { StepResult } from "./types";
 
 const getStep = () => {

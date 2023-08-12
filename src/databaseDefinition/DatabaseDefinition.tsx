@@ -15,8 +15,8 @@ import {
 } from "./databaseDefinitionStore";
 import { Alert, Button, Col, Input, Row } from "antd";
 import getSteps from "../createDatabaseWizard";
-import WizardModal from "../wizard/WizardModal";
-import AsyncModal from "../AsyncModal";
+import WizardModal from "../components/wizard/WizardModal";
+import AsyncModal from "../components/AsyncModal";
 import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
 

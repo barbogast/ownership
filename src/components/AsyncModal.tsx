@@ -1,6 +1,6 @@
 import { Alert, Modal, message } from "antd";
 import { useState } from "react";
-import { isPromise } from "./util/utils";
+import { isPromise } from "../util/utils";
 
 type Props = {
   onSubmit: () => void | Promise<void>;

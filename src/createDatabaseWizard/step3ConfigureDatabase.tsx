@@ -1,7 +1,7 @@
 import { Input, Space } from "antd";
 import Papa from "papaparse";
 
-import { Step } from "../wizard/types";
+import { Step } from "../components/wizard/types";
 import { StepResult } from "./types";
 import {
   addDatabaseDefinition,
