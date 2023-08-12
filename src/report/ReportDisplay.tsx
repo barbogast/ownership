@@ -3,8 +3,8 @@ import React from "react";
 import { Link } from "wouter";
 import useQueryController from "../useQueryController";
 import ChartDisplay from "../display/Index";
-import { Query } from "../query/queryStore";
-import WithQueryFromLocalStorage from "../WithQueryFromLocalStorage";
+import { Query, useQuery } from "../query/queryStore";
+import InjectFromStore from "../InjectFromStore";
 
 type Props = {
   queryId: string;
@@ -21,8 +21,9 @@ const Inner: React.FC<{ query: Query }> = ({ query }) => {
 const Chart: React.FC<Props> = ({ queryId, showEditLink }) => {
   return (
     <>
-      <WithQueryFromLocalStorage
-        queryId={queryId}
+      <InjectFromStore
+        id={queryId}
+        useFunc={useQuery}
         child={(query) => <Inner query={query} />}
       />
 

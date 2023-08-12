@@ -80,6 +80,9 @@ export const databaseDefinitionStore = new NestedStore(
 );
 const useDatabaseDefinitionStore = databaseDefinitionStore.store;
 
+export const useDatabaseDefinition = (id: string) =>
+  useDatabaseDefinitionStore((state) => state[id]);
+
 export const addDatabaseDefinition = (data: Omit<DatabaseDefinition, "id">) => {
   const id = createId();
   useDatabaseDefinitionStore.setState((state) => {

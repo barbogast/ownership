@@ -10,9 +10,10 @@ import NestedRoutes from "./NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";
 import DevTools from "./DevTools";
 import ReportDisplay from "./report/ReportDisplay";
-import WithReportFromLocalStorage from "./WithReportFromLocalStorage";
-import WithQueryFromLocalStorage from "./WithQueryFromLocalStorage";
-import WithDatabaseDefinitionFromLocalStorage from "./WithDatabaseDefinitionFromLocalStorage";
+import InjectFromStore from "./InjectFromStore";
+import { useQuery } from "./query/queryStore";
+import { useReport } from "./report/reportStore";
+import { useDatabaseDefinition } from "./databaseDefinition/databaseDefinitionStore";
 
 function App() {
   return (
@@ -32,9 +33,10 @@ function App() {
                   component={(props) => (
                     // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
                     // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-                    <WithDatabaseDefinitionFromLocalStorage
+                    <InjectFromStore
                       key={props.params.databaseDefinitionId}
                       id={props.params.databaseDefinitionId}
+                      useFunc={useDatabaseDefinition}
                       child={(databaseDefinition) => (
                         <DatabaseDefinition
                           databaseDefinition={databaseDefinition}
@@ -47,12 +49,13 @@ function App() {
                 <Route
                   path="/query/:queryId"
                   component={(props) => (
-                    // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
-                    // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-                    <WithQueryFromLocalStorage
+                    <InjectFromStore
+                      // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
+                      // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
                       key={props.params.queryId}
-                      queryId={props.params.queryId}
+                      id={props.params.queryId}
                       child={(query) => <Query query={query} />}
+                      useFunc={useQuery}
                     />
                   )}
                 ></Route>
@@ -62,9 +65,10 @@ function App() {
                   component={(props) => (
                     // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
                     // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-                    <WithReportFromLocalStorage
+                    <InjectFromStore
                       key={props.params.reportId}
-                      reportId={props.params.reportId}
+                      id={props.params.reportId}
+                      useFunc={useReport}
                       child={(report) => (
                         <Report
                           key={props.params.reportId}
@@ -72,7 +76,7 @@ function App() {
                           report={report}
                         />
                       )}
-                    ></WithReportFromLocalStorage>
+                    />
                   )}
                 />
                 <Route path="/dev-tools" component={DevTools} />
@@ -87,9 +91,10 @@ function App() {
         component={(props) => (
           // Setting the 'key' prop makes sure that React actually mounts a new component when queryId changes.
           // Otherwise it would just update the previous component, and local state (like collapsible state, ...) would not be reset.
-          <WithReportFromLocalStorage
+          <InjectFromStore
             key={props.params.reportId}
-            reportId={props.params.reportId}
+            id={props.params.reportId}
+            useFunc={useReport}
             child={(report) => (
               <Report
                 key={props.params.reportId}
@@ -98,7 +103,7 @@ function App() {
                 readOnly
               />
             )}
-          ></WithReportFromLocalStorage>
+          />
         )}
       />
     </Router>
