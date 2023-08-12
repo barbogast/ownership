@@ -75,7 +75,6 @@ const initialState: QueryState = {};
 const CURRENT_VERSION = 3;
 
 const migrate = (unknownState: unknown, oldVersion: number) => {
-  console.log("migrate", unknownState, oldVersion);
   const state = unknownState as QueryState;
 
   if (oldVersion < 3) {

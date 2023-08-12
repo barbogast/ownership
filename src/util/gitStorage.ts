@@ -21,7 +21,6 @@ const save = async (
   for (const [id, files] of Object.entries(entityFolders)) {
     const folder = getEntryPath(gitHelper.root, entryName, id);
     await fsHelper.mkdir_p(folder);
-    console.log(files);
     await fsHelper.writeFilesToDirectory(folder, files);
     await gitHelper.addFiles(
       getRelativeEntryPath(entryName, id),

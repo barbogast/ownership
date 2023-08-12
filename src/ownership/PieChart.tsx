@@ -11,8 +11,6 @@ const Chart: React.FC<Props> = ({ data }) => {
     return null;
   }
 
-  console.log("chart", data.children);
-
   return (
     <PieChart width={400} height={400}>
       <Pie

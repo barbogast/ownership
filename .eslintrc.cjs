@@ -22,5 +22,6 @@ module.exports = {
       { destructuredArrayIgnorePattern: "^_" },
     ],
     "@typescript-eslint/no-floating-promises": "error",
+    "no-console": ["error", { allow: ["warn", "info", "error"] }],
   },
 };

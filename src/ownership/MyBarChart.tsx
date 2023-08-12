@@ -17,7 +17,7 @@ type Props = {
 };
 const MyBarChart: React.FC<Props> = ({ data }) => {
   const [selected, setSelected] = useState<BarChartTableDataType[]>([]);
-  console.log(selected);
+  console.info(selected);
 
   const chartData = data.map((item) => ({
     name: item.name,

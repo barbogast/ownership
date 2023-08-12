@@ -22,7 +22,6 @@ export type ColumnDefinition = {
 const init = async () => {
   // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
   // without any configuration, initSqlJs will fetch the wasm files
-  console.log("AAAAA", import.meta.env.MODE, import.meta.env);
   const SQL = await initSqlJs({
     locateFile: () =>
       import.meta.env.MODE === "production"
