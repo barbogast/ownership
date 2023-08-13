@@ -22,7 +22,7 @@ const TransformSection: React.FC<Props> = ({
   const editorRef = useRef<monaco.IStandaloneCodeEditor>();
   const [monacoInstances, setMonacoInstances] = useState<{
     editor: monaco.IStandaloneCodeEditor;
-    monaco: typeof import("/Users/ben/git/ownership/node_modules/monaco-editor/esm/vs/editor/editor.api");
+    monaco: typeof import("../../../node_modules/monaco-editor/esm/vs/editor/editor.api");
   }>();
 
   const onEditorMount: OnMount = (editor, monaco) => {
