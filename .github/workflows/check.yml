@@ -31,4 +31,4 @@ jobs:
       - name: Typescript
         run: yarn tsc
       - name: Test
-        run: yarn test --run
+        run: yarn test:unit --run
