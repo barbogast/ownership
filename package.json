@@ -14,7 +14,7 @@
     "analyze-bundle": "npx vite-bundle-visualizer",
     "e2e": "yarn playwright test --config e2e/playwright.config.ts",
     "e2e-ui": "yarn playwright test --config e2e/playwright.config.ts --ui",
-    "e2e-codegen": "yarn playwright codegen http://localhost:5173",
+    "e2e-codegen": "yarn playwright codegen http://localhost:5173"
   },
   "dependencies": {
     "@blocknote/core": "^0.8.2",
