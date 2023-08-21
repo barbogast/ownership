@@ -1,6 +1,6 @@
 import fs_ from "fs";
 import { describe, expect, test } from "vitest";
-import { exec as exec_, spawn } from "node:child_process";
+import { exec as exec_ } from "node:child_process";
 import { saveStore } from "../src/util/gitStorage";
 import FsHelper from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
@@ -144,26 +144,15 @@ describe("Test git", () => {
 
     // 7. Compare test-git/temp/result/<test-name> to the expected files
 
-    const folders2 = {
-      queryA: {
-        "index.json": '{"name": "queryA"}',
-        // "sqlStatement.sql": "SELECT * FROM tableA",
-      },
-      queryD: {
-        "index.json": '{"name": "queryB"}',
-      },
-    };
-
-    for (const [folder, files] of Object.entries(folders2)) {
+    for (const [folder, files] of Object.entries(folders)) {
+      const directory = `test-git/temp/result/${name}/query/${folder}`;
       for (const [filename, content] of Object.entries(files)) {
-        const path = `test-git/temp/result/${name}/query/${folder}/${filename}`;
+        const path = `${directory}/${filename}`;
         const actual = await fs.readFile(path, "utf-8");
         expect(actual).toBe(content);
       }
 
-      const directoryContents = await fs.readdir(
-        `test-git/temp/result/${name}/query/${folder}`
-      );
+      const directoryContents = await fs.readdir(directory);
       for (const filename of directoryContents) {
         if (!(filename in files)) {
           throw new Error(`File ${filename} should not exist`);
