@@ -2,7 +2,7 @@ import fs_ from "fs";
 import { describe, expect, test } from "vitest";
 import { exec as exec_ } from "node:child_process";
 import { saveStore } from "../src/util/gitStorage";
-import FsHelper from "../src/util/fsHelper";
+import FsHelper, { FileContents } from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
 import Logger from "../src/util/logger";
 
@@ -53,6 +53,26 @@ const prepareTest = gitTestLogger.time("prepareTest", async (name: string) => {
   await exec(`git push`, `test-git/temp/source/${name}`);
 });
 
+const compareResult = async (
+  testName: string,
+  folders: Record<string, FileContents<string>>
+) => {
+  for (const [folder, files] of Object.entries(folders)) {
+    const directory = `test-git/temp/result/${testName}/query/${folder}`;
+    for (const [filename, content] of Object.entries(files)) {
+      const path = `${directory}/${filename}`;
+      const actual = await fs.readFile(path, "utf-8");
+      expect(actual).toBe(content);
+    }
+
+    const directoryContents = await fs.readdir(directory);
+    for (const filename of directoryContents) {
+      if (!(filename in files)) {
+        throw new Error(`File ${filename} should not exist`);
+      }
+    }
+  }
+};
 /*
     Folders:
     - test-git/fixtures: contains initial files of repositories
@@ -142,22 +162,7 @@ describe("Test git", () => {
       `test-git/temp/result`
     );
 
+    await compareResult(name, folders);
     // 7. Compare test-git/temp/result/<test-name> to the expected files
-
-    for (const [folder, files] of Object.entries(folders)) {
-      const directory = `test-git/temp/result/${name}/query/${folder}`;
-      for (const [filename, content] of Object.entries(files)) {
-        const path = `${directory}/${filename}`;
-        const actual = await fs.readFile(path, "utf-8");
-        expect(actual).toBe(content);
-      }
-
-      const directoryContents = await fs.readdir(directory);
-      for (const filename of directoryContents) {
-        if (!(filename in files)) {
-          throw new Error(`File ${filename} should not exist`);
-        }
-      }
-    }
   });
 });
