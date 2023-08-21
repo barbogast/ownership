@@ -1,3 +1,4 @@
+import fs_ from "fs";
 import { describe, expect, test } from "vitest";
 import { exec as exec_, spawn } from "node:child_process";
 import { saveStore } from "../src/util/gitStorage";
@@ -5,14 +6,14 @@ import FsHelper from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
 import Logger from "../src/util/logger";
 
+const fs = fs_.promises;
+
 const gitTestLogger = new Logger("gitTest");
 const shLogger = new Logger("sh");
 
 const exec = (command: string, cwd?: string) =>
   new Promise((resolve, reject) => {
     const start = performance.now();
-    // console.log(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
-    // console.time(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
     return exec_(command, { cwd }, (err, stdout) => {
       shLogger.log(
         `${cwd ? cwd + ":" : ""} ${command} (${Math.round(
@@ -20,9 +21,8 @@ const exec = (command: string, cwd?: string) =>
         )} ms)`
       );
 
-      // console.timeEnd(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
       if (err) {
-        console.log(err);
+        console.error(err);
       }
       return err ? reject(err) : resolve(stdout);
     });
@@ -142,5 +142,22 @@ describe("Test git", () => {
     );
 
     // 7. Compare test-git/temp/result/<test-name> to the expected files
+
+    for (const [folder, files] of Object.entries(folders)) {
+      for (const [filename, content] of Object.entries(files)) {
+        const path = `test-git/temp/result/${name}/${folder}/${filename}`;
+        const actual = await fsHelper.readFile(path);
+        expect(actual).toBe(content);
+      }
+
+      const directoryContents = await fs.readdir(
+        `test-git/temp/result/${name}/${folder}`
+      );
+      for (const filename of directoryContents) {
+        if (!(filename in files)) {
+          throw new Error(`File ${filename} should not exist`);
+        }
+      }
+    }
   });
 });
