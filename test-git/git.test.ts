@@ -16,6 +16,31 @@ const exec = (command: string, cwd?: string) =>
     });
   });
 
+const prepareTest = async (name: string) => {
+  await exec(`rm -rf test-git/temp`);
+  await exec(`mkdir -p test-git/temp/source/${name}`);
+  await exec(`mkdir -p test-git/temp/server/${name}`);
+  await exec(`mkdir -p test-git/temp/test/${name}`);
+  await exec(`mkdir -p test-git/temp/result/${name}`);
+
+  // 1. Initialize bare repository
+  await exec(`git init --bare`, `test-git/temp/server/${name}`);
+
+  // 2. Initialize source repository: test-git/temp/source/<test-name>: git init
+  await exec(
+    `git clone http://localhost:8174/${name}`,
+    `test-git/temp/source/${name}`
+  );
+
+  // 3. Copy files into source repository
+  await exec(`cp -r test-git/fixtures/test2/* test-git/temp/source/${name}`);
+
+  // 4. Add all files to git and commit: test-git/temp/source/<test-name>: git add . && git commit -m "Initial commit"
+  await exec(`git add --all`, "test-git/temp/source/test2");
+  await exec(`git commit -m "Initial commit"`, `test-git/temp/source/${name}`);
+  await exec(`git push`, `test-git/temp/source/${name}`);
+};
+
 /*
     Folders:
     - test-git/fixtures: contains initial files of repositories
@@ -74,32 +99,7 @@ describe("Test git", () => {
   test.only("test 2", async () => {
     Logger.enable("fs", "git");
     const name = "test2";
-
-    await exec(`rm -rf test-git/temp`);
-    await exec(`mkdir -p test-git/temp/source/${name}`);
-    await exec(`mkdir -p test-git/temp/server/${name}`);
-    await exec(`mkdir -p test-git/temp/test/${name}`);
-    await exec(`mkdir -p test-git/temp/result/${name}`);
-
-    // 1. Initialize bare repository
-    await exec(`git init --bare`, `test-git/temp/server/${name}`);
-
-    // 2. Initialize source repository: test-git/temp/source/<test-name>: git init
-    await exec(
-      `git clone http://localhost:8174/${name}`,
-      `test-git/temp/source/${name}`
-    );
-
-    // 3. Copy files into source repository
-    await exec(`cp -r test-git/fixtures/test2/* test-git/temp/source/${name}`);
-
-    // 4. Add all files to git and commit: test-git/temp/source/<test-name>: git add . && git commit -m "Initial commit"
-    await exec(`git add --all`, "test-git/temp/source/test2");
-    await exec(
-      `git commit -m "Initial commit"`,
-      `test-git/temp/source/${name}`
-    );
-    await exec(`git push`, `test-git/temp/source/${name}`);
+    await prepareTest(name);
 
     // 5. Run the test
 
