@@ -115,6 +115,16 @@ describe("Test git", () => {
 
     // 5. Run the test
 
+    const folders = {
+      queryA: {
+        "index.json": '{"name": "queryA"}',
+        "sqlStatement.sql": "SELECT * FROM tableA",
+      },
+      queryD: {
+        "index.json": '{"name": "queryB"}',
+      },
+    };
+
     const organization = "org1";
 
     const fsHelper = new FsHelper(organization);
@@ -134,7 +144,7 @@ describe("Test git", () => {
 
     // 7. Compare test-git/temp/result/<test-name> to the expected files
 
-    const folders = {
+    const folders2 = {
       queryAa: {
         "index.json": '{"name": "queryA"}',
         "sqlStatement.sql": "SELECT * FROM tableA",
@@ -144,7 +154,7 @@ describe("Test git", () => {
       },
     };
 
-    for (const [folder, files] of Object.entries(folders)) {
+    for (const [folder, files] of Object.entries(folders2)) {
       for (const [filename, content] of Object.entries(files)) {
         const path = `test-git/temp/result/${name}/query/${folder}/${filename}`;
         const actual = await fs.readFile(path, "utf-8");
