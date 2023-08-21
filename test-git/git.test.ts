@@ -83,7 +83,7 @@ const prepareTest = gitTestLogger.time("prepareTest", async (name: string) => {
 */
 describe("Test git", () => {
   test("test 1", async () => {
-    Logger.enable("fs", "git");
+    Logger.enable("fs", "git", "sh", "gitTest");
     const organization = "org1";
     const repository = "repo1";
     const gitRoot = "test-dir" + repository;
