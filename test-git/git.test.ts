@@ -145,8 +145,8 @@ describe("Test git", () => {
     // 7. Compare test-git/temp/result/<test-name> to the expected files
 
     const folders2 = {
-      queryAa: {
-        "index.json": '{"name": "queryA"}',
+      queryA: {
+        "index.jsons": '{"name": "queryA"}',
         "sqlStatement.sql": "SELECT * FROM tableA",
       },
       queryD: {
