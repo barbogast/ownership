@@ -35,6 +35,13 @@ const SyncRepositoryButton: React.FC<Props> = ({
       )}
       onSubmit={() => callback(repositoryInfo, user, password)}
     >
+      <a href="https://github.com/settings/tokens?type=beta">
+        https://github.com/settings/tokens?type=beta
+      </a>
+      <br />
+      - Repository access: Only select repositories
+      <br />
+      - Permissions: Contents: Read and write
       <Input
         placeholder="Username"
         addonBefore="Username"

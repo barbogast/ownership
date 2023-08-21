@@ -12,7 +12,7 @@ const getRelativeEntryPath = (entryName: string, entryId: string) =>
 const getEntryPath = (gitRoot: string, entryName: string, entryId: string) =>
   `${gitRoot}/${entryName}/${entryId}`;
 
-const save = async (
+export const saveStore = async (
   fsHelper: FsHelper,
   gitHelper: GitHelper,
   entryName: string,
@@ -68,7 +68,7 @@ export const saveToGit = async (
   await gitHelper.clone(repositoryInfo.path, username, password);
 
   for (const store of stores) {
-    await save(fsHelper, gitHelper, store.config.name, store.export());
+    await saveStore(fsHelper, gitHelper, store.config.name, store.export());
   }
 
   await gitHelper.commit();

@@ -1,0 +1,176 @@
+- Repository level / management
+- Saving and loading with Github
+- Create DB on the fly from CSV
+- Form to create / edit DB
+- Use Typescript instead of Javascript for Code Transform
+- Introduce Typescript and SQL support for editor
+- Fix data transformation chart configuration
+- Prototype rendering on separate website
+- Change selected query in report editor
+
+
+Bugs
+- transformCode is run with every key stroke
+- "Export" button is broken on prod
+- App creates //undefined/reports store; it shouldn't
+- Loading a repo from Github needs a page refresh to update the data
+- deep links don't work at all because of hosting with github pages :-(
+
+Code:
+- change modifiedStore to be a NestedStore
+- use superstruct (or smth similar) to verify that data from Github (or localStorage(?)) has the correct shape
+
+Saving to Github
+- avoid saving default transformCode / sqlStatement to Github
+- on Github: queries/index.json
+    - don't write "databaseFileName"
+- Add newline character at the end of json files
+- isomorphic-git seems to use "master" as the default branch
+
+Usability
+- preselect all columns to display
+- automatically open the correct tab within a query
+- automatically add initial sqlStatement to query: select * from aaa
+- errors from sql queries should be displayed directly below the editor
+- rename QuerySection to SqlSection (or DatabaseSection)
+
+Features
+- Deleting entities doesn't also delete the corresponding files in the repo
+- Somehow validate that the data returned by transformCode is valid
+- Delete reports
+- Add validation to input fields
+- csv export of query result
+- json export of transform result
+- Allow to configure delimiter and quote character for csv import
+- Change adding a repository:
+    - 3 tabs: load from Github, load from Git, create local
+        - load from Github: enter url, prefill org/repo name
+        - load from git: enter url, manually fill org / repo name
+        - manually fill org / repo name
+- allow to mark DB columns as NOT NULL?
+- Database display: Allow to filter the data, via UI and/or SQL
+- SQL editor doesn't grow with code size / is too small
+
+Architecture
+- versioning of schema
+- Change report editor to use markdown
+- Database vs Table:
+    - have multiple tables per database connection
+    - expose this to the user? what about joins between tables?
+    - what about table name collisions?
+- Sync state between tabs
+- Undo???
+- Run transformCode operation in sandbox (webworker, iframe, ...)
+- Run git operations in webworker
+- Run sql operations in webworker (are they already?)
+
+Name ideas
+- pocket
+- declouded
+- unclouded
+- hamster
+- myown
+
+Sovereign bond holdings:
+- different currencies (euro vs usd)
+- netherlands: 
+    - missing data points (points vs empty cells)
+    - "Banks (incl Central Bank)" seems to indicate that it includes the next column
+- germany empty data cells
+
+Sync state between tabs:
+- https://github.com/Romainlg29/use-broadcast
+- https://dev.to/cassiolacerda/how-to-syncing-react-state-across-multiple-tabs-with-usestate-hook-4bdm
+- https://github.com/Tom-Julux/shared-zustand
+- https://github.com/pmndrs/zustand/discussions/1141
+
+- https://medium.com/@pvh/pixelpusher-real-time-peer-to-peer-collaboration-with-react-7c7bc8ecbf74
+- https://dat-ecosystem.org/
+- https://www.inkandswitch.com/local-first/
+- https://medium.com/collaborne-engineering/serverless-yjs-72d0a84326a2
+
+Backend via git:
+- https://github.com/petersalomonsen/wasm-git
+- https://gist.github.com/andrewn/76e84b070fd20c405029fc2cf0eec0c9
+
+Report editor:
+- https://editorjs.io/
+- https://www.blocknotejs.org/
+- https://novu.co/blog/building-a-notion-like-system-with-socket-io-and-react/
+- https://dev.to/novu/building-a-notion-like-system-with-socketio-and-react-1hjg?comments_sort=oldest
+- https://www.typecell.org/
+- https://github.com/steven-tey/novel
+
+Encode state into URL:
+- https://killedbyapixel.github.io/JSONCrush/
+- https://github.com/lifthrasiir/roadroller
+- https://github.com/jsonurl/jsonurl-js
+
+CSV:
+- https://www.papaparse.com/
+
+Charts:
+- https://github.com/vega/vega
+- https://echarts.apache.org/
+- https://github.com/plouc/nivo
+- https://github.com/FormidableLabs/victory
+- https://github.com/reactchartjs/react-chartjs-2
+- https://blog.logrocket.com/top-8-react-chart-libraries/
+- https://www.typecell.org/@yousef/charts
+
+Other:
+- https://github.com/xpl/ololog
+- https://github.com/sezna/nps, https://github.com/MarkForged/nps
+
+Sovereign bond holdings:
+- ownership-cleaned-countries https://docs.google.com/spreadsheets/d/1vGEO5UTu_FyEiq0HpCvYYeR-22EnwdiXbhqhKWAMNvg/edit#gid=1766186910
+- cleaned (old) https://docs.google.com/spreadsheets/d/1LqXRxl8RSUR9Q1kpo7HB1ARX0gvqRXBIdGIn69NeIy4/edit#gid=1325757673
+- full sheet: https://docs.google.com/spreadsheets/d/13Q8qKzinj4F5goYmSWQJJ8E83Ze1Hi061CH1CzpUxz0/edit#gid=1647744621
+- https://www.bruegel.org/dataset/sovereign-bond-holdings
+
+Other data
+- https://ourworldindata.org/jobs
+- https://data.bis.org/topics/IDS/BIS%2CWS_DEBT_SEC2_PUB%2C1.0/Q.3P.MA.1.2.C.A.F.TO1.A.A.A.A.A.I?view=chart
+- https://data.bis.org/topics/LBS/tables-and-dashboards/BIS,LBS_A5,1.0?dimensions=L_MEASURE%3AB%2CL_REP_CTY%3ADE&view=value
+
+Editing project.organization / project.repository might be a horrible idea
+
+Report bak:
+{"state":{"queries":{"tableofownershipdetails":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"databaseFileName":"database.sqlite","sqlStatement":"select * from aaa","transformCode":"\ntype Value = string | number | null\ntype QueryResult = {values: Value[][], colums: string[]}[]\ntype TransformResult = Record<string, Value>[]\n\nfunction transform(queryResult: QueryResult): TransformResult{\n  return queryResult[0].values.map((row) => {\n    const mappedValues = Object.fromEntries(queryResult[0].columns.map((k, i) => [k, row[i]]));\n    return {\n      name: \"Year\",\n      value: mappedValues.year,\n      children: [\n        {\n          name: \"Total\",\n          value: mappedValues.total,\n          children: [\n            {\n              name: \"Residents\",\n              value: mappedValues.residents,\n              children: [\n                { name: \"Central Bank\", value: mappedValues.central_bank },\n                { name: \"OMFIs\", value: mappedValues.omfis },\n                { name: \"Other financial institutions\", value: mappedValues.other_financial_institutions },\n                { name: \"Other Residents\", value: mappedValues.other_residents },\n              ],\n            },\n            { name: \"Non-Residents\", value: mappedValues.non_residents },\n          ],\n        },\n      ],\n    };\n  });\n}","id":"tableofownershipdetails","label":"Debt ownership: Details","chartType":"table"},"tableofownershipdistribution":{"transformType":"config","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"databaseFileName":"database.sqlite","sqlStatement":"select central_bank, omfis, other_financial_institutions, other_residents from aaa","transformCode":"","id":"tableofownershipdistribution","label":"Debt ownership: Distribution","chartType":"pieChart"},"tableofownershiptime":{"transformType":"config","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"databaseFileName":"database.sqlite","sqlStatement":"select central_bank, omfis, other_financial_institutions, other_residents from aaa","transformCode":"","id":"tableofownershiptime","label":"Debt ownership: Time","chartType":"barChart"},"categoryanalysis":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"databaseFileName":"database2.sqlite","sqlStatement":"\nselect category_1 from aaa where category_1 is not null group by category_1 order by category_1;\nselect category_2 from aaa where category_2 is not null group by category_2 order by category_2;\nselect category_3 from aaa where category_3 is not null group by category_3 order by category_3;\nselect category_4 from aaa where category_4 is not null group by category_4  order by category_4;","transformCode":"\ntype Value = string | number | null\ntype QueryResult = {values: Value[][], colums: string[]}[]\ntype TransformResult = Record<string, Value>[]\n\nfunction transform(queryResult: QueryResult): TransformResult{\n  const valueArrays = queryResult.map(({values}) => values)\n  const [cat1, cat2, cat3, cat4] = queryResult.map(res => res.values.map(row => row[0]))\n\n\n  const maxLength = Math.max(...valueArrays.map(arr => arr.length))\n\n\n  const data = Array(maxLength).fill(null).map((_, i) => ({\n    category1: cat1[i],\n    category2: cat2[i],\n    category3: cat3[i],\n    category4: cat4[i]\n  }))\n  return data\n}\n","id":"categoryanalysis","label":"Category Analysis","chartType":"table"}}},"version":2}
+{"state":{"queries":{"tableofownershipdetails":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":["total","residents","central_bank"],"labelColumn":"","dataRowIndex":0},"id":"tableofownershipdetails","label":"Debt ownership: Details","databaseFileName":"database.sqlite","sqlStatement":"select * from aaa","transformCode":"type Value = string | number | null | TransformResult\ntype QueryResult = {values: Value[][], columns: string[]}[]\ntype TransformResult = Record<string, Value>[]\n\nfunction transform(queryResult: QueryResult): TransformResult{\nreturn queryResult[0].values.map((row) => {\n  const mappedValues = Object.fromEntries(queryResult[0].columns.map((k, i) => [k, row[i]]));\n  return {\n    name: \"Year\",\n    value: mappedValues.year,\n    children: [\n      {\n        name: \"Total\",\n        value: mappedValues.total,\n        children: [\n          {\n            name: \"Residents\",\n            value: mappedValues.residents,\n            children: [\n              { name: \"Central Bank\", value: mappedValues.central_bank },\n              { name: \"OMFIs\", value: mappedValues.omfis },\n              { name: \"Other financial institutions\", value: mappedValues.other_financial_institutions },\n              { name: \"Other Residents\", value: mappedValues.other_residents },\n            ],\n          },\n          { name: \"Non-Residents\", value: mappedValues.non_residents },\n        ],\n      },\n    ],\n  };\n})\n};","chartType":"table"},"tableofownershipdistribution":{"transformType":"config","transformConfig":{"dataOrientation":"column","selectedColumns":["central_bank","omfis","other_financial_institutions","other_residents"],"labelColumn":"","dataRowIndex":0},"id":"tableofownershipdistribution","label":"Debt ownership: Distribution","databaseFileName":"database.sqlite","sqlStatement":"select \n    central_bank, \n    omfis, \n    other_financial_institutions,\n    other_residents \nfrom aaa","transformCode":"","chartType":"barChart"},"tableofownershiptime":{"transformType":"config","transformConfig":{"dataOrientation":"row","selectedColumns":["2418","2863"],"labelColumn":"--no-label-column--","dataRowIndex":22},"id":"tableofownershiptime","label":"Debt ownership: Time","databaseFileName":"database.sqlite","sqlStatement":"select central_bank, omfis, other_financial_institutions, other_residents from aaa","transformCode":"","chartType":"lineChart"},"categoryanalysis":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"id":"categoryanalysis","label":"Category Analysis","databaseFileName":"database4.sqlite","sqlStatement":"select category_1 from aaa where category_1 is not null group by category_1 order by category_1;\nselect category_2 from aaa where category_2 is not null group by category_2 order by category_2;\nselect category_3 from aaa where category_3 is not null group by category_3 order by category_3;\nselect category_4 from aaa where category_4 is not null group by category_4  order by category_4;\n","transformCode":"type Value = string | number | null\ntype QueryResult = {values: Value[][], colums: string[]}[]\ntype TransformResult = Record<string, Value>[]\n\nfunction transform(queryResult: QueryResult): TransformResult{\n\nconst valueArrays = queryResult.map(({values}) => values)\nconst [cat1, cat2, cat3, cat4] = queryResult.map(res => res.values.map(row => row[0]))\n\nconst maxLength = Math.max(...valueArrays.map(arr => arr.length))\n\nconst data = Array(maxLength).fill(null).map((_, i) => ({\n  category1: cat1[i],\n  category2: cat2[i],\n  category3: cat3[i],\n  category4: cat4[i]\n}))\nreturn data\n}\n","chartType":"table"},"664d3ff1-534b-4f72-914b-93cb635b996c":{"transformType":"config","transformConfig":{"dataOrientation":"row","selectedColumns":["dom","nondom"],"labelColumn":"time","dataRowIndex":0},"id":"664d3ff1-534b-4f72-914b-93cb635b996c","label":"Debt of Finnland: Resident vs non-residtent","databaseFileName":"database2.sqlite","sqlStatement":"select substr(dom.time, 3, 2) as time, dom.value as dom, nondom.value as nondom from \n(\nselect time, sum(value) as value from aaa where country = 'finnland' and category_2 = 'Domestic' group by time, category_2\n) as dom\n\nfull join\n\n(\nselect time, sum(value) as value from aaa where country = 'finnland' and category_2 = 'Rest of the world' group by time, category_2\n) as nondom\n\non dom.time = nondom.time\norder by dom.time","enableTransform":false,"transformCode":"","chartType":"pieChart"},"1856df95-2c75-4245-84a3-1d4bd23b9f2b":{"transformType":"config","transformConfig":{"dataOrientation":"column","selectedColumns":[8658107],"labelColumn":"--no-label-column--","dataRowIndex":0,"isSingleDataset":false},"id":"1856df95-2c75-4245-84a3-1d4bd23b9f2b","label":"test row","databaseFileName":"database4.sqlite","sqlStatement":"select \n(select sum(value) from aaa where country = 'belgium') as belgium,\n(select sum(value) from aaa where country = 'greece') as greece,\n(select sum(value) from aaa where country = 'us') as us,\n(select sum(value) from aaa where country = 'uk') as uk","enableTransform":false,"transformCode":"return queryResult","chartType":"barChart"},"c7c6a8ed-8076-418c-8349-e9a0123f5b43":{"transformType":"config","transformConfig":{"dataOrientation":"column","valueColumn":"value","labelColumn":"country","dataRowIndex":0,"selectedColumns":["value"]},"id":"c7c6a8ed-8076-418c-8349-e9a0123f5b43","label":"test col","databaseFileName":"database4.sqlite","sqlStatement":"select country, sum(value) as value from aaa group by country","enableTransform":false,"transformCode":"return queryResult","chartType":"barChart"},"a4ca4618-7191-470d-8cc5-ce22dd33f4d2":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":["avg","sum"],"labelColumn":"sum","dataRowIndex":1},"id":"a4ca4618-7191-470d-8cc5-ce22dd33f4d2","label":"test row multi","databaseFileName":"database4.sqlite","sqlStatement":"select * from \n(\nselect 'sum' as sum, \n(select sum(value) from aaa where country = 'belgium') as belgium, \n(select sum(value) from aaa where country = 'us')  as us\n)\nunion\nselect * from\n(\nselect 'avg', \n(select avg(value) from aaa where country = 'belgium'), \n(select avg(value) from aaa where country = 'us')\n)\n","enableTransform":false,"transformCode":"return queryResult","chartType":"barChart"},"30fb9426-5db3-4cce-b754-754240760d12":{"transformType":"code","transformConfig":{"dataOrientation":"column","valueColumn":"value","labelColumn":"country","dataRowIndex":0,"selectedColumns":["sum","avg"]},"id":"30fb9426-5db3-4cce-b754-754240760d12","label":"test col multi","databaseFileName":"database4.sqlite","sqlStatement":"select country, sum(value) as sum, avg(value) as avg from aaa group by country","enableTransform":false,"transformCode":"return queryResult","chartType":"pieChart"},"c8591471-9d4c-433f-ac58-4160a389f27a":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":["belgium","finnland","greece"],"labelColumn":"country","dataRowIndex":1,"isSingleDataset":false},"id":"c8591471-9d4c-433f-ac58-4160a389f27a","label":"test new","databaseFileName":"database4.sqlite","sqlStatement":"select res.country, resident, nonres from (\nselect country, sum(value) as resident from aaa where category_2 = \"Residents\" group by country\n) res join (\nselect country, sum(value) as nonres from aaa where category_2 = \"Non-residents\" group by country\n) nonres on \nres.country = nonres.country\nwhere res.country != 'us'\n\n","transformCode":"return queryResult","chartType":"stackedBarChart"},"dc55e91a-1832-4d51-8cdd-7f71bd15fd28":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"id":"dc55e91a-1832-4d51-8cdd-7f71bd15fd28","label":"Category Analysis by country","databaseFileName":"database4.sqlite","sqlStatement":"select country, category_1, category_2, category_3, category_4 from aaa group by country, category_1, category_2, category_3, category_4 order by country","transformCode":"\nconst valueArrays = queryResult.map(({values}) => values)\nconst [cat1, cat2, cat3, cat4] = queryResult.map(res => res.values.map(row => row[0]))\n\n\nconst maxLength = Math.max(...valueArrays.map(arr => arr.length))\n\n\nconst data = Array(maxLength).fill().map((_, i) => ({\n  category1: cat1[i],\n  category2: cat2[i],\n  category3: cat3[i],\n  category4: cat4[i]\n}))\nreturn data\n","chartType":"table"},"add608ee-2f6f-4553-8a75-a01595adf892":{"transformType":"code","transformConfig":{"dataOrientation":"row","selectedColumns":[],"labelColumn":"","dataRowIndex":0},"databaseFileName":"database2.sqlite","sqlStatement":"select * from aaa","transformCode":"ffasfd function throw hahax","id":"add608ee-2f6f-4553-8a75-a01595adf892","label":"New query","chartType":"table"},"de833feb-0dd7-4745-b88a-6d81d9697dd4":{"transformType":"config","transformConfig":{"dataOrientation":"row","selectedColumns":["sum(residents)","sum(non_residents)"],"labelColumn":"central_bank","dataRowIndex":0},"databaseFileName":"database4.sqlite","sqlStatement":"select * from aaa where category_3 = 'Central bank' or category_4 = 'Central bank'","transformCode":"\ntype Value = string | number | null | TransformResult\ntype QueryResult = {values: Value[][], columns: string[]}[]\ntype TransformResult = Record<string, Value>[]\n\nfunction transform(queryResult: QueryResult): TransformResult{\n  // Your code here ...\n}\n","id":"de833feb-0dd7-4745-b88a-6d81d9697dd4","label":"New query toby","chartType":"lineChart"}}},"version":2}
+{"state":{"reports":{"888abb49-2912-4ba0-affb-22a0ede59a5e":{"id":"888abb49-2912-4ba0-affb-22a0ede59a5e","label":"Distribution of ownership","blocks":[{"id":"dd6d9638-6ea7-4a86-9deb-7216eb8f7d16","type":"heading","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left","level":"1"},"content":[{"type":"text","text":"Analysis of ownership of government in Europe","styles":{}}],"children":[]},{"id":"e281aa23-aeb3-46de-aa9b-1d345947a5c0","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[{"type":"text","text":"This is a fancy analysis that shows how you can build reports out of data in your browser","styles":{}}],"children":[]},{"id":"dd89cb8f-7d8f-41f2-8fb6-20b249ee7658","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]},{"id":"f044061e-cc74-4e3c-adec-c0d20dd9b199","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]},{"id":"36673422-9bce-42a0-89cf-7132c4ad5bff","type":"heading","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left","level":"2"},"content":[{"type":"text","text":"Here is a fancy chart","styles":{}}],"children":[]},{"id":"2f1dceb0-e69c-4e12-a548-96d95c4eaa6e","type":"dataDisplay","props":{"textColor":"black","backgroundColor":"transparent","textAlignment":"left","queryId":"tableofownershiptime"},"content":[{"type":"text","text":"This is an explanatory text for this chart. It explains ","styles":{}},{"type":"text","text":"many","styles":{"bold":true}},{"type":"text","text":" things. Also, you can edit the chart using the \"Edit\" button on the right (if are viewing this in the editor).","styles":{}}],"children":[]},{"id":"323558af-685c-4a9d-9419-81444675a485","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]},{"id":"4e7dc1ee-127d-4ef2-9845-8dbe91522bf9","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]},{"id":"7b11ba9b-ccbe-49b8-93dc-4c2ba2df7e40","type":"heading","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left","level":"3"},"content":[{"type":"text","text":"More charts","styles":{}}],"children":[]},{"id":"489e9317-cac5-4fd1-b182-2a152750e479","type":"dataDisplay","props":{"textColor":"black","backgroundColor":"transparent","textAlignment":"left","queryId":"tableofownershiptime"},"content":[{"type":"text","text":"Again, with funny text.","styles":{}}],"children":[]},{"id":"5de73f4c-59b4-4b65-b3ac-8bf7dbdceef7","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]},{"id":"9185a159-b117-417c-b2e2-5c0ea1130810","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]},{"id":"db0b054e-f874-4ce4-a881-2fa4394f28d5","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]}]},"b60e58fd-8ac9-4ea3-a748-d0b7ebdea2f0":{"id":"b60e58fd-8ac9-4ea3-a748-d0b7ebdea2f0","label":"New reportsss","blocks":[{"id":"3f9c5b5a-c430-4b0a-9738-7c7cf278b4ef","type":"paragraph","props":{"textColor":"default","backgroundColor":"default","textAlignment":"left"},"content":[],"children":[]}]}}},"version":0}
+
+
+
+
+
+-- Show the ratio of each resident in Belgium
+select 
+    financial_corporations.time, 
+    financial_corporations, 
+    non_financial_corporations, 
+    general_government,
+    households_npish
+
+from (
+    select sum(value) as financial_corporations, time from debt 
+    where country = 'greece' and category_2 = 'Residents' and category_3 = 'Financial corporations' group by time
+) as financial_corporations
+
+join (
+    select sum(value) as non_financial_corporations, time from debt 
+    where country = 'greece' and category_2 = 'Residents' and category_3 = 'Non-financial corporations' group by time
+) as non_financial_corporations on financial_corporations.time = non_financial_corporations.time
+
+join (
+    select sum(value) as general_government, time from debt 
+    where country = 'greece' and category_2 = 'Residents' and category_3 = 'General government' group by time
+) as general_government on financial_corporations.time = general_government.time
+
+join (
+    select sum(value) as households_npish, time from debt 
+    where country = 'greece' and category_2 = 'Residents' and category_3 = 'Households-NPISH' group by time
+) as households_npish on financial_corporations.time = households_npish.time
+
+
+--max-old-space-size=16384

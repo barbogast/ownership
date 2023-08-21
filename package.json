@@ -14,7 +14,10 @@
     "analyze-bundle": "npx vite-bundle-visualizer",
     "test:e2e": "yarn playwright test --config e2e/playwright.config.ts",
     "test:e2e-ui": "yarn playwright test --config e2e/playwright.config.ts --ui",
-    "test:e2e-codegen": "yarn playwright codegen http://localhost:5173"
+    "test:e2e-codegen": "yarn playwright codegen http://localhost:5173",
+    "start-git-http-mock-server": "cross-env GIT_HTTP_MOCK_SERVER_PORT=8888 GIT_HTTP_MOCK_SERVER_ROOT=tests-git/fixtures git-http-mock-server start",
+    "stop-git-http-mock-server": "cross-env GIT_HTTP_MOCK_SERVER_PORT=8888 GIT_HTTP_MOCK_SERVER_ROOT=tests-git/fixtures git-http-mock-server stop",
+    "test:git": "vitest --config test-git/vitest.git.config.ts"
   },
   "dependencies": {
     "@blocknote/core": "^0.8.2",

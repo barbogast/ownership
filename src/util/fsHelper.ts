@@ -10,8 +10,12 @@ export default class FsHelper {
 
   constructor(name: string) {
     // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
+
     const options: LightningFS.Options = { wipe: true };
-    this.fs = new LightningFS(name, options);
+    this.fs =
+      process.env["NODE_ENV"] === "test"
+        ? require("fs")
+        : new LightningFS(name, options);
   }
 
   readFile = (path: string) => this.fs.promises.readFile(path, "utf8");
@@ -19,7 +23,7 @@ export default class FsHelper {
   mkdir_p = async (path: string) => {
     let fullPath = "";
     for (const segment of path.split("/").filter(Boolean)) {
-      fullPath += "/" + segment;
+      fullPath += segment + "/";
       try {
         await this.fs.promises.stat(fullPath);
         logger.log("mkdir_p exists", { fullPath });
@@ -48,6 +52,7 @@ export default class FsHelper {
   ) => {
     for (const [filename, contents] of Object.entries<string>(fileContents)) {
       if (contents) {
+        logger.log("writeFilesToDirectory", { directory, filename });
         await this.fs.promises.writeFile(directory + "/" + filename, contents);
       }
     }

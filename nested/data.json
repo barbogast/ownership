@@ -1,0 +1,29 @@
+{
+  "transformResult": [
+    { "label": "central_bank", "value": 2418 },
+    { "label": "omfis", "value": 157935 },
+    { "label": "other_financial_institutions", "value": 34137 },
+    { "label": "other_residents", "value": 19226 }
+  ],
+  "query": {
+    "chartType": "pieChart",
+    "databaseFileName": "database.sqlite",
+    "databaseSource": { "type": "local", "url": "db1" },
+    "id": "tableofownershipdistribution",
+    "label": "Debt ownership: Distribution",
+    "transformConfig": {
+      "dataOrientation": "column",
+      "dataRowIndex": 2,
+      "labelColumn": "--no-label-column--",
+      "selectedColumns": [
+        "central_bank",
+        "omfis",
+        "other_financial_institutions",
+        "other_residents"
+      ]
+    },
+    "transformType": "config",
+    "sqlStatement": "select central_bank, omfis, other_financial_institutions, other_residents from aaa",
+    "transformCode": ""
+  }
+}
