@@ -5,6 +5,8 @@ import FsHelper from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
 import Logger from "../src/util/logger";
 
+const logger = new Logger("gitTest");
+
 const exec = (command: string, cwd?: string) =>
   new Promise((resolve, reject) => {
     console.log(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
@@ -16,7 +18,7 @@ const exec = (command: string, cwd?: string) =>
     });
   });
 
-const prepareTest = async (name: string) => {
+const prepareTest = logger.time("prepareTest", async (name: string) => {
   await exec(`rm -rf test-git/temp`);
   await exec(`mkdir -p test-git/temp/source/${name}`);
   await exec(`mkdir -p test-git/temp/server/${name}`);
@@ -39,7 +41,7 @@ const prepareTest = async (name: string) => {
   await exec(`git add --all`, "test-git/temp/source/test2");
   await exec(`git commit -m "Initial commit"`, `test-git/temp/source/${name}`);
   await exec(`git push`, `test-git/temp/source/${name}`);
-};
+});
 
 /*
     Folders:
