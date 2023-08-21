@@ -151,7 +151,7 @@ describe("Test git", () => {
       }
 
       const directoryContents = await fs.readdir(
-        `test-git/temp/result/${name}/${folder}`
+        `test-git/temp/result/${name}/query/${folder}`
       );
       for (const filename of directoryContents) {
         if (!(filename in files)) {
