@@ -109,7 +109,7 @@ describe("Test git", () => {
   });
 
   test.only("test 2", async () => {
-    Logger.enable("fs", "git", "gitTest");
+    Logger.enable("fs", "git", "gitTest", "sh");
     const name = "test2";
     await prepareTest(name);
 
