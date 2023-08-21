@@ -9,6 +9,7 @@ const ALL_CATEGORIES = [
   "fs",
   "csv",
   "gitTest",
+  "sh",
 ] as const;
 type LogCategory = (typeof ALL_CATEGORIES)[number];
 

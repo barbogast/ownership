@@ -5,14 +5,22 @@ import FsHelper from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
 import Logger from "../src/util/logger";
 
-const logger = new Logger("gitTest");
+const gitTestLogger = new Logger("gitTest");
+const shLogger = new Logger("sh");
 
 const exec = (command: string, cwd?: string) =>
   new Promise((resolve, reject) => {
-    console.log(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
-    console.time(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
+    const start = performance.now();
+    // console.log(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
+    // console.time(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
     return exec_(command, { cwd }, (err, stdout) => {
-      console.timeEnd(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
+      shLogger.log(
+        `${cwd ? cwd + ":" : ""} ${command} (${Math.round(
+          performance.now() - start
+        )} ms)`
+      );
+
+      // console.timeEnd(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
       if (err) {
         console.log(err);
       }
@@ -20,7 +28,7 @@ const exec = (command: string, cwd?: string) =>
     });
   });
 
-const prepareTest = logger.time("prepareTest", async (name: string) => {
+const prepareTest = gitTestLogger.time("prepareTest", async (name: string) => {
   await exec(`rm -rf test-git/temp`);
   await exec(`mkdir -p test-git/temp/source/${name}`);
   await exec(`mkdir -p test-git/temp/server/${name}`);
