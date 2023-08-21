@@ -10,7 +10,9 @@ const logger = new Logger("gitTest");
 const exec = (command: string, cwd?: string) =>
   new Promise((resolve, reject) => {
     console.log(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
+    console.time(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
     return exec_(command, { cwd }, (err, stdout) => {
+      console.timeEnd(`[sh] ${cwd ? cwd + ":" : ""} ${command}`);
       if (err) {
         console.log(err);
       }
