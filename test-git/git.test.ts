@@ -146,8 +146,9 @@ describe("Test git", () => {
 
     const folders2 = {
       queryA: {
-        "index.json": '{"name": "queryA"}s',
+        "index.json": '{"name": "queryA"}',
         "sqlStatement.sql": "SELECT * FROM tableA",
+        "sqlStatement.sqld": "SELECT * FROM tableA",
       },
       queryD: {
         "index.json": '{"name": "queryB"}',
