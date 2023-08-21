@@ -145,7 +145,7 @@ describe("Test git", () => {
 
     for (const [folder, files] of Object.entries(folders)) {
       for (const [filename, content] of Object.entries(files)) {
-        const path = `test-git/temp/result/${name}/${folder}/${filename}`;
+        const path = `test-git/temp/result/${name}/query/${folder}/${filename}`;
         const actual = await fs.readFile(path);
         expect(actual).toBe(content);
       }
