@@ -149,7 +149,7 @@ describe("Test git", () => {
     const organization = "org1";
 
     const fsHelper = new FsHelper(organization);
-    const gitHelper = new GitHelper(fsHelper.fs, `temp/test/${name}`);
+    const gitHelper = new GitHelper(fsHelper.fs, `test-git/temp/test/${name}`);
 
     await gitHelper.clone2(`http://localhost:8174/${name}`, "asdf", "asdf");
     await saveStore(fsHelper, gitHelper, "query", folders);
