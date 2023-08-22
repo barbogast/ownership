@@ -39,6 +39,9 @@ export default class GitHelper {
       // onAuth: () => ({ username, password }),
     });
 
+  checkout = (branch: string) =>
+    git.checkout({ fs: this.fs, dir: this.root, ref: branch });
+
   commit = () =>
     git.commit({
       fs: this.fs,
