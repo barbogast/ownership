@@ -103,33 +103,33 @@ const compareResult = async (
 
 */
 describe("Test git", () => {
-  test("test 1", async () => {
-    Logger.enable("fs", "git", "sh", "gitTest");
-    const organization = "org1";
-    const repository = "repo1";
-    const gitRoot = "test-dir" + repository;
+  // test("test 1", async () => {
+  //   Logger.enable("fs", "git", "sh", "gitTest");
+  //   const organization = "org1";
+  //   const repository = "repo1";
+  //   const gitRoot = "test-dir" + repository;
 
-    const fsHelper = new FsHelper(organization);
-    const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
+  //   const fsHelper = new FsHelper(organization);
+  //   const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
 
-    const folders = {
-      queryA: {
-        "index.json": '{"name": "queryA"}',
-        "sqlStatement.sql": "SELECT * FROM tableA",
-      },
-      queryD: {
-        "index.json": '{"name": "queryB"}',
-      },
-    };
-    await exec(`rm -rf xxx`);
-    await gitHelper.clone2(`http://localhost:8174/${gitRoot}`, "asdf", "asdf");
-    await saveStore(fsHelper, gitHelper, "query", folders);
-    await gitHelper.commit();
-    await gitHelper.push("asdf", "asdf");
-    await exec(`git clone http://localhost:8174/${gitRoot} xxx`);
-  });
+  //   const folders = {
+  //     queryA: {
+  //       "index.json": '{"name": "queryA"}',
+  //       "sqlStatement.sql": "SELECT * FROM tableA",
+  //     },
+  //     queryD: {
+  //       "index.json": '{"name": "queryB"}',
+  //     },
+  //   };
+  //   await exec(`rm -rf xxx`);
+  //   await gitHelper.clone2(`http://localhost:8174/${gitRoot}`, "asdf", "asdf");
+  //   await saveStore(fsHelper, gitHelper, "query", folders);
+  //   await gitHelper.commit();
+  //   await gitHelper.push("asdf", "asdf");
+  //   await exec(`git clone http://localhost:8174/${gitRoot} xxx`);
+  // });
 
-  test.only("test 2", async () => {
+  test("test 2", async () => {
     Logger.enable("fs", "git", "gitTest", "sh");
     const name = "test2";
     await prepareTest(name);
@@ -152,10 +152,7 @@ describe("Test git", () => {
     const gitHelper = new GitHelper(fsHelper.fs, `test-git/temp/test/${name}`);
 
     await gitHelper.clone2(`http://localhost:8174/${name}`, "asdf", "asdf");
-    console.log(111);
-    // await gitHelper.checkout("main");
     await gitHelper.createBranch("main");
-    console.log(222);
     await saveStore(fsHelper, gitHelper, "query", folders);
     await gitHelper.commit();
     await gitHelper.push("asdf", "asdf");
