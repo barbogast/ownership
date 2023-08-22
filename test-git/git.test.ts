@@ -141,7 +141,7 @@ describe("Test git", () => {
         "index.json": '{"name": "queryA"}',
         "sqlStatement.sql": "SELECT * FROM tableA",
       },
-      queryD: {
+      queryB: {
         "index.json": '{"name": "queryB"}',
       },
     };
