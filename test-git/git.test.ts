@@ -152,7 +152,9 @@ describe("Test git", () => {
     const gitHelper = new GitHelper(fsHelper.fs, `test-git/temp/test/${name}`);
 
     await gitHelper.clone2(`http://localhost:8174/${name}`, "asdf", "asdf");
+    console.log(111);
     await gitHelper.checkout("main");
+    console.log(222);
     await saveStore(fsHelper, gitHelper, "query", folders);
     await gitHelper.commit();
     await gitHelper.push("asdf", "asdf");
