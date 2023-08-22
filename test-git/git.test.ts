@@ -123,7 +123,6 @@ describe("Test git", () => {
     };
     await exec(`rm -rf xxx`);
     await gitHelper.clone2(`http://localhost:8174/${gitRoot}`, "asdf", "asdf");
-    await gitHelper.checkout("main");
     await saveStore(fsHelper, gitHelper, "query", folders);
     await gitHelper.commit();
     await gitHelper.push("asdf", "asdf");
@@ -153,6 +152,7 @@ describe("Test git", () => {
     const gitHelper = new GitHelper(fsHelper.fs, `test-git/temp/test/${name}`);
 
     await gitHelper.clone2(`http://localhost:8174/${name}`, "asdf", "asdf");
+    await gitHelper.checkout("main");
     await saveStore(fsHelper, gitHelper, "query", folders);
     await gitHelper.commit();
     await gitHelper.push("asdf", "asdf");
