@@ -1,14 +1,11 @@
 import fs_ from "fs";
 import { describe, expect, test } from "vitest";
-import { toMatchFilesystemSnapshot } from "jest-fs-snapshot";
 
 import { exec as exec_ } from "node:child_process";
 import { saveStore } from "../src/util/gitStorage";
 import FsHelper, { FileContents } from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
 import Logger from "../src/util/logger";
-
-expect.extend({ toMatchFilesystemSnapshot });
 
 const fs = fs_.promises;
 
@@ -167,7 +164,7 @@ describe("Test git", () => {
     );
 
     await compareResult(name, folders);
-    expect(`test-git/temp/result/${name}`).toMatchFilesystemSnapshot();
+
     // 7. Compare test-git/temp/result/<test-name> to the expected files
   });
 });

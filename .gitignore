@@ -34,3 +34,5 @@ dist-ssr
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+test-git/temp
