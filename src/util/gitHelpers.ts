@@ -39,9 +39,6 @@ export default class GitHelper {
       // onAuth: () => ({ username, password }),
     });
 
-  createBranch = (name: string) =>
-    git.branch({ fs: this.fs, dir: this.root, ref: name, checkout: true });
-
   commit = () =>
     git.commit({
       fs: this.fs,
