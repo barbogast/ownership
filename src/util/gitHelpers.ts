@@ -29,7 +29,7 @@ export default class GitHelper {
       onAuth: () => ({ username, password }),
     });
 
-  clone2 = (url: string, username: string, password: string) =>
+  clone2 = (url: string) =>
     git.clone({
       fs: this.fs,
       http,
