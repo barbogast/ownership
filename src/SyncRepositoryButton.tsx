@@ -35,6 +35,17 @@ const SyncRepositoryButton: React.FC<Props> = ({
       )}
       onSubmit={() => callback(repositoryInfo, user, password)}
     >
+      To create a Github token go to{" "}
+      <a href="https://github.com/settings/tokens?type=beta">
+        https://github.com/settings/tokens?type=beta
+      </a>
+      <p>
+        Required settings:
+        <ul>
+          <li>Repository access: Only select repositories</li>
+          <li>Permissions: Contents: Read and write</li>
+        </ul>
+      </p>
       <Input
         placeholder="Username"
         addonBefore="Username"
