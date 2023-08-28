@@ -1,11 +1,13 @@
 import fs_ from "fs";
 import { describe, expect, test } from "vitest";
+import { temporaryDirectory } from "tempy";
 
 import { exec as exec_ } from "node:child_process";
 import { saveStore } from "../src/util/gitStorage";
 import FsHelper, { FileContents } from "../src/util/fsHelper";
 import GitHelper from "../src/util/gitHelpers";
 import Logger from "../src/util/logger";
+import { beforeEach } from "node:test";
 
 const fs = fs_.promises;
 
@@ -31,31 +33,34 @@ const exec = (command: string, cwd?: string) =>
     });
   });
 
-const prepareTest = gitTestLogger.time("prepareTest", async (name: string) => {
-  await exec(`rm -rf test-git/temp`);
-  await exec(`mkdir -p test-git/temp/source/${name}`);
-  await exec(`mkdir -p test-git/temp/server/${name}`);
-  await exec(`mkdir -p test-git/temp/test/${name}`);
-  await exec(`mkdir -p test-git/temp/result/${name}`);
+const prepareTest = gitTestLogger.time(
+  "prepareTest",
+  async (root: string, name: string) => {
+    await exec(`mkdir -p ${root}/source/${name}`);
+    await exec(`mkdir -p ${root}/server/${name}`);
+    await exec(`mkdir -p ${root}/test/${name}`);
+    await exec(`mkdir -p ${root}/result/${name}`);
 
-  // 1. Copy files into source repository
-  await exec(`cp -r test-git/fixtures/${name}/* test-git/temp/source/${name}`);
+    // 1. Copy files into source repository
+    await exec(`cp -r test-git/fixtures/${name}/* ${root}/source/${name}`);
 
-  // 2. Initialize source git repository
-  await exec(`git init`, `test-git/temp/source/${name}`);
-  await exec(`git add --all`, `test-git/temp/source/${name}`);
-  await exec(`git commit -m "Initial commit"`, `test-git/temp/source/${name}`);
+    // 2. Initialize source git repository
+    await exec(`git init`, `${root}/source/${name}`);
+    await exec(`git add --all`, `${root}/source/${name}`);
+    await exec(`git commit -m "Initial commit"`, `${root}/source/${name}`);
 
-  // 3. Clone the source repository into a bare repository that is exposed via HTTP
-  await exec(`git clone --bare source/${name} server/${name}`, `test-git/temp`);
-});
+    // 3. Clone the source repository into a bare repository that is exposed via HTTP
+    await exec(`git clone --bare source/${name} server/${name}`, root);
+  }
+);
 
 const compareResult = async (
+  root: string,
   testName: string,
   folders: Record<string, FileContents<string>>
 ) => {
   for (const [folder, files] of Object.entries(folders)) {
-    const directory = `test-git/temp/result/${testName}/query/${folder}`;
+    const directory = `${root}/result/${testName}/query/${folder}`;
     for (const [filename, content] of Object.entries(files)) {
       const path = `${directory}/${filename}`;
       const actual = await fs.readFile(path, "utf-8");
@@ -99,10 +104,15 @@ const compareResult = async (
 
 */
 describe("Test git", () => {
+  let root: string;
+  beforeEach(() => {
+    root = temporaryDirectory();
+  });
+
   test("test 2", async () => {
     Logger.enable("fs", "git", "gitTest", "sh");
     const name = "test2";
-    await prepareTest(name);
+    await prepareTest(root, name);
 
     const folders = {
       queryA: {
@@ -117,7 +127,7 @@ describe("Test git", () => {
     const organization = "org1";
 
     const fsHelper = new FsHelper(organization);
-    const gitHelper = new GitHelper(fsHelper.fs, `test-git/temp/test/${name}`);
+    const gitHelper = new GitHelper(fsHelper.fs, `${root}/test/${name}`);
 
     await gitHelper.clone2(`${GIT_URL}/${name}`);
     await saveStore(fsHelper, gitHelper, "query", folders);
@@ -125,9 +135,9 @@ describe("Test git", () => {
     await gitHelper.push("asdf", "asdf");
 
     // 6. Clone the repository to test-git/temp/result: git clone http://localhost:8174/<test-name>
-    await exec(`git clone ${GIT_URL}/${name}`, `test-git/temp/result`);
+    await exec(`git clone ${GIT_URL}/${name}`, `${root}/result`);
 
     // 7. Compare test-git/temp/result/<test-name> to the expected files
-    await compareResult(name, folders);
+    await compareResult(root, name, folders);
   });
 });
