@@ -4,12 +4,17 @@ import { isPromise } from "../util/utils";
 
 type Props = {
   onSubmit: () => void | Promise<void>;
-  render: (openModal: () => void) => React.ReactNode;
+  renderTrigger: (openModal: () => void) => React.ReactNode;
   children: React.ReactNode;
   label: string;
 };
 
-const AsyncModal: React.FC<Props> = ({ children, onSubmit, render, label }) => {
+const AsyncModal: React.FC<Props> = ({
+  children,
+  onSubmit,
+  renderTrigger,
+  label,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -48,7 +53,7 @@ const AsyncModal: React.FC<Props> = ({ children, onSubmit, render, label }) => {
 
   return (
     <>
-      {render(() => setIsOpen(true))}
+      {renderTrigger(() => setIsOpen(true))}
       {contextHolder}
       {isOpen && (
         <Modal

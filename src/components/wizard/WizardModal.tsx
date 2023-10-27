@@ -6,12 +6,12 @@ import useWizardController from "./useWizardController";
 import { Content } from "antd/es/layout/layout";
 
 type Props<ResultType extends Record<string, unknown>> = {
-  render: (openModal: () => void) => React.ReactNode;
+  renderTrigger: (openModal: () => void) => React.ReactNode;
   title: string;
   config: WizardConfig<ResultType>;
 };
 const WizardModal = <ResultType extends Record<string, unknown>>({
-  render,
+  renderTrigger,
   title,
   config,
 }: Props<ResultType>) => {
@@ -49,7 +49,7 @@ const WizardModal = <ResultType extends Record<string, unknown>>({
 
   return (
     <>
-      {render(() => setIsOpen(true))}
+      {renderTrigger(() => setIsOpen(true))}
       {isOpen && (
         <Modal
           width="80%"

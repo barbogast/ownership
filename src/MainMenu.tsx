@@ -70,7 +70,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           <WizardModal
             title="Create Database"
             config={getConfig(false)}
-            render={(openModal) => (
+            renderTrigger={(openModal) => (
               <a onClick={openModal}>+ Create new database</a>
             )}
           />

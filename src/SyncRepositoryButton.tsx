@@ -28,7 +28,7 @@ const SyncRepositoryButton: React.FC<Props> = ({
   return (
     <AsyncModal
       label={label}
-      render={(openModal) => (
+      renderTrigger={(openModal) => (
         <Button style={buttonStyle} onClick={openModal}>
           {buttonLabel}
         </Button>

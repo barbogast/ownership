@@ -103,14 +103,16 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <WizardModal
             title="Edit Database"
             config={getConfig(true)}
-            render={(openModal) => <Button onClick={openModal}>Edit</Button>}
+            renderTrigger={(openModal) => (
+              <Button onClick={openModal}>Edit</Button>
+            )}
           />{" "}
           <Button onClick={() => duplicateDatabaseDefinition(id)}>
             Duplicate
           </Button>{" "}
           <AsyncModal
             label={`Are you sure you want to delete the database "${databaseDefinition.label}"?`}
-            render={(openModal) => (
+            renderTrigger={(openModal) => (
               <Button onClick={openModal}>Delete...</Button>
             )}
             onSubmit={() => {
