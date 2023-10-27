@@ -1,11 +1,24 @@
 import step1ParseCsv from "./step1ParseCsv";
 import step3ConfigureDatabase from "./step3ConfigureDatabase";
 import step2ConfigureColumns from "./step2ConfigureColumns";
+import { WizardConfig } from "../components/wizard/types";
+import { StepResult } from "./types";
 
-const getSteps = (isExistingDb: boolean) => ({
-  parseCsv: step1ParseCsv(),
-  configureColumns: step2ConfigureColumns(),
-  configureDatabase: step3ConfigureDatabase(isExistingDb),
+const getConfig = (isExistingDb: boolean): WizardConfig<StepResult> => ({
+  steps: {
+    parseCsv: step1ParseCsv(),
+    configureColumns: step2ConfigureColumns(),
+    configureDatabase: step3ConfigureDatabase(isExistingDb),
+  },
+  initialResult: {
+    id: "",
+    label: "",
+    tableName: "",
+    csvContent: "",
+    columns: [],
+    parsedCsvContent: [],
+  },
+  initialStepName: "parseCsv",
 });
 
-export default getSteps;
+export default getConfig;

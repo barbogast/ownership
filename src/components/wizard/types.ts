@@ -30,3 +30,9 @@ export type Step<Results extends Record<string, unknown>> =
         Props<Results> & React.RefAttributes<RefType<Results>>
       >;
     } & _SharedStepProperties<Results>);
+
+export type WizardConfig<Results extends Record<string, unknown>> = {
+  steps: Record<string, Step<Results>>;
+  initialResult: Results;
+  initialStepName: string;
+};

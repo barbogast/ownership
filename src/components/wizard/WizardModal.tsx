@@ -1,23 +1,19 @@
 import { Modal, Button, Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useState, useRef, useEffect } from "react";
-import { RefType, Step } from "./types";
+import { RefType, WizardConfig } from "./types";
 import useWizardController from "./useWizardController";
 import { Content } from "antd/es/layout/layout";
 
 type Props<ResultType extends Record<string, unknown>> = {
-  steps: Record<string, Step<ResultType>>;
-  initialResult: ResultType;
   render: (openModal: () => void) => React.ReactNode;
   title: string;
-  initialStepName: string;
+  config: WizardConfig<ResultType>;
 };
 const WizardModal = <ResultType extends Record<string, unknown>>({
-  steps,
-  initialResult,
   render,
   title,
-  initialStepName,
+  config,
 }: Props<ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
@@ -31,7 +27,7 @@ const WizardModal = <ResultType extends Record<string, unknown>>({
     resetState,
     isInitialStep,
     isFinalStep,
-  } = useWizardController(steps, initialResult, initialStepName, childRef);
+  } = useWizardController(config, childRef);
 
   const onPrevButton = () => {
     if (isInitialStep) {

@@ -14,7 +14,7 @@ import {
   DatabaseDefinition,
 } from "./databaseDefinitionStore";
 import { Alert, Button, Col, Input, Row } from "antd";
-import getSteps from "../createDatabaseWizard";
+import getConfig from "../createDatabaseWizard";
 import WizardModal from "../components/wizard/WizardModal";
 import AsyncModal from "../components/AsyncModal";
 import { useQueriesByDatabase } from "../query/queryStore";
@@ -102,10 +102,8 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
         <Col span={12} style={{ textAlign: "right" }}>
           <WizardModal
             title="Edit Database"
-            steps={getSteps(true)}
-            initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
+            config={getConfig(true)}
             render={(openModal) => <Button onClick={openModal}>Edit</Button>}
-            initialStepName="parseCsv"
           />{" "}
           <Button onClick={() => duplicateDatabaseDefinition(id)}>
             Duplicate

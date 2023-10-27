@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RefType, Step } from "./types";
+import { RefType, WizardConfig } from "./types";
 
 const useStepHistory = (initialStepName: string) => {
   const [steps, setSteps] = useState([initialStepName]);
@@ -11,16 +11,14 @@ const useStepHistory = (initialStepName: string) => {
 };
 
 const useWizardController = <T extends Record<string, unknown>>(
-  steps: Record<string, Step<T>>,
-  initialResult: T,
-  initialStepName: string,
+  config: WizardConfig<T>,
   childRef: React.MutableRefObject<RefType<T>>
 ) => {
-  const history = useStepHistory(initialStepName);
-  const [currentResults, setCurrentResults] = useState<T>(initialResult);
+  const history = useStepHistory(config.initialStepName);
+  const [currentResults, setCurrentResults] = useState<T>(config.initialResult);
 
   const currentStepName = history.getCurrent();
-  const currentStep = steps[currentStepName];
+  const currentStep = config.steps[currentStepName];
   if (!currentStep) {
     throw new Error(`No step with name "${currentStepName}" found`);
   }
@@ -46,13 +44,13 @@ const useWizardController = <T extends Record<string, unknown>>(
   };
 
   const resetState = () => {
-    setCurrentResults(initialResult);
+    setCurrentResults(config.initialResult);
     history.reset();
   };
 
   return {
     currentStepName,
-    isInitialStep: currentStepName === initialStepName,
+    isInitialStep: currentStepName === config.initialStepName,
     isFinalStep: currentStep.nextStep === undefined,
     currentResults,
     currentStep,

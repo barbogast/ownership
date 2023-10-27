@@ -13,7 +13,7 @@ import { sortByLabel, useRepoInfo } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
 import RepositoryControl from "./RepositoryControl";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
-import getSteps from "./createDatabaseWizard";
+import getConfig from "./createDatabaseWizard";
 import WizardModal from "./components/wizard/WizardModal";
 
 type Props = {
@@ -69,16 +69,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         label: (
           <WizardModal
             title="Create Database"
-            steps={getSteps(false)}
-            initialResult={{
-              id: "",
-              label: "",
-              tableName: "",
-              csvContent: "",
-              columns: [],
-              parsedCsvContent: [],
-            }}
-            initialStepName="parseCsv"
+            config={getConfig(false)}
             render={(openModal) => (
               <a onClick={openModal}>+ Create new database</a>
             )}
