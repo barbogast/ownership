@@ -6,6 +6,7 @@ const getStep = () => {
   const step: Step<StepResult> = {
     type: "component",
     label: "Configure Columns",
+    nextStep: "configureDatabase",
     component: ({ results, setResults }) => {
       return (
         <Space direction="vertical" style={{ width: "100%" }}>

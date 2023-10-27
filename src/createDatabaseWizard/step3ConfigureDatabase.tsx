@@ -14,6 +14,7 @@ const getStep = (isExistingDb: boolean) => {
   const step: Step<StepResult> = {
     type: "component",
     label: "Configure Database",
+    nextStep: undefined,
     component: ({ results, setResults }) => {
       return (
         <Space direction="vertical" size="large">

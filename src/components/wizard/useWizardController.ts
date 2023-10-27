@@ -1,17 +1,28 @@
 import { useState } from "react";
 import { RefType, Step } from "./types";
 
+const useStepHistory = (initialStepName: string) => {
+  const [steps, setSteps] = useState([initialStepName]);
+  const push = (stepName: string) => setSteps((state) => [...state, stepName]);
+  const pop = () => setSteps((state) => state.slice(0, -1));
+  const reset = () => setSteps([initialStepName]);
+  const getCurrent = () => steps[steps.length - 1]!;
+  return { steps, push, pop, reset, getCurrent };
+};
+
 const useWizardController = <T extends Record<string, unknown>>(
-  steps: Step<T>[],
+  steps: Record<string, Step<T>>,
   initialResult: T,
+  initialStepName: string,
   childRef: React.MutableRefObject<RefType<T>>
 ) => {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const history = useStepHistory(initialStepName);
   const [currentResults, setCurrentResults] = useState<T>(initialResult);
 
-  const currentStep = steps[currentStepIndex];
+  const currentStepName = history.getCurrent();
+  const currentStep = steps[currentStepName];
   if (!currentStep) {
-    throw new Error(`No step with index ${currentStepIndex} found`);
+    throw new Error(`No step with name "${currentStepName}" found`);
   }
 
   const goToNextStep = () => {
@@ -23,23 +34,31 @@ const useWizardController = <T extends Record<string, unknown>>(
       result = currentStep.onNext(result);
     }
     setCurrentResults(result);
-    if (currentStepIndex < steps.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1);
+
+    const nextStepName =
+      typeof currentStep.nextStep === "function"
+        ? currentStep.nextStep(result)
+        : currentStep.nextStep;
+
+    if (nextStepName) {
+      history.push(nextStepName);
     }
   };
 
   const resetState = () => {
     setCurrentResults(initialResult);
-    setCurrentStepIndex(0);
+    history.reset();
   };
 
   return {
-    currentStepIndex,
+    currentStepName,
+    isInitialStep: currentStepName === initialStepName,
+    isFinalStep: currentStep.nextStep === undefined,
     currentResults,
     currentStep,
     setResults: setCurrentResults,
     goToNextStep,
-    goToPreviousStep: () => setCurrentStepIndex(currentStepIndex - 1),
+    goToPreviousStep: history.pop,
     resetState,
   };
 };

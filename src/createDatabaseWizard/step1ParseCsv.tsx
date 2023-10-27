@@ -9,6 +9,7 @@ const getStep = () => {
   const step: Step<StepResult> = {
     type: "forwardRefComponent",
     label: "Parse CSV",
+    nextStep: "configureColumns",
     forwardRefComponent: forwardRef(({ results }, parentRef) => {
       const inputRef = useRef<HTMLTextAreaElement>(null);
 

@@ -105,6 +105,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
             steps={getSteps(true)}
             initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
             render={(openModal) => <Button onClick={openModal}>Edit</Button>}
+            initialStepName="parseCsv"
           />{" "}
           <Button onClick={() => duplicateDatabaseDefinition(id)}>
             Duplicate

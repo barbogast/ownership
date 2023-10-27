@@ -78,6 +78,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               columns: [],
               parsedCsvContent: [],
             }}
+            initialStepName="parseCsv"
             render={(openModal) => (
               <a onClick={openModal}>+ Create new database</a>
             )}

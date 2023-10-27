@@ -16,6 +16,7 @@ type _SharedStepProperties<Results> = {
     label?: string;
     type?: ButtonType;
   };
+  nextStep: string | ((context: Results) => string | undefined) | undefined;
 };
 
 export type Step<Results extends Record<string, unknown>> =
