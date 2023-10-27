@@ -11,7 +11,7 @@ type Props<T> = {
 
 type _SharedStepProperties<Results> = {
   label: string;
-  onNext?: (context: Results) => Results;
+  submitStep?: (context: Results) => Results;
   nextButton?: {
     label?: string;
     type?: ButtonType;

@@ -34,7 +34,7 @@ const getStep = () => {
         />
       );
     }),
-    onNext: (results: StepResult) => {
+    submitStep: (results: StepResult) => {
       const result = Papa.parse<string[]>(results.csvContent);
       return {
         ...results,

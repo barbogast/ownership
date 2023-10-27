@@ -42,7 +42,7 @@ const getStep = (isExistingDb: boolean) => {
         </Space>
       );
     },
-    onNext: (results) => {
+    submitStep: (results) => {
       const databaseDefinition = {
         id: results.id,
         label: results.label,

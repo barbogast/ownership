@@ -28,8 +28,8 @@ const useWizardController = <T extends Record<string, unknown>>(
     if (currentStep.type === "forwardRefComponent") {
       result = childRef.current!.getResult(currentResults);
     }
-    if (currentStep.onNext) {
-      result = currentStep.onNext(result);
+    if (currentStep.submitStep) {
+      result = currentStep.submitStep(result);
     }
     setCurrentResults(result);
 
