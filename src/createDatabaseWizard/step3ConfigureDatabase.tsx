@@ -2,7 +2,7 @@ import { Input, Space } from "antd";
 import Papa from "papaparse";
 
 import { Step } from "../components/wizard/types";
-import { StepResult } from "./types";
+import { StepName, StepResult } from "./types";
 import {
   addDatabaseDefinition,
   updateDatabaseDefinition,
@@ -11,7 +11,7 @@ import { getBasePath } from "../util/utils";
 import { deleteConnection } from "../databaseConnectionStore";
 
 const getStep = (isExistingDb: boolean) => {
-  const step: Step<StepResult> = {
+  const step: Step<StepName, StepResult> = {
     type: "component",
     label: "Configure Database",
     nextStep: undefined,

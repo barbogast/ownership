@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { RefType, WizardConfig } from "./types";
 
-const useStepHistory = (initialStepName: string) => {
-  const [steps, setSteps] = useState([initialStepName]);
-  const push = (stepName: string) => setSteps((state) => [...state, stepName]);
+const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
+  const [steps, setSteps] = useState<StepName[]>([initialStepName]);
+  const push = (stepName: StepName) =>
+    setSteps((state) => [...state, stepName]);
   const pop = () => setSteps((state) => state.slice(0, -1));
   const reset = () => setSteps([initialStepName]);
-  const getCurrent = () => steps[steps.length - 1]!;
-  return { steps, push, pop, reset, getCurrent };
+  const getCurrent = (): StepName => steps[steps.length - 1]!;
+  return { push, pop, reset, getCurrent };
 };
 
-const useWizardController = <T extends Record<string, unknown>>(
-  config: WizardConfig<T>,
-  childRef: React.MutableRefObject<RefType<T>>
+const useWizardController = <
+  StepName extends string,
+  Results extends Record<string, unknown>
+>(
+  config: WizardConfig<StepName, Results>,
+  childRef: React.MutableRefObject<RefType<Results>>
 ) => {
   const history = useStepHistory(config.initialStepName);
-  const [currentResults, setCurrentResults] = useState<T>(config.initialResult);
+
+  const [currentResults, setCurrentResults] = useState<Results>(
+    config.initialResult
+  );
 
   const currentStepName = history.getCurrent();
   const currentStep = config.steps[currentStepName];

@@ -1,15 +1,18 @@
 import { Steps as StepsComponent } from "antd";
 import { Step } from "./types";
 
-type Props<T extends Record<string, unknown>> = {
-  steps: Step<T>[];
+type Props<StepName extends string, Results extends Record<string, unknown>> = {
+  steps: Step<StepName, Results>[];
   currentStepIndex: number;
 };
 
-const ProgressDisplay = <T extends Record<string, unknown>>({
+const ProgressDisplay = <
+  StepName extends string,
+  Results extends Record<string, unknown>
+>({
   currentStepIndex,
   steps,
-}: Props<T>) => {
+}: Props<StepName, Results>) => {
   return (
     <StepsComponent
       direction="vertical"

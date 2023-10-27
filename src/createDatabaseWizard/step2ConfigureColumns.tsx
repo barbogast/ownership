@@ -1,9 +1,9 @@
 import { Input, Row, Col, Select, Space } from "antd";
 import { Step } from "../components/wizard/types";
-import { StepResult } from "./types";
+import { StepName, StepResult } from "./types";
 
 const getStep = () => {
-  const step: Step<StepResult> = {
+  const step: Step<StepName, StepResult> = {
     type: "component",
     label: "Configure Columns",
     nextStep: "configureDatabase",

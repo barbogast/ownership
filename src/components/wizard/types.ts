@@ -9,30 +9,36 @@ type Props<T> = {
   setResults: React.Dispatch<React.SetStateAction<T>>;
 };
 
-type _SharedStepProperties<Results> = {
+type _SharedStepProperties<StepName extends string, Results> = {
   label: string;
   submitStep?: (context: Results) => Results;
   nextButton?: {
     label?: string;
     type?: ButtonType;
   };
-  nextStep: string | ((context: Results) => string | undefined) | undefined;
+  nextStep: StepName | ((context: Results) => StepName | undefined) | undefined;
 };
 
-export type Step<Results extends Record<string, unknown>> =
+export type Step<
+  StepName extends string,
+  Results extends Record<string, unknown>
+> =
   | ({
       type: "component";
       component: React.FC<Props<Results>>;
-    } & _SharedStepProperties<Results>)
+    } & _SharedStepProperties<StepName, Results>)
   | ({
       type: "forwardRefComponent";
       forwardRefComponent: React.ForwardRefExoticComponent<
         Props<Results> & React.RefAttributes<RefType<Results>>
       >;
-    } & _SharedStepProperties<Results>);
+    } & _SharedStepProperties<StepName, Results>);
 
-export type WizardConfig<Results extends Record<string, unknown>> = {
-  steps: Record<string, Step<Results>>;
+export type WizardConfig<
+  StepName extends string,
+  Results extends Record<string, unknown>
+> = {
+  steps: Record<StepName, Step<StepName, Results>>;
   initialResult: Results;
-  initialStepName: string;
+  initialStepName: StepName;
 };

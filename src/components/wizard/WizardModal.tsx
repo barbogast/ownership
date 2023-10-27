@@ -5,16 +5,23 @@ import { RefType, WizardConfig } from "./types";
 import useWizardController from "./useWizardController";
 import { Content } from "antd/es/layout/layout";
 
-type Props<ResultType extends Record<string, unknown>> = {
+type Props<
+  StepName extends string,
+  ResultType extends Record<string, unknown>
+> = {
   renderTrigger: (openModal: () => void) => React.ReactNode;
   title: string;
-  config: WizardConfig<ResultType>;
+  config: WizardConfig<StepName, ResultType>;
 };
-const WizardModal = <ResultType extends Record<string, unknown>>({
+
+const WizardModal = <
+  StepName extends string,
+  ResultType extends Record<string, unknown>
+>({
   renderTrigger,
   title,
   config,
-}: Props<ResultType>) => {
+}: Props<StepName, ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
 

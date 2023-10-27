@@ -3,10 +3,10 @@ import Papa from "papaparse";
 
 import { Step } from "../components/wizard/types";
 import { analyzeCsvHeader } from "../util/csv";
-import { StepResult } from "./types";
+import { StepName, StepResult } from "./types";
 
 const getStep = () => {
-  const step: Step<StepResult> = {
+  const step: Step<StepName, StepResult> = {
     type: "forwardRefComponent",
     label: "Parse CSV",
     nextStep: "configureColumns",
