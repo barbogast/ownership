@@ -9,14 +9,23 @@ type Props<T> = {
   setResults: React.Dispatch<React.SetStateAction<T>>;
 };
 
-type _SharedStepProperties<StepName extends string, Results> = {
+type _SharedStepProperties<
+  StepName extends string,
+  Results extends Record<string, unknown>
+> = {
   label: string;
   submitStep?: (context: Results) => Results;
   nextButton?: {
     label?: string;
     type?: ButtonType;
   };
-  nextStep: StepName | ((context: Results) => StepName | undefined) | undefined;
+  nextStep:
+    | StepName
+    | {
+        resultKey: keyof Results;
+        resultValueMappings: { value: unknown; stepName: StepName }[];
+      }
+    | undefined;
 };
 
 export type Step<

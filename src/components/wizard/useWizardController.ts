@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RefType, WizardConfig } from "./types";
+import { RefType, Step, WizardConfig } from "./types";
 
 const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
   const [steps, setSteps] = useState<StepName[]>([initialStepName]);
@@ -9,6 +9,27 @@ const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
   const reset = () => setSteps([initialStepName]);
   const getCurrent = (): StepName => steps[steps.length - 1]!;
   return { push, pop, reset, getCurrent };
+};
+
+const getNextStepName = <
+  StepName extends string,
+  Results extends Record<string, unknown>
+>(
+  currentStep: Step<StepName, Results>,
+  result: Results
+): StepName | undefined => {
+  if (typeof currentStep.nextStep === "object") {
+    for (const mapping of currentStep.nextStep.resultValueMappings) {
+      if (mapping.value === result[currentStep.nextStep.resultKey]) {
+        return mapping.stepName;
+      }
+    }
+    throw new Error(
+      `No next step found for value "${result[currentStep.nextStep.resultKey]}"`
+    );
+  } else {
+    return currentStep.nextStep;
+  }
 };
 
 const useWizardController = <
@@ -40,10 +61,10 @@ const useWizardController = <
     }
     setCurrentResults(result);
 
-    const nextStepName =
-      typeof currentStep.nextStep === "function"
-        ? currentStep.nextStep(result)
-        : currentStep.nextStep;
+    const nextStepName = getNextStepName<StepName, Results>(
+      currentStep,
+      result
+    );
 
     if (nextStepName) {
       history.push(nextStepName);
