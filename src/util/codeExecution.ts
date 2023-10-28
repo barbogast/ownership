@@ -1,11 +1,15 @@
 import sourceMap from "source-map-js";
 
-type ExecutionResult =
+export type ExecutionError = {
+  error: Error;
+  position?: { line: number; column: number };
+};
+
+export type ExecutionResult =
   | { success: true; returnValue: unknown }
   | {
       success: false;
-      error: Error;
-      position?: { line: number; column: number };
+      error: ExecutionError;
     };
 
 export const getPositionFromStacktrace = (stack: string) => {
@@ -62,6 +66,6 @@ export const executeTypescriptCode = async (
     const position = transpiledPosition
       ? smc.originalPositionFor(transpiledPosition)
       : undefined;
-    return { success: false, error: err as Error, position };
+    return { success: false, error: { error: err as Error, position } };
   }
 };

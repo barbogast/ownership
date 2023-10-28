@@ -3,14 +3,12 @@ import { editor as monaco } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 
 import { editorDefaultOptions } from "../constants";
+import { ExecutionError } from "../util/codeExecution";
 
 type Props = {
   code: string;
   setCode: (code: string) => void;
-  error?: {
-    position?: { line: number; column: number };
-    error: Error;
-  };
+  error?: ExecutionError;
 };
 
 const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {

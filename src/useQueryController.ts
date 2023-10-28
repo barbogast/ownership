@@ -10,7 +10,7 @@ import {
   DatabaseConnection,
   useDatabaseConnection,
 } from "./databaseConnectionStore";
-import { executeTypescriptCode } from "./util/codeExecution";
+import { ExecutionError, executeTypescriptCode } from "./util/codeExecution";
 
 type Progress = {
   queried?: boolean;
@@ -25,8 +25,7 @@ export type QueryState =
   | { state: "dbQueryError"; errorMessage: string }
   | {
       state: "transformError";
-      position?: { line: number; column: number };
-      error: Error;
+      error: ExecutionError;
     };
 
 const getStateFromDbState = (db: DatabaseConnection): QueryState => {
@@ -100,7 +99,6 @@ const useQueryController = (query: Query) => {
       setQueryState({
         state: "transformError",
         error: result.error,
-        position: result.position,
       });
     }
   };

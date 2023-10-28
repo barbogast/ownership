@@ -107,7 +107,7 @@ const Query: React.FC<Props> = ({ query }) => {
                         }
                         error={
                           queryState.state === "transformError"
-                            ? queryState
+                            ? queryState.error
                             : undefined
                         }
                       />
