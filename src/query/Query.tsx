@@ -14,10 +14,10 @@ import {
 } from "./queryStore";
 import { downloadFile } from "../util/utils";
 import QuerySection from "./sections/QuerySection";
-import TransformSection from "./sections/TransformSection";
 import DisplaySection from "./sections/DisplaySection";
 import TransformConfigForm from "./TransformConfigForm";
 import TableDisplay from "../display/TableDisplay";
+import CodeEditor from "../components/CodeEditor";
 
 type Props = {
   query: Query;
@@ -99,13 +99,28 @@ const Query: React.FC<Props> = ({ query }) => {
                   label: "Code",
                   key: "code",
                   children: (
-                    <TransformSection
-                      query={query}
-                      runTransform={() =>
-                        runTransform(queryResults, transformCode)
-                      }
-                      queryState={queryState}
-                    />
+                    <>
+                      <CodeEditor
+                        code={query.transformCode}
+                        setCode={(code) =>
+                          updateQuery(query.id, { transformCode: code })
+                        }
+                        error={
+                          queryState.state === "transformError"
+                            ? queryState
+                            : undefined
+                        }
+                      />
+                      <br />
+                      <Button
+                        type="primary"
+                        onClick={() =>
+                          runTransform(queryResults, transformCode)
+                        }
+                      >
+                        Transform
+                      </Button>
+                    </>
                   ),
                 },
               ]}
