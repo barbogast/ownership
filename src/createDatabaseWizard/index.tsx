@@ -12,15 +12,6 @@ const getConfig = (
     configureColumns: step2ConfigureColumns(),
     configureDatabase: step3ConfigureDatabase(isExistingDb),
   },
-  initialResult: {
-    id: "",
-    label: "",
-    tableName: "",
-    csvContent: "",
-    columns: [],
-    parsedCsvContent: [],
-  },
-  initialStepName: "parseCsv",
 });
 
 export default getConfig;

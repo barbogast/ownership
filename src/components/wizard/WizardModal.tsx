@@ -12,6 +12,8 @@ type Props<
   renderTrigger: (openModal: () => void) => React.ReactNode;
   title: string;
   config: WizardConfig<StepName, ResultType>;
+  initialResult: ResultType;
+  initialStepName: StepName;
 };
 
 const WizardModal = <
@@ -21,6 +23,8 @@ const WizardModal = <
   renderTrigger,
   title,
   config,
+  initialResult,
+  initialStepName,
 }: Props<StepName, ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
@@ -34,7 +38,7 @@ const WizardModal = <
     resetState,
     isInitialStep,
     isFinalStep,
-  } = useWizardController(config, childRef);
+  } = useWizardController(config, initialResult, initialStepName, childRef);
 
   const onPrevButton = () => {
     if (isInitialStep) {

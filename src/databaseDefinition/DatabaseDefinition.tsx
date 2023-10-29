@@ -103,6 +103,8 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <WizardModal
             title="Edit Database"
             config={getConfig(true)}
+            initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
+            initialStepName="parseCsv"
             renderTrigger={(openModal) => (
               <Button onClick={openModal}>Edit</Button>
             )}

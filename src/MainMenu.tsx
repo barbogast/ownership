@@ -68,6 +68,15 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         key: "new-database",
         label: (
           <WizardModal
+            initialResult={{
+              id: "",
+              label: "",
+              tableName: "",
+              csvContent: "",
+              columns: [],
+              parsedCsvContent: [],
+            }}
+            initialStepName="parseCsv"
             title="Create Database"
             config={getConfig(false)}
             renderTrigger={(openModal) => (

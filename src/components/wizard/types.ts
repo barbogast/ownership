@@ -48,6 +48,4 @@ export type WizardConfig<
   Results extends Record<string, unknown>
 > = {
   steps: Record<StepName, Step<StepName, Results>>;
-  initialResult: Results;
-  initialStepName: StepName;
 };

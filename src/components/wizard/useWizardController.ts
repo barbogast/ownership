@@ -37,13 +37,14 @@ const useWizardController = <
   Results extends Record<string, unknown>
 >(
   config: WizardConfig<StepName, Results>,
+  initialResult: Results,
+  initialStepName: StepName,
   childRef: React.MutableRefObject<RefType<Results>>
 ) => {
-  const history = useStepHistory(config.initialStepName);
 
-  const [currentResults, setCurrentResults] = useState<Results>(
-    config.initialResult
-  );
+  const history = useStepHistory(initialStepName);
+
+  const [currentResults, setCurrentResults] = useState<Results>(initialResult);
 
   const currentStepName = history.getCurrent();
   const currentStep = config.steps[currentStepName];
@@ -72,13 +73,13 @@ const useWizardController = <
   };
 
   const resetState = () => {
-    setCurrentResults(config.initialResult);
+    setCurrentResults(initialResult);
     history.reset();
   };
 
   return {
     currentStepName,
-    isInitialStep: currentStepName === config.initialStepName,
+    isInitialStep: currentStepName === initialStepName,
     isFinalStep: currentStep.nextStep === undefined,
     currentResults,
     currentStep,
