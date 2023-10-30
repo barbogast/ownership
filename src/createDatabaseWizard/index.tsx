@@ -1,6 +1,6 @@
-import step1ParseCsv from "./step1ParseCsv";
-import step3ConfigureDatabase from "./step3ConfigureDatabase";
-import step2ConfigureColumns from "./step2ConfigureColumns";
+import stepParseCsv from "./stepParseCsv";
+import stepConfigureDatabase from "./stepConfigureDatabase";
+import stepConfigureColumns from "./stepConfigureColumns";
 import stepSource from "./stepSource";
 import stepCode from "./stepCode";
 import { WizardConfig } from "../components/wizard/types";
@@ -12,9 +12,9 @@ const getConfig = (
   steps: {
     stepSource: stepSource(),
     code: stepCode(),
-    parseCsv: step1ParseCsv(),
-    configureColumns: step2ConfigureColumns(),
-    configureDatabase: step3ConfigureDatabase(isExistingDb),
+    parseCsv: stepParseCsv(),
+    configureColumns: stepConfigureColumns(),
+    configureDatabase: stepConfigureDatabase(isExistingDb),
   },
 });
 
