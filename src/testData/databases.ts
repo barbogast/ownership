@@ -52,6 +52,8 @@ export const testTable = {
   csvContent,
   tableName: "aaa",
   columns,
+  source: "csv" as const,
+  code: "",
 };
 
 const getDatabasesTestData = (): DatabaseState => {

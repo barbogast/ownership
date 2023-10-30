@@ -45,6 +45,8 @@ const getStep = (isExistingDb: boolean) => {
     submitStep: (results) => {
       const databaseDefinition = {
         id: results.id,
+        source: results.source,
+        code: results.code,
         label: results.label,
         csvContent: Papa.unparse(results.parsedCsvContent, { newline: "\n" }),
         tableName: results.tableName,

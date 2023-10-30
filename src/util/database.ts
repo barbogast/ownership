@@ -13,10 +13,12 @@ import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStor
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");
 
+export type ColumnType = "integer" | "real" | "text";
+
 export type ColumnDefinition = {
   csvName: string;
   dbName: string;
-  type: "integer" | "real" | "text";
+  type: ColumnType;
 };
 
 const init = async () => {

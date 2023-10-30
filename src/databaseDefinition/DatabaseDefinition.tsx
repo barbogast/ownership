@@ -104,7 +104,9 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
             title="Edit Database"
             config={getConfig(true)}
             initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
-            initialStepName="parseCsv"
+            initialStepName={
+              databaseDefinition.source === "code" ? "code" : "parseCsv"
+            }
             renderTrigger={(openModal) => (
               <Button onClick={openModal}>Edit</Button>
             )}

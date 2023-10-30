@@ -1,5 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { flipArrayOfObjects, objectToArray, rowsToObjects } from "./transform";
+import {
+  flipArrayOfObjects,
+  objectToArray,
+  objectsToRows,
+  rowsToObjects,
+} from "./transform";
 
 describe("transform", () => {
   test("rowsToObjects", () => {
@@ -19,6 +24,23 @@ describe("transform", () => {
     ];
 
     expect(rowsToObjects(source)).toEqual(expected);
+  });
+
+  test("objectsToRows", () => {
+    const source = [
+      { col_a: "A1", col_b: "B1", col_c: "C1", col_d: "D1" },
+      { col_a: "A2", col_b: "B2", col_c: "C2", col_d: "D2" },
+      { col_a: "A3", col_b: "B3", col_c: "C3", col_d: "D3" },
+    ];
+    const columns = ["col_a", "col_b", "col_c", "col_d"];
+
+    const expected = [
+      ["A1", "B1", "C1", "D1"],
+      ["A2", "B2", "C2", "D2"],
+      ["A3", "B3", "C3", "D3"],
+    ];
+
+    expect(objectsToRows(source, columns)).toEqual(expected);
   });
 
   test("flipArrayOfObjects", () => {

@@ -8,6 +8,8 @@ import { Draft } from "immer";
 
 export type DatabaseDefinition = {
   id: string;
+  source: "code" | "csv";
+  code: string;
   label: string;
   csvContent: string;
   tableName: string;
@@ -18,7 +20,7 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-const CURRENT_VERSION = 3;
+const CURRENT_VERSION = 4;
 
 type Files = "content.csv" | "index.json";
 
@@ -69,6 +71,12 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
         db.id = db.name;
         // @ts-expect-error db.name was available in version 2
         delete db.name;
+      }
+    }
+
+    if (oldVersion < 4) {
+      for (const db of Object.values(state as DatabaseState)) {
+        db.source = db.source ?? "csv";
       }
     }
     return state;

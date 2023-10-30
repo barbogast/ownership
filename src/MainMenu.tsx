@@ -75,8 +75,10 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               csvContent: "",
               columns: [],
               parsedCsvContent: [],
+              source: "csv",
+              code: "",
             }}
-            initialStepName="parseCsv"
+            initialStepName="stepSource"
             title="Create Database"
             config={getConfig(false)}
             renderTrigger={(openModal) => (

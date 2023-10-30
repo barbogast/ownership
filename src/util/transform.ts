@@ -13,6 +13,18 @@ export const rowsToObjects = logger.wrap(
   }
 );
 
+export const objectsToRows = logger.wrap(
+  "objectsToRows",
+  (
+    transformResult: TransformResult,
+    columns: string[]
+  ): (string | number | null)[][] => {
+    return transformResult.map((row) =>
+      columns.map((col) => (row[col] as string | number | null) ?? null)
+    );
+  }
+);
+
 export const flipArrayOfObjects = logger.wrap(
   "flipArrayOfObjects",
   (queryResult: TransformResult, labelColumn: string) =>
