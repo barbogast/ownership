@@ -13,7 +13,8 @@ export type BarChartTableDataType = {
   children?: BarChartTableDataType[];
 };
 
-export type TransformResult = Record<string, unknown>[];
+export type Value = string | number | null;
+export type TransformResult = Record<string, Value>[];
 
 export type ChartProps = {
   transformResult: TransformResult;

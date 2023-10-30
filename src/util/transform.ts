@@ -1,5 +1,5 @@
 import { QueryExecResult } from "sql.js";
-import { TransformResult } from "../types";
+import { TransformResult, Value } from "../types";
 import Logger from "./logger";
 
 const logger = new Logger("transform");
@@ -19,9 +19,7 @@ export const objectsToRows = logger.wrap(
     transformResult: TransformResult,
     columns: string[]
   ): (string | number | null)[][] => {
-    return transformResult.map((row) =>
-      columns.map((col) => (row[col] as string | number | null) ?? null)
-    );
+    return transformResult.map((row) => columns.map((col) => row[col] ?? null));
   }
 );
 
@@ -32,8 +30,11 @@ export const flipArrayOfObjects = logger.wrap(
       .filter((col) => col !== labelColumn)
       .map((key) =>
         Object.fromEntries(
-          ([["label", key]] as [string, unknown][]).concat(
-            queryResult.map((row) => [row[labelColumn] as string, row[key]])
+          ([["label", key]] as [string, Value][]).concat(
+            queryResult.map((row) => [
+              row[labelColumn] as string,
+              row[key] ?? null,
+            ])
           )
         )
       )
