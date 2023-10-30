@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { RefType, Step, WizardConfig } from "./types";
+import Logger from "../../util/logger";
+
+const logger = new Logger("wizard");
 
 const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
   const [steps, setSteps] = useState<StepName[]>([initialStepName]);
@@ -41,7 +44,6 @@ const useWizardController = <
   initialStepName: StepName,
   childRef: React.MutableRefObject<RefType<Results>>
 ) => {
-
   const history = useStepHistory(initialStepName);
 
   const [currentResults, setCurrentResults] = useState<Results>(initialResult);
@@ -70,6 +72,8 @@ const useWizardController = <
     if (nextStepName) {
       history.push(nextStepName);
     }
+
+    logger.log("next step", { result, step: nextStepName });
   };
 
   const resetState = () => {

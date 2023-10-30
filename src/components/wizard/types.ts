@@ -28,19 +28,26 @@ type _SharedStepProperties<
     | undefined;
 };
 
+export type WizardStepComponent<Results extends Record<string, unknown>> =
+  React.FC<Props<Results>>;
+
+export type WizardStepForwardRefComponent<
+  Results extends Record<string, unknown>
+> = React.ForwardRefExoticComponent<
+  Props<Results> & React.RefAttributes<RefType<Results>>
+>;
+
 export type Step<
   StepName extends string,
   Results extends Record<string, unknown>
 > =
   | ({
       type: "component";
-      component: React.FC<Props<Results>>;
+      component: WizardStepComponent<Results>;
     } & _SharedStepProperties<StepName, Results>)
   | ({
       type: "forwardRefComponent";
-      forwardRefComponent: React.ForwardRefExoticComponent<
-        Props<Results> & React.RefAttributes<RefType<Results>>
-      >;
+      forwardRefComponent: WizardStepForwardRefComponent<Results>;
     } & _SharedStepProperties<StepName, Results>);
 
 export type WizardConfig<
