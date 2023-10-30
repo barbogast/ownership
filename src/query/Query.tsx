@@ -99,7 +99,7 @@ const Query: React.FC<Props> = ({ query }) => {
                   label: "Code",
                   key: "code",
                   children: (
-                    <>
+                    <div style={{ height: 300 }}>
                       <CodeEditor
                         code={query.transformCode}
                         setCode={(code) =>
@@ -120,7 +120,7 @@ const Query: React.FC<Props> = ({ query }) => {
                       >
                         Transform
                       </Button>
-                    </>
+                    </div>
                   ),
                 },
               ]}

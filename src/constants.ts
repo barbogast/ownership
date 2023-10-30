@@ -17,4 +17,5 @@ export const editorDefaultOptions: editor.IStandaloneEditorConstructionOptions =
     scrollBeyondLastLine: false,
     formatOnPaste: true,
     formatOnType: true,
+    automaticLayout: true,
   };

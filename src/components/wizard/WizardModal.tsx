@@ -64,7 +64,6 @@ const WizardModal = <
       {isOpen && (
         <Modal
           width="80%"
-          //   height="80%"
           bodyStyle={{ height: "60vh", overflow: "auto" }}
           title={title}
           open={isOpen}
@@ -90,7 +89,7 @@ const WizardModal = <
                 currentStepIndex={currentStepIndex}
               /> */}
             </Sider>
-            <Content style={{ height: "100%" }}>
+            <Content style={{ height: "100%", overflow: "scroll" }}>
               {currentStep.type === "component" ? (
                 <currentStep.component
                   results={currentResults}

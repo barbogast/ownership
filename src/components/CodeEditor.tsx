@@ -44,7 +44,6 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
 
   return (
     <Editor
-      height="500px"
       defaultLanguage="typescript"
       defaultValue={code}
       onChange={(value) => value && setCode(value)}
