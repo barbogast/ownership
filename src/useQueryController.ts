@@ -89,9 +89,13 @@ const useQueryController = (query: Query) => {
     transformCode: string
   ) => {
     setQueryState({ state: "transformRunning" });
-    const result = await executeTypescriptCode(transformCode, results);
+    const result = await executeTypescriptCode<TransformResult>(
+      transformCode,
+      "transform",
+      { queryResults: results }
+    );
     if (result.success) {
-      setTransformResult((result.returnValue as TransformResult) || []);
+      setTransformResult(result.returnValue || []);
       setProgress({ queried: true, transformed: true });
       setQueryState({ state: "ready" });
     } else {

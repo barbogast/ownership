@@ -1,12 +1,16 @@
 import sourceMap from "source-map-js";
 
+import Logger from "./logger";
+
+const logger = new Logger("codeExecution");
+
 export type ExecutionError = {
   error: Error;
   position?: { line: number; column: number };
 };
 
-export type ExecutionResult =
-  | { success: true; returnValue: unknown }
+export type ExecutionResult<ReturnValue> =
+  | { success: true; returnValue: ReturnValue }
   | {
       success: false;
       error: ExecutionError;
@@ -34,10 +38,11 @@ export const getPositionFromStacktrace = (stack: string) => {
   };
 };
 
-export const executeTypescriptCode = async (
+export const executeTypescriptCode = async <ReturnValue>(
   code: string,
-  functionArguments: unknown
-): Promise<ExecutionResult> => {
+  functionName: string,
+  functionArguments: Record<string, unknown>
+): Promise<ExecutionResult<ReturnValue>> => {
   // @ts-expect-error Hack for typescript in browser to not crash
   window.process = { versions: {} };
 
@@ -49,13 +54,20 @@ export const executeTypescriptCode = async (
     compilerOptions: { sourceMap: true },
   });
 
+  const argTuples = Object.entries(functionArguments);
+  const argNames = argTuples.map(([name]) => name);
+  const argValues = argTuples.map(([, value]) => value);
+
   const finalCode = `${transpiled.outputText}
-      return transform(queryResult)
+      return ${functionName} (${argNames.join(", ")})
     `;
 
+  logger.log("Executing code", { code: finalCode });
+
   try {
-    const func = new Function("queryResult", finalCode);
-    const returnValue = func(functionArguments);
+    const func = new Function(...argNames, finalCode);
+    const returnValue = func(...argValues);
+    logger.log("Execution successful", { returnValue });
     return { success: true, returnValue };
   } catch (err) {
     const smc = new sourceMap.SourceMapConsumer(
@@ -66,6 +78,7 @@ export const executeTypescriptCode = async (
     const position = transpiledPosition
       ? smc.originalPositionFor(transpiledPosition)
       : undefined;
+    logger.log("Execution failed", { err, position });
     return { success: false, error: { error: err as Error, position } };
   }
 };
