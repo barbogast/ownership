@@ -20,7 +20,7 @@ const ProgressDisplay = <
   const maybeAppendStep = (stepName: StepName) => {
     const nextStep = steps[stepName].nextStep;
     if (typeof nextStep === "string") {
-      breadcrumbs.push(stepName);
+      breadcrumbs.push(nextStep);
       maybeAppendStep(nextStep);
     } else if (typeof nextStep === "object") {
       breadcrumbs.push("...");
