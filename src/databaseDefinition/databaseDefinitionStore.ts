@@ -22,7 +22,7 @@ const initialState: DatabaseState = {};
 
 const CURRENT_VERSION = 4;
 
-type Files = "content.csv" | "index.json";
+type Files = "content.csv" | "index.json" | "code.ts";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
@@ -33,10 +33,11 @@ type DatabaseDefinitionStoreConfig = StoreConfig<
 export const databaseToFiles = (
   db: DatabaseDefinition
 ): FileContents<Files> => {
-  const { csvContent, ...partialDb } = db;
+  const { csvContent, code, ...partialDb } = db;
   const fileContents = {
     "index.json": stringify(partialDb, null, 2),
     "content.csv": csvContent,
+    "code.ts": code,
   };
   return fileContents;
 };
@@ -47,6 +48,7 @@ export const fileToDatabase = (
   return {
     ...JSON.parse(fileContents["index.json"]),
     csvContent: fileContents["content.csv"],
+    code: fileContents["code.ts"],
   };
 };
 
