@@ -14,12 +14,35 @@ import InjectFromStore from "./components/InjectFromStore";
 import { useQuery } from "./query/queryStore";
 import { useReport } from "./report/reportStore";
 import { useDatabaseDefinition } from "./databaseDefinition/databaseDefinitionStore";
+import WizardModal from "./components/wizard/WizardModal";
+import getConfig from "./TourWizard";
+import { Button } from "antd";
 
 function App() {
   return (
     <Router>
       <MainMenu>
-        <Route path="/" component={RepositoryList}></Route>
+        <Route
+          path="/"
+          component={() => (
+            <>
+              <WizardModal
+                initialResult={{}}
+                initialStepName="stepOverview"
+                title="Tour"
+                config={getConfig()}
+                renderTrigger={(openModal) => (
+                  <Button onClick={openModal}>Tour</Button>
+                )}
+                width="50%"
+              />
+              <br />
+              <br />
+              <br />
+              <RepositoryList />{" "}
+            </>
+          )}
+        ></Route>
         <Route path="/ownership" component={Ownership} />
         <Route
           path="/:organization/:repository/:rest*"

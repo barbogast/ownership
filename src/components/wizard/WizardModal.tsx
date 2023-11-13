@@ -15,6 +15,7 @@ type Props<
   config: WizardConfig<StepName, ResultType>;
   initialResult: ResultType;
   initialStepName: StepName;
+  width?: string | number;
 };
 
 const WizardModal = <
@@ -26,6 +27,7 @@ const WizardModal = <
   config,
   initialResult,
   initialStepName,
+  width,
 }: Props<StepName, ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
@@ -65,7 +67,7 @@ const WizardModal = <
       {renderTrigger(() => setIsOpen(true))}
       {isOpen && (
         <Modal
-          width="80%"
+          width={width ?? "80%"}
           bodyStyle={{ height: "60vh", overflow: "auto" }}
           title={title}
           open={isOpen}
