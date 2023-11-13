@@ -16,6 +16,7 @@ type Props<
   initialResult: ResultType;
   initialStepName: StepName;
   width?: string | number;
+  navigationAllowed?: boolean;
 };
 
 const WizardModal = <
@@ -28,6 +29,7 @@ const WizardModal = <
   initialResult,
   initialStepName,
   width,
+  navigationAllowed,
 }: Props<StepName, ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
@@ -38,6 +40,7 @@ const WizardModal = <
     setResults,
     goToNextStep,
     goToPreviousStep,
+    jumpToIndex,
     resetState,
     isInitialStep,
     isFinalStep,
@@ -91,6 +94,7 @@ const WizardModal = <
               <ProgressDisplay<StepName, ResultType>
                 steps={config.steps}
                 history={history}
+                onStepClick={navigationAllowed ? jumpToIndex : undefined}
               />
             </Sider>
             <Content style={{ height: "100%", overflow: "scroll" }}>

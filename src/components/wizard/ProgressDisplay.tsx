@@ -4,6 +4,7 @@ import { Step } from "./types";
 type Props<StepName extends string, Results extends Record<string, unknown>> = {
   steps: Record<StepName, Step<StepName, Results>>;
   history: StepName[];
+  onStepClick?: (index: number) => void;
 };
 
 const ProgressDisplay = <
@@ -12,6 +13,7 @@ const ProgressDisplay = <
 >({
   steps,
   history,
+  onStepClick,
 }: Props<StepName, Results>) => {
   // Previous steps and future steps as far as they are known
   const breadcrumbs: (StepName | "...")[] = [...history];
@@ -37,6 +39,7 @@ const ProgressDisplay = <
         title: stepName in steps ? steps[stepName].label : stepName,
         // description: <span>&nbsp;</span>, // Required so that vertical line between elements is visible
       }))}
+      onChange={onStepClick}
     />
   );
 };

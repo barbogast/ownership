@@ -4,7 +4,12 @@ import Logger from "../../util/logger";
 
 const logger = new Logger("wizard");
 
-const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
+const useStepHistory = <
+  StepName extends string,
+  Results extends Record<string, unknown>
+>(
+  initialStepName: StepName
+) => {
   const [steps, setSteps] = useState<StepName[]>([initialStepName]);
   const push = (stepName: StepName) =>
     setSteps((state) => [...state, stepName]);
@@ -12,7 +17,31 @@ const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
   const reset = () => setSteps([initialStepName]);
   const getCurrent = (): StepName => steps[steps.length - 1]!;
   const getHistory = (): StepName[] => steps;
-  return { push, pop, reset, getCurrent, getHistory };
+  const jumpToIndex = (
+    targetIndex: number,
+    allSteps: Record<StepName, Step<StepName, Results>>
+  ) => {
+    if (targetIndex <= steps.length - 1) {
+      setSteps((state) => state.slice(0, targetIndex + 1));
+    } else {
+      const newSteps = [...steps];
+      const maybeAddStep = (name: StepName) => {
+        if (newSteps.length - 1 === targetIndex) {
+          return;
+        }
+        const nextStep = allSteps[name].nextStep;
+        if (typeof nextStep === "string") {
+          newSteps.push(nextStep);
+          maybeAddStep(nextStep);
+        } else {
+          throw new Error("Cannot jump to step with nextStep of type object");
+        }
+      };
+      maybeAddStep(steps.at(-1)!);
+      setSteps(newSteps);
+    }
+  };
+  return { push, pop, reset, getCurrent, getHistory, jumpToIndex };
 };
 
 const getNextStepName = <
@@ -45,7 +74,7 @@ const useWizardController = <
   initialStepName: StepName,
   childRef: React.MutableRefObject<RefType<Results>>
 ) => {
-  const history = useStepHistory(initialStepName);
+  const history = useStepHistory<StepName, Results>(initialStepName);
 
   const [currentResults, setCurrentResults] = useState<Results>(initialResult);
 
@@ -77,6 +106,10 @@ const useWizardController = <
     logger.log("next step", { result, step: nextStepName });
   };
 
+  const jumpToIndex = (index: number) => {
+    history.jumpToIndex(index, config.steps);
+  };
+
   const resetState = () => {
     setCurrentResults(initialResult);
     history.reset();
@@ -91,6 +124,7 @@ const useWizardController = <
     setResults: setCurrentResults,
     goToNextStep,
     goToPreviousStep: history.pop,
+    jumpToIndex,
     resetState,
     history: history.getHistory(),
   };
