@@ -1,14 +1,11 @@
 export type StepName =
   | "stepOverview"
-  | "stepCsv"
-  | "stepCode"
-  | "stepSql"
-  | "stepPivot"
+  | "stepImport"
+  | "stepQuery"
   | "stepTransform"
   | "stepChart"
   | "stepGit"
   | "stepShare"
-  | "stepWebsite"
-  | "stepExplore";
+  | "stepCollaborate";
 
 export type Result = Record<string, unknown>;

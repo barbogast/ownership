@@ -35,6 +35,8 @@ function App() {
                   <Button onClick={openModal}>Tour</Button>
                 )}
                 width="50%"
+                navigationAllowed
+                hideStepNumbers
               />
               <br />
               <br />

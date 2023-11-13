@@ -4,8 +4,8 @@ import { StepName, Result } from "./types";
 const getStep = () => {
   const step: Step<StepName, Result> = {
     type: "component",
-    label: "Overview",
-    nextStep: "stepCsv",
+    label: "Features",
+    nextStep: "stepImport",
     component: () => (
       <div>
         <p>

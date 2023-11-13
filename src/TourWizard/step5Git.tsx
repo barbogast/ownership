@@ -6,7 +6,7 @@ import imageGit from "./images/git.png";
 const getStep = () => {
   const step: Step<StepName, Result> = {
     type: "component",
-    label: "5. Save with Git",
+    label: "5. Persist",
     nextStep: "stepShare",
     component: () => (
       <div>

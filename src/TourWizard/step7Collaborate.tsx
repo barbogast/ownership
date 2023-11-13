@@ -4,7 +4,7 @@ import { StepName, Result } from "./types";
 const getStep = () => {
   const step: Step<StepName, Result> = {
     type: "component",
-    label: "7. Now everybody",
+    label: "7. Collaborate",
     nextStep: undefined,
     component: () => (
       <div>

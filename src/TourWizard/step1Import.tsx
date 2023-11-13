@@ -1,4 +1,5 @@
 import imageCsv from "./images/csv.png";
+import imageCode from "./images/code.png";
 import { Step } from "../components/wizard/types";
 import { StepName, Result } from "./types";
 import TourImage from "./TourImage";
@@ -33,15 +34,34 @@ Year	TOTAL	Residents	Central bank	OMFIs	Other financial institutions	Other resid
 2019	467160	206880	59922	64496	65638	16823	260280
 */
 
+// Example code for screenshot
+/*
+type Value = string | number | null | undefined
+type Row = Record<string, Value>
+type Columns = { name: string, type: "text" | "integer" | "real" }[]
+type ReturnValue = {data: Row[], columns: Columns}
+
+async function execute(): Promise<ReturnValue> {
+  const res = await fetch('https://yourwebsite.com/api/v1/weather')
+  const data = await res.json()
+
+  const preparedData = data.map(row => ({tempCelsius: (row.tempFahrenheit - 32) * 5 / 9, date: row.date}))
+  return {data: preparedData, columns: [{name: 'tempCelsius', type: 'real'}, {name: 'date', type: 'text'}]}
+}
+*/
+
 const getStep = () => {
   const step: Step<StepName, Result> = {
     type: "component",
-    label: "1. Import from CSV...",
-    nextStep: "stepCode",
+    label: "1. Import",
+    nextStep: "stepQuery",
     component: () => (
       <div>
-        Populate your database with data from a csv file.
+        Populate your database with data from a csv file...
         <TourImage src={imageCsv} />
+        ... or write a script to generate the data, for example by fetching it
+        from a third-party API.
+        <TourImage src={imageCode} />
       </div>
     ),
   };
