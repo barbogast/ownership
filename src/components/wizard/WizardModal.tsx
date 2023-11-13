@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { RefType, WizardConfig } from "./types";
 import useWizardController from "./useWizardController";
 import { Content } from "antd/es/layout/layout";
+import ProgressDisplay from "./ProgressDisplay";
 
 type Props<
   StepName extends string,
@@ -38,6 +39,7 @@ const WizardModal = <
     resetState,
     isInitialStep,
     isFinalStep,
+    history,
   } = useWizardController(config, initialResult, initialStepName, childRef);
 
   const onPrevButton = () => {
@@ -83,11 +85,11 @@ const WizardModal = <
           ]}
         >
           <Layout style={{ background: "white", height: "95%" }}>
-            <Sider theme="light">
-              {/* <ProgressDisplay
-                steps={steps}
-                currentStepIndex={currentStepIndex}
-              /> */}
+            <Sider theme="light" width={300}>
+              <ProgressDisplay<StepName, ResultType>
+                steps={config.steps}
+                history={history}
+              />
             </Sider>
             <Content style={{ height: "100%", overflow: "scroll" }}>
               {currentStep.type === "component" ? (

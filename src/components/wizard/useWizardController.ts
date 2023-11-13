@@ -11,7 +11,8 @@ const useStepHistory = <StepName extends string>(initialStepName: StepName) => {
   const pop = () => setSteps((state) => state.slice(0, -1));
   const reset = () => setSteps([initialStepName]);
   const getCurrent = (): StepName => steps[steps.length - 1]!;
-  return { push, pop, reset, getCurrent };
+  const getHistory = (): StepName[] => steps;
+  return { push, pop, reset, getCurrent, getHistory };
 };
 
 const getNextStepName = <
@@ -91,6 +92,7 @@ const useWizardController = <
     goToNextStep,
     goToPreviousStep: history.pop,
     resetState,
+    history: history.getHistory(),
   };
 };
 
