@@ -5,6 +5,7 @@ type Props<StepName extends string, Results extends Record<string, unknown>> = {
   steps: Record<StepName, Step<StepName, Results>>;
   history: StepName[];
   onStepClick?: (index: number) => void;
+  hideStepNumbers?: boolean;
 };
 
 const ProgressDisplay = <
@@ -14,6 +15,7 @@ const ProgressDisplay = <
   steps,
   history,
   onStepClick,
+  hideStepNumbers,
 }: Props<StepName, Results>) => {
   // Previous steps and future steps as far as they are known
   const breadcrumbs: (StepName | "...")[] = [...history];
@@ -34,6 +36,7 @@ const ProgressDisplay = <
   return (
     <StepsComponent
       direction="vertical"
+      progressDot={hideStepNumbers}
       current={history.length - 1}
       items={breadcrumbs.map((stepName) => ({
         title: stepName in steps ? steps[stepName].label : stepName,

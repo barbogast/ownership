@@ -17,6 +17,7 @@ type Props<
   initialStepName: StepName;
   width?: string | number;
   navigationAllowed?: boolean;
+  hideStepNumbers?: boolean;
 };
 
 const WizardModal = <
@@ -30,6 +31,7 @@ const WizardModal = <
   initialStepName,
   width,
   navigationAllowed,
+  hideStepNumbers,
 }: Props<StepName, ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
@@ -95,6 +97,7 @@ const WizardModal = <
                 steps={config.steps}
                 history={history}
                 onStepClick={navigationAllowed ? jumpToIndex : undefined}
+                hideStepNumbers={hideStepNumbers}
               />
             </Sider>
             <Content style={{ height: "100%", overflow: "scroll" }}>
