@@ -95,11 +95,23 @@ class NestedStore<
   };
 
   export = () => {
-    const files: Record<string, FileContents<Files>> = {};
+    const folders: Record<string, FileContents<Files>> = {};
     for (const entry of Object.values<Entity>(this.store.getState())) {
-      files[entry.id] = this.config.entityToFiles(entry);
+      const files = this.config.entityToFiles(entry);
+
+      const filesWithContent: FileContents<string> = {};
+      for (const [filename, content] of Object.entries<string | undefined>(
+        files
+      )) {
+        if (content) {
+          filesWithContent[filename] = content;
+        }
+      }
+
+      folders[entry.id] = filesWithContent;
     }
-    return files;
+
+    return folders;
   };
 
   delete = (info: RepositoryInfo) => {
