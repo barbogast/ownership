@@ -66,7 +66,7 @@ export const executeTypescriptCode = async <ReturnValue>(
 
   try {
     const func = new Function(...argNames, finalCode);
-    const returnValue = func(...argValues);
+    const returnValue = await func(...argValues);
     logger.log("Execution successful", { returnValue });
     return { success: true, returnValue };
   } catch (err) {

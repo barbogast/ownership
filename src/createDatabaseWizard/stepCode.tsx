@@ -22,7 +22,7 @@ type Row = Record<string, Value>
 type Columns = { name: string, type: "text" | "integer" | "real" }[]
 type ReturnValue = {data: Row[], columns: Columns}
 
-function execute(): ReturnValue {
+function execute(): ReturnValue | Promise<ReturnValue> {
   // Your code here ...
   return {data: [], columns: []}
 }
