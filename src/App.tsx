@@ -15,7 +15,7 @@ import { useQuery } from "./query/queryStore";
 import { useReport } from "./report/reportStore";
 import { useDatabaseDefinition } from "./databaseDefinition/databaseDefinitionStore";
 import WizardModal from "./components/wizard/WizardModal";
-import getConfig from "./TourWizard";
+import getConfig from "./tourWizard";
 import { Button } from "antd";
 
 function App() {
