@@ -49,7 +49,7 @@ const getStep = () => {
         ...results,
         parsedContent: result,
         columns: Object.entries(result[0]).map(([key, value]) => ({
-          csvName: key,
+          sourceName: key,
           dbName: key,
           type: jsonTypeToDbType(value),
         })),

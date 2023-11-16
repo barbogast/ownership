@@ -53,7 +53,7 @@ const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
         parsedCsvContent,
         csvContent: Papa.unparse(parsedCsvContent, { newline: "\n" }),
         columns: columns.map((c) => ({
-          csvName: c.name,
+          sourceName: c.name,
           dbName: c.name,
           type: c.type,
         })),

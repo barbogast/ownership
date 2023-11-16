@@ -31,22 +31,22 @@ export const csvContent = `Year	TOTAL	Residents	Central bank	OMFIs	Other financi
 2019	467160	206880	59922	64496	65638	16823	260280`;
 
 const columns: ColumnDefinition[] = [
-  { csvName: "Year", dbName: "year", type: "integer" },
-  { csvName: "TOTAL", dbName: "total", type: "integer" },
-  { csvName: "Residents", dbName: "residents", type: "integer" },
-  { csvName: "Central bank", dbName: "central_bank", type: "integer" },
-  { csvName: "OMFIs", dbName: "omfis", type: "integer" },
+  { sourceName: "Year", dbName: "year", type: "integer" },
+  { sourceName: "TOTAL", dbName: "total", type: "integer" },
+  { sourceName: "Residents", dbName: "residents", type: "integer" },
+  { sourceName: "Central bank", dbName: "central_bank", type: "integer" },
+  { sourceName: "OMFIs", dbName: "omfis", type: "integer" },
   {
-    csvName: "Other financial institutions",
+    sourceName: "Other financial institutions",
     dbName: "other_financial_institutions",
     type: "integer",
   },
   {
-    csvName: "Other residents",
+    sourceName: "Other residents",
     dbName: "other_residents",
     type: "integer",
   },
-  { csvName: "Non-residents", dbName: "non_residents", type: "integer" },
+  { sourceName: "Non-residents", dbName: "non_residents", type: "integer" },
 ];
 
 export const testTable: DatabaseDefinition = {

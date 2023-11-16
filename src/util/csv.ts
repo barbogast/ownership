@@ -37,7 +37,7 @@ export const analyzeCsvHeader = (records: CsvRecords): ColumnDefinition[] => {
   const columns = firstRow.map(
     (name, index) =>
       ({
-        csvName: name,
+        sourceName: name,
         dbName: slugify(name, "_").toLowerCase().replace("-", "_"),
         type: guessType(records, index),
       } as const)
