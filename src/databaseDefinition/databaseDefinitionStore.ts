@@ -8,10 +8,11 @@ import { Draft } from "immer";
 
 export type DatabaseDefinition = {
   id: string;
-  source: "code" | "csv";
+  source: "code" | "csv" | "json";
   code: string;
   label: string;
   csvContent: string;
+  jsonContent: string;
   tableName: string;
   columns: ColumnDefinition[];
 };
@@ -22,7 +23,7 @@ const initialState: DatabaseState = {};
 
 const CURRENT_VERSION = 4;
 
-type Files = "content.csv" | "index.json" | "code.ts";
+type Files = "content.csv" | "content.json" | "index.json" | "code.ts";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
@@ -33,10 +34,11 @@ type DatabaseDefinitionStoreConfig = StoreConfig<
 export const databaseToFiles = (
   db: DatabaseDefinition
 ): FileContents<Files> => {
-  const { csvContent, code, ...partialDb } = db;
+  const { csvContent, jsonContent, code, ...partialDb } = db;
   const fileContents = {
     "index.json": stringify(partialDb, null, 2),
     "content.csv": csvContent,
+    "content.json": jsonContent,
     "code.ts": code,
   };
   return fileContents;
@@ -48,6 +50,7 @@ export const fileToDatabase = (
   return {
     ...JSON.parse(fileContents["index.json"]),
     csvContent: fileContents["content.csv"],
+    jsonContent: fileContents["content.json"],
     code: fileContents["code.ts"],
   };
 };

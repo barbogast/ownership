@@ -80,8 +80,9 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               label: "",
               tableName: "",
               csvContent: "",
+              jsonContent: "",
               columns: [],
-              parsedCsvContent: [],
+              parsedContent: [],
               source: "csv",
               code: "",
             }}

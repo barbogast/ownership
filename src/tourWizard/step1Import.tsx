@@ -57,7 +57,7 @@ const getStep = () => {
     nextStep: "stepQuery",
     component: () => (
       <div>
-        Populate your database with data from a csv file...
+        Populate your database with data from a csv file or a JSON file...
         <TourImage src={imageCsv} />
         ... or write a script to generate the data, for example by fetching it
         from a third-party API.

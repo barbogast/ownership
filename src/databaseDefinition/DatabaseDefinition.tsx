@@ -19,6 +19,7 @@ import WizardModal from "../components/wizard/WizardModal";
 import AsyncModal from "../components/AsyncModal";
 import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
+import { sourceToStepMapping } from "../createDatabaseWizard/utils";
 
 const DeleteDatabaseDefinitionModal: React.FC<{
   id: string;
@@ -103,10 +104,8 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <WizardModal
             title="Edit Database"
             config={getConfig(true)}
-            initialResult={{ ...databaseDefinition, parsedCsvContent: [] }}
-            initialStepName={
-              databaseDefinition.source === "code" ? "code" : "parseCsv"
-            }
+            initialResult={{ ...databaseDefinition, parsedContent: [] }}
+            initialStepName={sourceToStepMapping[databaseDefinition.source]}
             renderTrigger={(openModal) => (
               <Button onClick={openModal}>Edit</Button>
             )}

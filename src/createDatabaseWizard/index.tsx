@@ -1,4 +1,5 @@
 import stepParseCsv from "./stepParseCsv";
+import stepParseJson from "./stepParseJson";
 import stepConfigureDatabase from "./stepConfigureDatabase";
 import stepConfigureColumns from "./stepConfigureColumns";
 import stepSource from "./stepSource";
@@ -13,6 +14,7 @@ const getConfig = (
     stepSource: stepSource(),
     code: stepCode(),
     parseCsv: stepParseCsv(),
+    parseJson: stepParseJson(),
     configureColumns: stepConfigureColumns(),
     configureDatabase: stepConfigureDatabase(isExistingDb),
   },

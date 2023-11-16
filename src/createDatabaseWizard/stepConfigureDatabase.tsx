@@ -1,5 +1,6 @@
 import { Input, Space } from "antd";
 import Papa from "papaparse";
+import stringify from "safe-stable-stringify";
 
 import { Step } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
@@ -43,12 +44,16 @@ const getStep = (isExistingDb: boolean) => {
       );
     },
     submitStep: (results) => {
+      const csvContent = Papa.unparse(results.parsedContent, { newline: "\n" });
+      const jsonContent =
+        results.source === "json" ? stringify(results.parsedContent) : "";
       const databaseDefinition = {
         id: results.id,
         source: results.source,
         code: results.code,
         label: results.label,
-        csvContent: Papa.unparse(results.parsedCsvContent, { newline: "\n" }),
+        csvContent,
+        jsonContent,
         tableName: results.tableName,
         columns: results.columns,
       };

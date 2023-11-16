@@ -1,6 +1,7 @@
 import { Radio } from "antd";
 import { Step } from "../components/wizard/types";
-import { StepName, StepResult } from "./types";
+import { Source, StepName, StepResult } from "./types";
+import { sourceToStepMapping } from "./utils";
 
 const getStep = () => {
   const step: Step<StepName, StepResult> = {
@@ -8,10 +9,9 @@ const getStep = () => {
     label: "Import source",
     nextStep: {
       resultKey: "source",
-      resultValueMappings: [
-        { value: "csv", stepName: "parseCsv" },
-        { value: "code", stepName: "code" },
-      ],
+      resultValueMappings: Object.entries(sourceToStepMapping).map(
+        ([source, stepName]) => ({ value: source, stepName })
+      ),
     },
     component: ({ results, setResults }) => {
       return (
@@ -19,12 +19,13 @@ const getStep = () => {
           onChange={(event) =>
             setResults((results) => ({
               ...results,
-              source: event.target.value,
+              source: event.target.value as Source,
             }))
           }
           value={results.source}
         >
           <Radio value="csv">Import from CSV</Radio>
+          <Radio value="json">Import from JSON</Radio>
           <Radio value="code">Run script</Radio>
         </Radio.Group>
       );
