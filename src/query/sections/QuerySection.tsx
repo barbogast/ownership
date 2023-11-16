@@ -10,6 +10,7 @@ import { editorDefaultOptions } from "../../constants";
 import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinitionStore";
 import { QueryState } from "../../useQueryController";
 import { TransformResult } from "../../types";
+import useLocalSettingsStore from "../../localSettingsStore";
 
 type Props = {
   query: Query;
@@ -27,6 +28,9 @@ const QuerySection: React.FC<Props> = ({
   const { sqlStatement, databaseSource } = query;
   const databases = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
+  const darkModeEnabled = useLocalSettingsStore(
+    (state) => state.darkModeEnabled
+  );
 
   const run = () => {
     const sel = editorRef.current!.getSelection();
@@ -92,6 +96,7 @@ const QuerySection: React.FC<Props> = ({
                 sqlStatement && updateQuery(query.id, { sqlStatement })
               }
               options={editorDefaultOptions}
+              theme={darkModeEnabled ? "vs-dark" : undefined}
             />
             <br />
             <br />

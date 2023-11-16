@@ -1,4 +1,4 @@
-import { Modal, Button, Layout } from "antd";
+import { Modal, Button, Layout, theme } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useState, useRef, useEffect } from "react";
 import { RefType, WizardConfig } from "./types";
@@ -20,6 +20,8 @@ type Props<
   hideStepNumbers?: boolean;
 };
 
+const { useToken } = theme;
+
 const WizardModal = <
   StepName extends string,
   ResultType extends Record<string, unknown>
@@ -35,6 +37,7 @@ const WizardModal = <
 }: Props<StepName, ResultType>) => {
   const [isOpen, setIsOpen] = useState(false);
   const childRef = useRef<RefType<ResultType>>({ getResult: (r) => r });
+  const { token } = useToken();
 
   const {
     currentResults,
@@ -91,7 +94,13 @@ const WizardModal = <
             </Button>,
           ]}
         >
-          <Layout style={{ background: "white", height: "95%" }}>
+          <Layout
+            style={{
+              background: token.colorBgContainer,
+              height: "95%",
+              padding: 10,
+            }}
+          >
             <Sider theme="light" width={300}>
               <ProgressDisplay<StepName, ResultType>
                 steps={config.steps}
@@ -100,7 +109,7 @@ const WizardModal = <
                 hideStepNumbers={hideStepNumbers}
               />
             </Sider>
-            <Content style={{ height: "100%", overflow: "scroll" }}>
+            <Content style={{ height: "100%", overflow: "auto" }}>
               {currentStep.type === "component" ? (
                 <currentStep.component
                   results={currentResults}

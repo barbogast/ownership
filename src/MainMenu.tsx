@@ -1,4 +1,4 @@
-import { Badge, Divider, Menu } from "antd";
+import { Badge, Divider, Menu, Switch, theme } from "antd";
 import { ReactElement, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -15,6 +15,9 @@ import RepositoryControl from "./RepositoryControl";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import getConfig from "./createDatabaseWizard";
 import WizardModal from "./components/wizard/WizardModal";
+import useLocalSettingsStore, { setDarkMode } from "./localSettingsStore";
+
+const { useToken } = theme;
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -28,6 +31,10 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [openFolders, setOpenFolders] = useState<string[]>([]);
   const repositoryInfo = useRepoInfo();
   const { modifiedQueries } = useModifiedStore();
+  const darkModeEnabled = useLocalSettingsStore(
+    (state) => state.darkModeEnabled
+  );
+  const { token } = useToken();
 
   const openFolder = (submenus: string[]) =>
     setOpenFolders((state) => [...new Set(state.concat(submenus))]);
@@ -174,21 +181,33 @@ const MainMenu: React.FC<Props> = ({ children }) => {
 
   return (
     <PanelGroup direction="horizontal">
-      <Panel defaultSize={20} minSize={10} style={{ marginRight: 10 }}>
+      <Panel
+        defaultSize={20}
+        minSize={10}
+        style={{ marginRight: 10, display: "flex", flexDirection: "column" }}
+      >
         <RepositoryControl />
         <Divider style={{ margin: "12px 0" }} />
         <Menu
           mode="inline"
-          style={{ overflow: "scroll", height: "100%" }}
+          style={{ overflowY: "auto", flex: 1 }}
           items={items}
           selectedKeys={[activeMenuItem]}
           openKeys={openFolders}
           onSelect={(selectInfo) => setActiveMenuItem(selectInfo.key)}
           onOpenChange={setOpenFolders}
         />
+        <div style={{ margin: 20 }}>
+          <Switch
+            checked={darkModeEnabled}
+            onChange={() => setDarkMode(!darkModeEnabled)}
+            checkedChildren="Dark Mode"
+            unCheckedChildren="Dark Mode"
+          />
+        </div>
       </Panel>
       <PanelResizeHandle
-        style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
+        style={{ width: 10, background: token.colorSplit, marginRight: 10 }}
       />
       <Panel minSize={30} style={{ height: "100%", overflow: "scroll" }}>
         {children}

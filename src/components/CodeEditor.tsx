@@ -4,6 +4,7 @@ import { Editor, OnMount } from "@monaco-editor/react";
 
 import { editorDefaultOptions } from "../constants";
 import { ExecutionError } from "../util/codeExecution";
+import useLocalSettingsStore from "../localSettingsStore";
 
 type Props = {
   code: string;
@@ -17,6 +18,9 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
     editor: monaco.IStandaloneCodeEditor;
     monaco: typeof import("../../node_modules/monaco-editor/esm/vs/editor/editor.api");
   }>();
+  const darkModeEnabled = useLocalSettingsStore(
+    (state) => state.darkModeEnabled
+  );
 
   const onEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -49,6 +53,7 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
       onChange={(value) => value && setCode(value)}
       onMount={onEditorMount}
       options={editorDefaultOptions}
+      theme={darkModeEnabled ? "vs-dark" : undefined}
     />
   );
 };
