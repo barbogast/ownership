@@ -1,6 +1,10 @@
+import { Editor, OnMount } from "@monaco-editor/react";
+import { editor } from "monaco-editor";
+
 import { forwardRef, useRef, useImperativeHandle } from "react";
 import { Step } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
+import useLocalSettingsStore from "../localSettingsStore";
 
 const getStep = () => {
   const step: Step<StepName, StepResult> = {
@@ -8,26 +12,29 @@ const getStep = () => {
     label: "Parse JSON",
     nextStep: "configureColumns",
     forwardRefComponent: forwardRef(({ results }, parentRef) => {
-      const inputRef = useRef<HTMLTextAreaElement>(null);
+      const editorRef = useRef<editor.IStandaloneCodeEditor>();
+      const darkModeEnabled = useLocalSettingsStore(
+        (state) => state.darkModeEnabled
+      );
+
+      const onEditorMount: OnMount = (editor) => {
+        editorRef.current = editor;
+      };
 
       useImperativeHandle(parentRef, () => ({
         getResult: (results) => ({
           ...results,
-          jsonContent: inputRef.current!.value,
+          jsonContent: editorRef.current!.getValue(),
         }),
       }));
 
       return (
-        <textarea
-          style={{ fontFamily: "monospace", height: "100%", width: "100%" }}
-          ref={inputRef}
+        <Editor
+          height="200px"
+          defaultLanguage="json"
           defaultValue={results.jsonContent}
-          data-testid="json-textarea"
-          onKeyDown={(event) =>
-            // Not sure why this is necessary, but without it, enter keys and arrow
-            // keys will be propagated to the parent element
-            event.stopPropagation()
-          }
+          onMount={onEditorMount}
+          theme={darkModeEnabled ? "vs-dark" : undefined}
         />
       );
     }),
