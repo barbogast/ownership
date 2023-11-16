@@ -38,7 +38,6 @@ const getStep = () => {
       const result = Papa.parse<string[]>(results.csvContent);
       return {
         ...results,
-        parsedContent: result.data,
         columns: analyzeCsvHeader(result.data),
       };
     },

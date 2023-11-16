@@ -104,7 +104,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <WizardModal
             title="Edit Database"
             config={getConfig(true)}
-            initialResult={{ ...databaseDefinition, parsedContent: [] }}
+            initialResult={{ ...databaseDefinition }}
             initialStepName={sourceToStepMapping[databaseDefinition.source]}
             renderTrigger={(openModal) => (
               <Button onClick={openModal}>Edit</Button>

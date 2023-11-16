@@ -1,3 +1,4 @@
+import Papa from "papaparse";
 import { Editor, OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 
@@ -54,7 +55,7 @@ const getStep = () => {
       };
       return {
         ...results,
-        parsedContent: result,
+        csvContent: Papa.unparse(result, { newline: "\n" }),
         columns: Object.entries(result[0]).map(([key, value]) => ({
           sourceName: key,
           dbName: key,

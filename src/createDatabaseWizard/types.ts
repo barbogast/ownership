@@ -15,7 +15,6 @@ export type StepResult = {
   code: string;
   csvContent: string;
   jsonContent: string;
-  parsedContent: (string | number | null)[][];
   columns: ColumnDefinition[];
   tableName: string;
   label: string;
