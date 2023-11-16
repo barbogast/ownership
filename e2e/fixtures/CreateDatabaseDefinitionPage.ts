@@ -43,11 +43,11 @@ export class CreateDatabaseDefinitionPage {
     const columnDefs: ColumnDefinition[] = [];
     for (const row of await this.#columnRow.all()) {
       const columns = await row.locator("div");
-      const csvName = (await columns.nth(0).textContent()) || "";
+      const sourceName = (await columns.nth(0).textContent()) || "";
       const dbName = (await columns.nth(1).locator("input").inputValue()) || "";
       const type = (await columns.nth(2).textContent()) || "";
       columnDefs.push({
-        csvName,
+        sourceName,
         dbName,
         type: type.toLocaleLowerCase() as ColumnDefinition["type"],
       });

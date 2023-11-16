@@ -23,7 +23,7 @@ const getStep = () => {
           </Row>
           {results.columns.map((col, i) => (
             <Row key={i} data-testid="column-row">
-              <Col span={8}>{col.csvName}</Col>
+              <Col span={8}>{col.sourceName}</Col>
               <Col span={8}>
                 <Input
                   value={col.dbName}
