@@ -5,41 +5,22 @@ import { Step, WizardStepComponent } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import CodeEditor from "../components/CodeEditor";
 import { Button } from "antd";
-import { ExecutionResult, executeTypescriptCode } from "../util/codeExecution";
+import { ExecutionResult } from "../util/codeExecution";
 import TableDisplay from "../display/TableDisplay";
-import { TransformResult } from "../types";
 import { objectsToRows } from "../util/transform";
-import { ColumnType } from "../util/database";
-
-type CodeReturnValue = {
-  data: TransformResult;
-  columns: { name: string; type: ColumnType }[];
-};
-
-const defaultCode = `
-type Value = string | number | null | undefined
-type Row = Record<string, Value>
-type Columns = { name: string, type: "text" | "integer" | "real" }[]
-type ReturnValue = {data: Row[], columns: Columns}
-
-function execute(): ReturnValue | Promise<ReturnValue> {
-  // Your code here ...
-  return {data: [], columns: []}
-}
-
-`;
+import {
+  ReturnValue,
+  defaultCode,
+  execute,
+} from "../codeExecution/importFromCode";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
   const [executionResult, setExecutionResult] =
-    useState<ExecutionResult<CodeReturnValue>>();
+    useState<ExecutionResult<ReturnValue>>();
 
   const executeCode = async () => {
-    const executionResult = await executeTypescriptCode<CodeReturnValue>(
-      results.code,
-      "execute",
-      {}
-    );
+    const executionResult = await execute(results.code);
     setExecutionResult(executionResult);
     if (executionResult.success) {
       const { data, columns } = executionResult.returnValue;

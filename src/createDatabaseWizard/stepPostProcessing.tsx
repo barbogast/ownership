@@ -5,35 +5,14 @@ import { Step, WizardStepComponent } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import CodeEditor from "../components/CodeEditor";
 import { Button } from "antd";
-import { ExecutionError, executeTypescriptCode } from "../util/codeExecution";
+import { ExecutionError } from "../util/codeExecution";
 import TableDisplay from "../display/TableDisplay";
 import { TransformResult } from "../types";
 import { objectsToRows, rowsToObjects } from "../util/transform";
 import { analyzeCsvHeader } from "../util/csv";
 import { analyseJsonHeader } from "../util/json";
-
-const defaultCodeCsv = `
-type Rows = string[][]
-
-function postProcess(rows: Rows): Rows | Promise<Rows> {
-  // Your code here ...
-  return rows
-}
-`;
-
-const defaultCodeJson = `
-type Value = string | number | null | undefined
-type Row = Record<string, Value>
-type ReturnValue = Row[]
-
-// Specify the actual type of the JSON data here
-type Data = unknown
-
-function postProcess(data: Data): ReturnValue | Promise<ReturnValue> {
-  // Your code here ...
-  return []
-}
-`;
+import * as postProcessCsv from "../codeExecution/postProcessCsv";
+import * as postProcessJson from "../codeExecution/postProcessJson";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const PostProcessing: WizardStepComponent<StepResult> = ({
@@ -46,10 +25,9 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
   const executeCodeForCsv = async () => {
     setError(undefined);
     setPreviewData([]);
-    const executionResult = await executeTypescriptCode<string[][]>(
+    const executionResult = await postProcessCsv.execute(
       results.postProcessingCode,
-      "postProcess",
-      { rows: results.parsedCsvContent }
+      { rows: results.parsedCsvContent! }
     );
     if (executionResult.success) {
       const columns = analyzeCsvHeader(executionResult.returnValue);
@@ -74,10 +52,11 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
   const executeCodeForJson = async () => {
     setError(undefined);
     setPreviewData([]);
-    const executionResult = await executeTypescriptCode<TransformResult>(
+    const executionResult = await postProcessJson.execute(
       results.postProcessingCode,
-      "postProcess",
-      { data: results.parsedJsonContent }
+      {
+        data: results.parsedJsonContent,
+      }
     );
     if (executionResult.success) {
       setPreviewData(executionResult.returnValue);
@@ -99,7 +78,9 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
   };
 
   const defaultCode =
-    results.source === "csv" ? defaultCodeCsv : defaultCodeJson;
+    results.source === "csv"
+      ? postProcessCsv.defaultCode
+      : postProcessJson.defaultCode;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>

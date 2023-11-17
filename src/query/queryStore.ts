@@ -7,6 +7,7 @@ import { add } from "../modifiedStore";
 import { ChartType } from "../display/Index";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
+import { defaultCode } from "../codeExecution/transformQuery";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -42,17 +43,6 @@ export type Query = {
 
 type QueryState = { [queryId: string]: Query };
 
-const defaultTransformCode = `
-type Value = string | number | null | Row[]
-type Row = Record<string, Value>
-type Table = Row[]
-
-function transform(tables: Table[]): Table {
-  // Your code here ...
-  return tables[0]
-}
-`;
-
 export const getDefaults = (dataSourceId: string) => ({
   transformType: "config" as const,
   databaseSource: {
@@ -67,7 +57,7 @@ export const getDefaults = (dataSourceId: string) => ({
   },
   databaseFileName: "",
   sqlStatement: "",
-  transformCode: defaultTransformCode,
+  transformCode: defaultCode,
 });
 
 const initialState: QueryState = {};

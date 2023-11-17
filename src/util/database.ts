@@ -9,9 +9,10 @@ import { DatabaseSource } from "../query/queryStore";
 import Papa from "papaparse";
 import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
 import { parseJson } from "./json";
-import { executeTypescriptCode } from "./codeExecution";
 import { TransformResult, Value } from "../types";
 import { objectsToRows } from "./transform";
+import * as postProcessCsv from "../codeExecution/postProcessCsv";
+import * as postProcessJson from "../codeExecution/postProcessJson";
 
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");
@@ -66,9 +67,8 @@ const loadFromCsv = async (databaseDefinition: DatabaseDefinition) => {
     return result.data;
   }
 
-  const executionResult = await executeTypescriptCode<string[][]>(
+  const executionResult = await postProcessCsv.execute(
     databaseDefinition.postProcessingCode,
-    "postProcess",
     { rows: result.data }
   );
 
@@ -85,9 +85,8 @@ const loadFromJson = async (databaseDefinition: DatabaseDefinition) => {
     return data as TransformResult;
   }
 
-  const executionResult = await executeTypescriptCode<TransformResult>(
+  const executionResult = await postProcessJson.execute(
     databaseDefinition.postProcessingCode,
-    "postProcess",
     { data }
   );
 

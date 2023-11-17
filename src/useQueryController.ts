@@ -10,7 +10,8 @@ import {
   DatabaseConnection,
   useDatabaseConnection,
 } from "./databaseConnectionStore";
-import { ExecutionError, executeTypescriptCode } from "./util/codeExecution";
+import { ExecutionError } from "./util/codeExecution";
+import { execute } from "./codeExecution/transformQuery";
 
 type Progress = {
   queried?: boolean;
@@ -89,11 +90,7 @@ const useQueryController = (query: Query) => {
     transformCode: string
   ) => {
     setQueryState({ state: "transformRunning" });
-    const result = await executeTypescriptCode<TransformResult>(
-      transformCode,
-      "transform",
-      { queryResults: results }
-    );
+    const result = await execute(transformCode, { queryResults: results });
     if (result.success) {
       setTransformResult(result.returnValue || []);
       setProgress({ queried: true, transformed: true });
