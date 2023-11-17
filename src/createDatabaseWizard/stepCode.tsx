@@ -50,7 +50,6 @@ const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
 
       setResults((state) => ({
         ...state,
-        parsedCsvContent,
         csvContent: Papa.unparse(parsedCsvContent, { newline: "\n" }),
         columns: columns.map((c) => ({
           sourceName: c.name,

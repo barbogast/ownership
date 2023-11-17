@@ -58,6 +58,8 @@ export const testTable: DatabaseDefinition = {
   columns,
   source: "csv" as const,
   code: "",
+  postProcessingCode: "",
+  enablePostProcessing: false,
 };
 
 const getDatabasesTestData = (): DatabaseState => {

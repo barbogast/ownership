@@ -9,7 +9,13 @@ const getStep = () => {
   const step: Step<StepName, StepResult> = {
     type: "forwardRefComponent",
     label: "Parse CSV",
-    nextStep: "configureColumns",
+    nextStep: {
+      resultKey: "enablePostProcessing",
+      resultValueMappings: [
+        { value: true, stepName: "postProcessing" },
+        { value: false, stepName: "configureColumns" },
+      ],
+    },
     forwardRefComponent: forwardRef(({ results }, parentRef) => {
       const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -38,7 +44,11 @@ const getStep = () => {
       const result = Papa.parse<string[]>(results.csvContent);
       return {
         ...results,
-        columns: analyzeCsvHeader(result.data),
+        parsedCsvContent: result.data,
+        // If post-processing is enabled we can defer analyzing the columns until after the post-processing
+        columns: results.enablePostProcessing
+          ? []
+          : analyzeCsvHeader(result.data),
       };
     },
   };

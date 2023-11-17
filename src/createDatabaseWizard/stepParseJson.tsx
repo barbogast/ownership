@@ -12,7 +12,13 @@ const getStep = () => {
   const step: Step<StepName, StepResult> = {
     type: "forwardRefComponent",
     label: "Parse JSON",
-    nextStep: "configureColumns",
+    nextStep: {
+      resultKey: "enablePostProcessing",
+      resultValueMappings: [
+        { value: true, stepName: "postProcessing" },
+        { value: false, stepName: "configureColumns" },
+      ],
+    },
     forwardRefComponent: forwardRef(({ results }, parentRef) => {
       const editorRef = useRef<editor.IStandaloneCodeEditor>();
       const darkModeEnabled = useLocalSettingsStore(
@@ -45,7 +51,9 @@ const getStep = () => {
       return {
         ...results,
         csvContent: Papa.unparse(result, { newline: "\n" }),
-        columns: analyseJsonHeader(result),
+        parsedJsonContent: result,
+        // If post-processing is enabled we can defer analyzing the columns until after the post-processing
+        columns: results.enablePostProcessing ? [] : analyseJsonHeader(result),
       };
     },
   };

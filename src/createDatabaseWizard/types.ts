@@ -1,22 +1,17 @@
-import { ColumnDefinition } from "../util/database";
+import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
 
 export type StepName =
   | "stepSource"
   | "code"
   | "parseCsv"
   | "parseJson"
+  | "postProcessing"
   | "configureColumns"
   | "configureDatabase";
 
 export type Source = "code" | "csv" | "json";
 
-export type StepResult = {
-  source: "code" | "csv" | "json";
-  code: string;
-  csvContent: string;
-  jsonContent: string;
-  columns: ColumnDefinition[];
-  tableName: string;
-  label: string;
-  id: string;
+export type StepResult = DatabaseDefinition & {
+  parsedCsvContent?: string[][];
+  parsedJsonContent?: unknown;
 };

@@ -15,13 +15,15 @@ export type DatabaseDefinition = {
   jsonContent: string;
   tableName: string;
   columns: ColumnDefinition[];
+  enablePostProcessing: boolean;
+  postProcessingCode: string;
 };
 
 export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-const CURRENT_VERSION = 5;
+const CURRENT_VERSION = 6;
 
 type Files = "content.csv" | "content.json" | "index.json" | "code.ts";
 
@@ -92,6 +94,17 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
           col.sourceName = col.sourceName ?? col.csvName;
           // @ts-expect-error db.csvName was available in version 4
           delete col.csvName;
+        });
+      }
+    }
+
+    if (oldVersion < 6) {
+      for (const db of Object.values(state as DatabaseState)) {
+        db.columns.forEach((col) => {
+          // @ts-expect-error db.csvName was available in version 4
+          col.enablePostProcessing = col.enablePostProcessing ?? false;
+          // @ts-expect-error db.csvName was available in version 4
+          col.postProcessingCode = col.postProcessingCode ?? "";
         });
       }
     }

@@ -84,6 +84,8 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               columns: [],
               source: "csv",
               code: "",
+              postProcessingCode: "",
+              enablePostProcessing: false,
             }}
             initialStepName="stepSource"
             title="Create Database"

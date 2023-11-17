@@ -1,4 +1,4 @@
-import { Radio } from "antd";
+import { Checkbox, Radio } from "antd";
 import { Step } from "../components/wizard/types";
 import { Source, StepName, StepResult } from "./types";
 import { sourceToStepMapping } from "./utils";
@@ -15,19 +15,39 @@ const getStep = () => {
     },
     component: ({ results, setResults }) => {
       return (
-        <Radio.Group
-          onChange={(event) =>
-            setResults((results) => ({
-              ...results,
-              source: event.target.value as Source,
-            }))
-          }
-          value={results.source}
-        >
-          <Radio value="csv">Import from CSV</Radio>
-          <Radio value="json">Import from JSON</Radio>
-          <Radio value="code">Run script</Radio>
-        </Radio.Group>
+        <>
+          <Radio.Group
+            onChange={(event) =>
+              setResults((results) => ({
+                ...results,
+                source: event.target.value as Source,
+              }))
+            }
+            value={results.source}
+          >
+            <Radio value="csv">Import from CSV</Radio>
+            <br />
+            <Radio value="json">Import from JSON</Radio>
+            <br />
+            <Radio value="code">Run script</Radio>
+            <br />
+          </Radio.Group>
+          <br />
+          <br />
+          {["csv", "json"].includes(results.source) && (
+            <Checkbox
+              onChange={(event) =>
+                setResults((results) => ({
+                  ...results,
+                  enablePostProcessing: event.target.checked,
+                }))
+              }
+              value={results.enablePostProcessing}
+            >
+              Enable post-processing
+            </Checkbox>
+          )}
+        </>
       );
     },
   };

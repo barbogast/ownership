@@ -51,6 +51,8 @@ const getStep = (isExistingDb: boolean) => {
         jsonContent: results.jsonContent,
         tableName: results.tableName,
         columns: results.columns,
+        enablePostProcessing: results.enablePostProcessing,
+        postProcessingCode: results.postProcessingCode,
       };
 
       if (isExistingDb) {
