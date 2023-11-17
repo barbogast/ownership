@@ -20,6 +20,7 @@ import AsyncModal from "../components/AsyncModal";
 import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
 import { sourceToStepMapping } from "../createDatabaseWizard/utils";
+import { deepCopy } from "../util/utils";
 
 const DeleteDatabaseDefinitionModal: React.FC<{
   id: string;
@@ -104,7 +105,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <WizardModal
             title="Edit Database"
             config={getConfig(true)}
-            initialResult={{ ...databaseDefinition }}
+            initialResult={deepCopy(databaseDefinition)}
             initialStepName={sourceToStepMapping[databaseDefinition.source]}
             renderTrigger={(openModal) => (
               <Button onClick={openModal}>Edit</Button>
