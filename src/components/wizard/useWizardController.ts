@@ -75,6 +75,8 @@ const useWizardController = <
   childRef: React.MutableRefObject<RefType<Results>>
 ) => {
   const history = useStepHistory<StepName, Results>(initialStepName);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [state, setState] = useState<"ready" | "loading" | "error">("ready");
 
   const [currentResults, setCurrentResults] = useState<Results>(initialResult);
 
@@ -84,13 +86,20 @@ const useWizardController = <
     throw new Error(`No step with name "${currentStepName}" found`);
   }
 
-  const goToNextStep = () => {
+  const goToNextStep = async () => {
+    setState("loading");
     let result = currentResults;
     if (currentStep.type === "forwardRefComponent") {
       result = childRef.current!.getResult(currentResults);
     }
     if (currentStep.submitStep) {
-      result = currentStep.submitStep(result);
+      try {
+        result = await currentStep.submitStep(result);
+      } catch (e) {
+        setErrors([(e as Error).message]);
+        setState("error");
+        return;
+      }
     }
     setCurrentResults(result);
 
@@ -102,6 +111,8 @@ const useWizardController = <
     if (nextStepName) {
       history.push(nextStepName);
     }
+    setState("ready");
+    setErrors([]);
 
     logger.log("next step", { result, step: nextStepName });
   };
@@ -127,6 +138,8 @@ const useWizardController = <
     jumpToIndex,
     resetState,
     history: history.getHistory(),
+    errors,
+    state,
   };
 };
 

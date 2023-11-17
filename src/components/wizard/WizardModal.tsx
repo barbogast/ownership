@@ -1,4 +1,4 @@
-import { Modal, Button, Layout, theme } from "antd";
+import { Modal, Button, Layout, theme, Alert } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useState, useRef, useEffect } from "react";
 import { RefType, WizardConfig } from "./types";
@@ -50,6 +50,8 @@ const WizardModal = <
     isInitialStep,
     isFinalStep,
     history,
+    state,
+    errors,
   } = useWizardController(config, initialResult, initialStepName, childRef);
 
   const onPrevButton = () => {
@@ -60,8 +62,8 @@ const WizardModal = <
     }
   };
 
-  const onNextButton = () => {
-    goToNextStep();
+  const onNextButton = async () => {
+    await goToNextStep();
     if (isFinalStep) {
       setIsOpen(false);
     }
@@ -81,12 +83,14 @@ const WizardModal = <
           open={isOpen}
           onCancel={() => setIsOpen(false)}
           footer={[
+            ...errors.map((error) => <Alert message={error} type="error" />),
             <Button key="back" onClick={onPrevButton}>
               {isInitialStep ? "Cancel" : "Previous"}
             </Button>,
             <Button
               key="next"
               onClick={onNextButton}
+              loading={state === "loading"}
               type={currentStep.nextButton?.type}
             >
               {currentStep.nextButton?.label ||

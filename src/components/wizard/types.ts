@@ -14,7 +14,7 @@ type _SharedStepProperties<
   Results extends Record<string, unknown>
 > = {
   label: string;
-  submitStep?: (context: Results) => Results;
+  submitStep?: (context: Results) => Results | Promise<Results>;
   nextButton?: {
     label?: string;
     type?: ButtonType;
