@@ -1,6 +1,5 @@
 import { Database } from "sql.js";
 import Logger from "./logger";
-import { CsvRecords } from "./csv";
 import initSqlJs from "sql.js";
 
 import useDatabaseConnectionStore, {
@@ -9,6 +8,10 @@ import useDatabaseConnectionStore, {
 import { DatabaseSource } from "../query/queryStore";
 import Papa from "papaparse";
 import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
+import { parseJson } from "./json";
+import { executeTypescriptCode } from "./codeExecution";
+import { TransformResult, Value } from "../types";
+import { objectsToRows } from "./transform";
 
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");
@@ -20,6 +23,8 @@ export type ColumnDefinition = {
   dbName: string;
   type: ColumnType;
 };
+
+type Rows = Value[][];
 
 const init = async () => {
   // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
@@ -44,13 +49,9 @@ const initializeDbFromUrl = dbLogger.wrap(
   }
 );
 
-const initializeDbFromCsv = dbLogger.time(
+const createDb = dbLogger.time(
   "initializeFromCsv",
-  async (
-    tableName: string,
-    columns: ColumnDefinition[],
-    csvContent: CsvRecords
-  ) => {
+  async (tableName: string, columns: ColumnDefinition[], csvContent: Rows) => {
     const SQL = await init();
     const db = new SQL.Database();
     await createTable(db, tableName, columns);
@@ -58,6 +59,49 @@ const initializeDbFromCsv = dbLogger.time(
     return db;
   }
 );
+
+const loadFromCsv = async (databaseDefinition: DatabaseDefinition) => {
+  const result = Papa.parse<string[]>(databaseDefinition.csvContent);
+  if (!databaseDefinition.enablePostProcessing) {
+    return result.data;
+  }
+
+  const executionResult = await executeTypescriptCode<string[][]>(
+    databaseDefinition.postProcessingCode,
+    "postProcess",
+    { rows: result.data }
+  );
+
+  if (!executionResult.success) {
+    throw new Error(executionResult.error.error.message);
+  }
+
+  return executionResult.returnValue;
+};
+
+const loadFromJson = async (databaseDefinition: DatabaseDefinition) => {
+  const data = parseJson(databaseDefinition.jsonContent);
+  if (!databaseDefinition.enablePostProcessing) {
+    return data as TransformResult;
+  }
+
+  const executionResult = await executeTypescriptCode<TransformResult>(
+    databaseDefinition.postProcessingCode,
+    "postProcess",
+    { data }
+  );
+
+  if (!executionResult.success) {
+    throw new Error(executionResult.error.error.message);
+  }
+
+  return executionResult.returnValue;
+};
+
+const loadFromCode = async (databaseDefinition: DatabaseDefinition) => {
+  const result = Papa.parse<string[]>(databaseDefinition.csvContent);
+  return result.data;
+};
 
 export const initialize = async (
   databaseSource: DatabaseSource,
@@ -75,13 +119,31 @@ export const initialize = async (
     if (databaseSource.type === "remote") {
       db = await initializeDbFromUrl(databaseSource.url);
     } else {
-      const result = Papa.parse<string[]>(databaseDefinition.csvContent);
-      db = await initializeDbFromCsv(
+      let rows: Rows;
+
+      if (databaseDefinition.source === "csv") {
+        rows = await loadFromCsv(databaseDefinition);
+      } else if (databaseDefinition.source === "json") {
+        const data = await loadFromJson(databaseDefinition);
+        rows = [
+          [], // Hack: Empty row as the header. The contents are ignored by createDb()
+          ...objectsToRows(data, Object.keys(data[0]!)),
+        ];
+      } else if (databaseDefinition.source === "code") {
+        rows = await loadFromCode(databaseDefinition);
+      } else {
+        throw new Error(
+          `databaseSource.type "${databaseDefinition.source}" not supported`
+        );
+      }
+
+      db = await createDb(
         databaseDefinition.tableName,
         databaseDefinition.columns,
-        result.data
+        rows
       );
     }
+
     connection = { key, status: "loaded", db };
   } catch (err) {
     connection = { key, error: err as Error, status: "error" };
@@ -112,7 +174,7 @@ export const insertIntoTable = sqlLogger.time(
     db: Database,
     tableName: string,
     columns: ColumnDefinition[],
-    records: CsvRecords
+    records: Rows
   ) => {
     const insertStmt = `insert into ${tableName} (${columns.map(
       (col) => col.dbName
