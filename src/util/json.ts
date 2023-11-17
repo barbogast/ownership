@@ -2,7 +2,7 @@ import stringify from "safe-stable-stringify";
 
 import { ColumnDefinition } from "./database";
 
-export const parseJson = (source: string) => JSON.parse(source);
+export const parseJson = <Shape>(source: string) => JSON.parse(source) as Shape;
 
 export const stableStringify = (data: unknown): string =>
   stringify(data, null, 2) as string;

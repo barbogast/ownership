@@ -7,6 +7,7 @@ import { Step } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import useLocalSettingsStore from "../localSettingsStore";
 import { analyseJsonHeader, parseJson } from "../util/json";
+import { TransformResult } from "../types";
 
 const getStep = () => {
   const step: Step<StepName, StepResult> = {
@@ -47,7 +48,7 @@ const getStep = () => {
       );
     }),
     submitStep: (results: StepResult) => {
-      const result = parseJson(results.jsonContent);
+      const result = parseJson<TransformResult>(results.jsonContent);
       return {
         ...results,
         csvContent: Papa.unparse(result, { newline: "\n" }),

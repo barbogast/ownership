@@ -80,9 +80,9 @@ const loadFromCsv = async (databaseDefinition: DatabaseDefinition) => {
 };
 
 const loadFromJson = async (databaseDefinition: DatabaseDefinition) => {
-  const data = parseJson(databaseDefinition.jsonContent);
+  const data = parseJson<TransformResult>(databaseDefinition.jsonContent);
   if (!databaseDefinition.enablePostProcessing) {
-    return data as TransformResult;
+    return data;
   }
 
   const executionResult = await postProcessJson.execute(
