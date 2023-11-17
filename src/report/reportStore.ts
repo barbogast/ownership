@@ -1,8 +1,8 @@
 import { FileContents } from "../util/fsHelper";
-import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { Draft } from "immer";
 import { createId } from "../util/utils";
+import { stableStringify } from "../util/json";
 // import { Block } from "@blocknote/core";
 
 type Block = string[];
@@ -24,8 +24,8 @@ type ReportFiles = FileContents<"index.json" | "blocks.json">;
 export const reportToFiles = (report: Report): ReportFiles => {
   const { blocks, ...partialReport } = report;
   const fileContents = {
-    "index.json": stringify(partialReport, null, 2),
-    "blocks.json": blocks ? stringify(blocks, null, 2) : "",
+    "index.json": stableStringify(partialReport),
+    "blocks.json": blocks ? stableStringify(blocks) : "",
   };
   return fileContents;
 };

@@ -1,10 +1,10 @@
-import stringify from "safe-stable-stringify";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { FileContents } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
 import { getNewLabel } from "../util/labels";
 import { createId, deepCopy } from "../util/utils";
 import { Draft } from "immer";
+import { stableStringify } from "../util/json";
 
 export type DatabaseDefinition = {
   id: string;
@@ -38,7 +38,7 @@ export const databaseToFiles = (
 ): FileContents<Files> => {
   const { csvContent, jsonContent, code, ...partialDb } = db;
   const fileContents = {
-    "index.json": stringify(partialDb, null, 2),
+    "index.json": stableStringify(partialDb),
     "content.csv": csvContent,
     "content.json": jsonContent,
     "code.ts": code,

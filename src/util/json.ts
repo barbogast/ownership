@@ -1,6 +1,11 @@
+import stringify from "safe-stable-stringify";
+
 import { ColumnDefinition } from "./database";
 
 export const parseJson = (source: string) => JSON.parse(source);
+
+export const stableStringify = (data: unknown): string =>
+  stringify(data, null, 2) as string;
 
 export const analyseJsonHeader = (data: unknown): ColumnDefinition[] => {
   const jsonTypeToDbType = (value: unknown) => {

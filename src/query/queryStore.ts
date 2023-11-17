@@ -1,4 +1,3 @@
-import stringify from "safe-stable-stringify";
 import { Draft } from "immer";
 
 import { createId, deepCopy } from "../util/utils";
@@ -8,6 +7,7 @@ import { ChartType } from "../display/Index";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { defaultCode } from "../codeExecution/transformQuery";
+import { stableStringify } from "../util/json";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -88,7 +88,7 @@ type QueryStoreConfig = StoreConfig<Query, Record<string, Query>, Files>;
 export const queryToFiles = (query: Query): FileContents<Files> => {
   const { sqlStatement, transformCode, ...partialQuery } = query;
   const fileContents = {
-    "index.json": stringify(partialQuery, null, 2),
+    "index.json": stableStringify(partialQuery),
     "sqlStatement.sql": sqlStatement,
     "transformCode.ts": transformCode,
   };
