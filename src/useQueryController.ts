@@ -10,7 +10,7 @@ import {
   DatabaseConnection,
   useDatabaseConnection,
 } from "./databaseConnectionStore";
-import { ExecutionError } from "./util/codeExecution";
+import { ExecutionError } from "./codeExecution/types";
 import { execute } from "./codeExecution/transformQuery";
 
 type Progress = {

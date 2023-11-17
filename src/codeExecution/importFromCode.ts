@@ -1,5 +1,5 @@
 import { TransformResult } from "../types";
-import { executeTypescriptCode } from "../util/codeExecution";
+import { executeTypescriptCode } from "./util";
 import { ColumnType } from "../util/database";
 
 export type Parameters = Record<string, never>; // Empty object

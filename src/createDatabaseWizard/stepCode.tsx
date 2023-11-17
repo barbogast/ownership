@@ -5,7 +5,7 @@ import { Step, WizardStepComponent } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import CodeEditor from "../components/CodeEditor";
 import { Button } from "antd";
-import { ExecutionResult } from "../util/codeExecution";
+import { ExecutionResult } from "../codeExecution/types";
 import TableDisplay from "../display/TableDisplay";
 import { objectsToRows } from "../util/transform";
 import {

@@ -1,5 +1,5 @@
 import { TransformResult } from "../types";
-import { executeTypescriptCode } from "../util/codeExecution";
+import { executeTypescriptCode } from "./util";
 
 export type Parameters = { queryResults: TransformResult[] };
 

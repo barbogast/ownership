@@ -1,4 +1,4 @@
-import { executeTypescriptCode } from "../util/codeExecution";
+import { executeTypescriptCode } from "./util";
 
 export type Parameters = { rows: string[][] };
 

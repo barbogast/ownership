@@ -3,7 +3,7 @@ import { editor as monaco } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 
 import { editorDefaultOptions } from "../constants";
-import { ExecutionError } from "../util/codeExecution";
+import { ExecutionError } from "../codeExecution/types";
 import useLocalSettingsStore from "../localSettingsStore";
 
 type Props = {

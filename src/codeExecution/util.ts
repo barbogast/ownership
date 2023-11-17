@@ -1,20 +1,9 @@
 import sourceMap from "source-map-js";
 
-import Logger from "./logger";
+import Logger from "../util/logger";
+import { ExecutionResult } from "./types";
 
 const logger = new Logger("codeExecution");
-
-export type ExecutionError = {
-  error: Error;
-  position?: { line: number; column: number };
-};
-
-export type ExecutionResult<ReturnValue> =
-  | { success: true; returnValue: ReturnValue }
-  | {
-      success: false;
-      error: ExecutionError;
-    };
 
 export const getPositionFromStacktrace = (stack: string) => {
   const line = stack
