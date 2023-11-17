@@ -100,14 +100,11 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
 
     if (oldVersion < 6) {
       for (const db of Object.values(state as DatabaseState)) {
-        db.columns.forEach((col) => {
-          // @ts-expect-error db.csvName was available in version 4
-          col.enablePostProcessing = col.enablePostProcessing ?? false;
-          // @ts-expect-error db.csvName was available in version 4
-          col.postProcessingCode = col.postProcessingCode ?? "";
-        });
+        db.enablePostProcessing = db.enablePostProcessing ?? false;
+        db.postProcessingCode = db.postProcessingCode ?? "";
       }
     }
+
     return state;
   },
 };
