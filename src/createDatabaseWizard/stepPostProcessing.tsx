@@ -26,7 +26,10 @@ type Value = string | number | null | undefined
 type Row = Record<string, Value>
 type ReturnValue = Row[]
 
-function postProcess(data: unknown): ReturnValue | Promise<ReturnValue> {
+// Specify the actual type of the JSON data here
+type Data = unknown
+
+function postProcess(data: Data): ReturnValue | Promise<ReturnValue> {
   // Your code here ...
   return []
 }
