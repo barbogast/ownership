@@ -6,6 +6,7 @@ import { forwardRef, useRef, useImperativeHandle } from "react";
 import { Step } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import useLocalSettingsStore from "../localSettingsStore";
+import { analyseJsonHeader, parseJson } from "../util/json";
 
 const getStep = () => {
   const step: Step<StepName, StepResult> = {
@@ -40,27 +41,11 @@ const getStep = () => {
       );
     }),
     submitStep: (results: StepResult) => {
-      const result = JSON.parse(results.jsonContent);
-      const jsonTypeToDbType = (value: unknown) => {
-        switch (typeof value) {
-          case "string":
-            return "text";
-          case "number":
-            return value % 1 === 0 ? "integer" : "real";
-          case "boolean":
-            return "text";
-          default:
-            return "text";
-        }
-      };
+      const result = parseJson(results.jsonContent);
       return {
         ...results,
         csvContent: Papa.unparse(result, { newline: "\n" }),
-        columns: Object.entries(result[0]).map(([key, value]) => ({
-          sourceName: key,
-          dbName: key,
-          type: jsonTypeToDbType(value),
-        })),
+        columns: analyseJsonHeader(result),
       };
     },
   };
