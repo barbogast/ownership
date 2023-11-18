@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Papa from "papaparse";
 
 import { Step, WizardStepComponent } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
@@ -7,12 +6,12 @@ import CodeEditor from "../components/CodeEditor";
 import { Button } from "antd";
 import { ExecutionResult } from "../codeExecution/types";
 import TableDisplay from "../display/TableDisplay";
-import { objectsToRows } from "../util/transform";
 import {
   ReturnValue,
   defaultCode,
   execute,
 } from "../codeExecution/importFromCode";
+import { stableStringify } from "../util/json";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
@@ -24,14 +23,9 @@ const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
     setExecutionResult(executionResult);
     if (executionResult.success) {
       const { data, columns } = executionResult.returnValue;
-
-      const headerRow = columns.map((c) => c.name);
-      const dataRows = objectsToRows(data, headerRow);
-      const parsedCsvContent = [headerRow, ...dataRows];
-
       setResults((state) => ({
         ...state,
-        csvContent: Papa.unparse(parsedCsvContent, { newline: "\n" }),
+        jsonContent: stableStringify(data),
         columns: columns.map((c) => ({
           sourceName: c.name,
           dbName: c.name,

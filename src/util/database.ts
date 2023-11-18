@@ -7,7 +7,10 @@ import useDatabaseConnectionStore, {
 } from "../databaseConnectionStore";
 import { DatabaseSource } from "../query/queryStore";
 import Papa from "papaparse";
-import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
+import {
+  DatabaseDefinition,
+  JsonContent,
+} from "../databaseDefinition/databaseDefinitionStore";
 import { parseJson } from "./json";
 import { TransformResult, Value } from "../types";
 import { objectsToRows } from "./transform";
@@ -97,10 +100,8 @@ const loadFromJson = async (databaseDefinition: DatabaseDefinition) => {
   return executionResult.returnValue;
 };
 
-const loadFromCode = async (databaseDefinition: DatabaseDefinition) => {
-  const result = Papa.parse<string[]>(databaseDefinition.csvContent);
-  return result.data;
-};
+const loadFromCode = async (databaseDefinition: DatabaseDefinition) =>
+  parseJson<JsonContent>(databaseDefinition.jsonContent);
 
 export const initialize = async (
   databaseSource: DatabaseSource,
@@ -129,7 +130,11 @@ export const initialize = async (
           ...objectsToRows(data, Object.keys(data[0]!)),
         ];
       } else if (databaseDefinition.source === "code") {
-        rows = await loadFromCode(databaseDefinition);
+        const data = await loadFromCode(databaseDefinition);
+        rows = [
+          [], // Hack: Empty row as the header. The contents are ignored by createDb()
+          ...objectsToRows(data, Object.keys(data[0]!)),
+        ];
       } else {
         throw new Error(
           `databaseSource.type "${databaseDefinition.source}" not supported`
@@ -145,6 +150,7 @@ export const initialize = async (
 
     connection = { key, status: "loaded", db };
   } catch (err) {
+    console.error(err);
     connection = { key, error: err as Error, status: "error" };
   }
   useDatabaseConnectionStore.setState((state) => {

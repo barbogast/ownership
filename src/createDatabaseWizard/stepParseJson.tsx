@@ -1,4 +1,3 @@
-import Papa from "papaparse";
 import { Editor, OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 
@@ -51,7 +50,6 @@ const getStep = () => {
       const result = parseJson<TransformResult>(results.jsonContent);
       return {
         ...results,
-        csvContent: Papa.unparse(result, { newline: "\n" }),
         parsedJsonContent: result,
         // If post-processing is enabled we can defer analyzing the columns until after the post-processing
         columns: results.enablePostProcessing ? [] : analyseJsonHeader(result),

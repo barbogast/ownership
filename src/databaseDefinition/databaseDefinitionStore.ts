@@ -1,3 +1,5 @@
+import Papa from "papaparse";
+
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { FileContents } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
@@ -5,6 +7,9 @@ import { getNewLabel } from "../util/labels";
 import { createId, deepCopy } from "../util/utils";
 import { Draft } from "immer";
 import { stableStringify } from "../util/json";
+import { TransformResult } from "../types";
+
+export type JsonContent = TransformResult;
 
 export type DatabaseDefinition = {
   id: string;
@@ -23,7 +28,7 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-const CURRENT_VERSION = 6;
+const CURRENT_VERSION = 7;
 
 type Files = "content.csv" | "content.json" | "index.json" | "code.ts";
 
@@ -102,6 +107,21 @@ export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
       for (const db of Object.values(state as DatabaseState)) {
         db.enablePostProcessing = db.enablePostProcessing ?? false;
         db.postProcessingCode = db.postProcessingCode ?? "";
+      }
+    }
+
+    if (oldVersion < 7) {
+      for (const db of Object.values(state as DatabaseState)) {
+        if (db.source === "code") {
+          db.jsonContent = stableStringify(
+            Papa.parse(db.csvContent, { header: true }).data
+          );
+          db.csvContent = "";
+        }
+
+        if (db.source === "json") {
+          db.csvContent = "";
+        }
       }
     }
 
