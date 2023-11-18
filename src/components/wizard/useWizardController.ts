@@ -98,7 +98,7 @@ const useWizardController = <
       } catch (e) {
         setErrors([(e as Error).message]);
         setState("error");
-        return;
+        return { closeWizard: false };
       }
     }
     setCurrentResults(result);
@@ -115,6 +115,7 @@ const useWizardController = <
     setErrors([]);
 
     logger.log("next step", { result, step: nextStepName });
+    return { closeWizard: nextStepName === undefined };
   };
 
   const jumpToIndex = (index: number) => {
@@ -123,6 +124,8 @@ const useWizardController = <
 
   const resetState = () => {
     setCurrentResults(initialResult);
+    setState("ready");
+    setErrors([]);
     history.reset();
   };
 

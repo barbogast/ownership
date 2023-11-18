@@ -63,8 +63,8 @@ const WizardModal = <
   };
 
   const onNextButton = async () => {
-    await goToNextStep();
-    if (isFinalStep) {
+    const result = await goToNextStep();
+    if (result.closeWizard) {
       setIsOpen(false);
     }
   };
