@@ -13,7 +13,7 @@ import {
   updateDatabaseDefinition,
   DatabaseDefinition,
 } from "./databaseDefinitionStore";
-import { Alert, Button, Col, Input, Row } from "antd";
+import { Alert, Button, Col, Input, Row, Typography } from "antd";
 import getConfig from "../createDatabaseWizard";
 import WizardModal from "../components/wizard/WizardModal";
 import AsyncModal from "../components/AsyncModal";
@@ -21,6 +21,8 @@ import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
 import { sourceToStepMapping } from "../createDatabaseWizard/utils";
 import { deepCopy } from "../util/utils";
+
+const { Title } = Typography;
 
 const DeleteDatabaseDefinitionModal: React.FC<{
   id: string;
@@ -132,7 +134,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
       {conn.status === "loaded" &&
         queryResults.map((queryResult, i) => (
           <Fragment key={i}>
-            <h2>{tables[i]}</h2>
+            <Title level={3}>{tables[i]}</Title>
             <TableDisplay transformResult={rowsToObjects(queryResult)} />
           </Fragment>
         ))}
