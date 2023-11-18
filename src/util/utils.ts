@@ -75,3 +75,12 @@ export const sortByLabel = (a: { label: string }, b: { label: string }) =>
     : 0;
 
 export const createId = uuidv4;
+
+export const omit = <T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
+  keys: K[]
+) =>
+  // https://stackoverflow.com/a/67074641
+  Object.fromEntries(
+    Object.entries(obj).filter((e) => !keys.includes(e[0] as K))
+  );

@@ -21,6 +21,7 @@ import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
 import { sourceToStepMapping } from "../createDatabaseWizard/utils";
 import { deepCopy } from "../util/utils";
+import EditRawMenu from "./EditRawMenu";
 
 const { Title } = Typography;
 
@@ -128,6 +129,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           >
             <DeleteDatabaseDefinitionModal id={id} />
           </AsyncModal>
+          <EditRawMenu databaseDefinition={databaseDefinition} />
         </Col>
       </Row>
 

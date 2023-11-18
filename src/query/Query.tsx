@@ -18,6 +18,7 @@ import DisplaySection from "./sections/DisplaySection";
 import TransformConfigForm from "./TransformConfigForm";
 import TableDisplay from "../display/TableDisplay";
 import CodeEditor from "../components/CodeEditor";
+import EditRawMenu from "./EditRawMenu";
 
 type Props = {
   query: Query;
@@ -165,6 +166,7 @@ const Query: React.FC<Props> = ({ query }) => {
             <Button onClick={removeQuery}>Delete...</Button>{" "}
             <Button onClick={duplicateQuery}>Duplicate</Button>{" "}
             <Button onClick={exportQuery}>Export</Button>
+            <EditRawMenu query={query} />
           </Col>
         </Row>
         <br /> <br />

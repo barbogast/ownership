@@ -7,6 +7,8 @@ type Props = {
   renderTrigger: (openModal: () => void) => React.ReactNode;
   children: React.ReactNode;
   label: string;
+  okText?: string;
+  fullscreen?: boolean;
 };
 
 const AsyncModal: React.FC<Props> = ({
@@ -14,6 +16,8 @@ const AsyncModal: React.FC<Props> = ({
   onSubmit,
   renderTrigger,
   label,
+  okText,
+  fullscreen,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +52,8 @@ const AsyncModal: React.FC<Props> = ({
             content: label + " failed.",
           });
         });
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -62,6 +68,9 @@ const AsyncModal: React.FC<Props> = ({
           onOk={() => submit()}
           onCancel={() => setIsOpen(false)}
           confirmLoading={isLoading}
+          width={fullscreen ? "90%" : undefined}
+          style={fullscreen ? { top: 50, bottom: 50 } : {}}
+          okText={okText}
         >
           {children}
           {errorMessage && <Alert message={errorMessage} type="error" />}
