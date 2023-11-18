@@ -12,8 +12,8 @@ import {
   JsonContent,
 } from "../databaseDefinition/databaseDefinitionStore";
 import { parseJson } from "./json";
-import { TransformResult, Value } from "../types";
-import { objectsToRows } from "./transform";
+import { TransformResult } from "../types";
+import { rowsToObjects } from "./transform";
 import * as postProcessCsv from "../codeExecution/postProcessCsv";
 import * as postProcessJson from "../codeExecution/postProcessJson";
 
@@ -27,8 +27,6 @@ export type ColumnDefinition = {
   dbName: string;
   type: ColumnType;
 };
-
-type Rows = Value[][];
 
 const init = async () => {
   // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
@@ -55,7 +53,11 @@ const initializeDbFromUrl = dbLogger.wrap(
 
 const createDb = dbLogger.time(
   "initializeFromCsv",
-  async (tableName: string, columns: ColumnDefinition[], csvContent: Rows) => {
+  async (
+    tableName: string,
+    columns: ColumnDefinition[],
+    csvContent: TransformResult
+  ) => {
     const SQL = await init();
     const db = new SQL.Database();
     await createTable(db, tableName, columns);
@@ -119,22 +121,18 @@ export const initialize = async (
     if (databaseSource.type === "remote") {
       db = await initializeDbFromUrl(databaseSource.url);
     } else {
-      let rows: Rows;
+      let rows: TransformResult;
 
       if (databaseDefinition.source === "csv") {
-        rows = await loadFromCsv(databaseDefinition);
+        const csvRows = await loadFromCsv(databaseDefinition);
+        rows = rowsToObjects({
+          columns: csvRows[0]!,
+          values: csvRows.slice(1),
+        });
       } else if (databaseDefinition.source === "json") {
-        const data = await loadFromJson(databaseDefinition);
-        rows = [
-          [], // Hack: Empty row as the header. The contents are ignored by createDb()
-          ...objectsToRows(data, Object.keys(data[0]!)),
-        ];
+        rows = await loadFromJson(databaseDefinition);
       } else if (databaseDefinition.source === "code") {
-        const data = await loadFromCode(databaseDefinition);
-        rows = [
-          [], // Hack: Empty row as the header. The contents are ignored by createDb()
-          ...objectsToRows(data, Object.keys(data[0]!)),
-        ];
+        rows = await loadFromCode(databaseDefinition);
       } else {
         throw new Error(
           `databaseSource.type "${databaseDefinition.source}" not supported`
@@ -179,7 +177,7 @@ export const insertIntoTable = sqlLogger.time(
     db: Database,
     tableName: string,
     columns: ColumnDefinition[],
-    records: Rows
+    records: TransformResult
   ) => {
     const insertStmt = `insert into ${tableName} (${columns.map(
       (col) => col.dbName
@@ -187,8 +185,13 @@ export const insertIntoTable = sqlLogger.time(
     sqlLogger.log(insertStmt);
 
     const preparedStatement = db.prepare(insertStmt);
-    for (const row of records.slice(1)) {
-      preparedStatement.run(row.map((v) => (v === "" ? null : v)));
+    for (const row of records) {
+      preparedStatement.run(
+        columns.map((col) => {
+          const v = row[col.sourceName]!;
+          return v === "" ? null : v;
+        })
+      );
       preparedStatement.reset();
     }
     preparedStatement.free();
