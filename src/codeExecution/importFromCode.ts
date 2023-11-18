@@ -10,7 +10,7 @@ export type ReturnValue = {
 };
 
 export const execute = (code: string) =>
-  executeTypescriptCode<ReturnValue>(code, "postProcess", {});
+  executeTypescriptCode<ReturnValue>(code, "execute", {});
 
 export const defaultCode = `
 type Value = string | number | null | undefined
