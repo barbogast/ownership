@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Alert, Button, Select } from "antd";
+import { Alert, Button, Select, theme } from "antd";
 import { editor } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -19,12 +19,15 @@ type Props = {
   queryState: QueryState;
 };
 
+const { useToken } = theme;
+
 const QuerySection: React.FC<Props> = ({
   query,
   runQuery,
   queryResults,
   queryState,
 }) => {
+  const { token } = useToken();
   const { sqlStatement, databaseSource } = query;
   const databases = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
@@ -112,7 +115,7 @@ const QuerySection: React.FC<Props> = ({
         )}
       </Panel>
       <PanelResizeHandle
-        style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
+        style={{ width: 10, background: token.colorSplit, marginRight: 10 }}
       />
       <Panel minSize={10}>
         {queryResults.map((queryResult, i) => (
