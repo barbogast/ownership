@@ -108,6 +108,17 @@ const useWizardController = <
       result
     );
 
+    if (nextStepName && config.steps[nextStepName].prepareStep) {
+      try {
+        result = await config.steps[nextStepName].prepareStep!(result);
+      } catch (e) {
+        setErrors([(e as Error).message]);
+        setState("error");
+        return { closeWizard: false };
+      }
+      setCurrentResults(result);
+    }
+
     if (nextStepName) {
       history.push(nextStepName);
     }

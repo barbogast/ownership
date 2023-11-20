@@ -15,6 +15,7 @@ type _SharedStepProperties<
 > = {
   label: string;
   submitStep?: (context: Results) => Results | Promise<Results>;
+  prepareStep?: (context: Results) => Results | Promise<Results>;
   nextButton?: {
     label?: string;
     type?: ButtonType;
