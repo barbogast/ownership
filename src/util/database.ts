@@ -28,6 +28,16 @@ export type ColumnDefinition = {
   type: ColumnType;
 };
 
+export type DbSchema = {
+  tables: {
+    name: string;
+    columns: {
+      name: string;
+      type: string;
+    }[];
+  }[];
+};
+
 const init = async () => {
   // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
   // without any configuration, initSqlJs will fetch the wasm files
@@ -146,7 +156,8 @@ export const initialize = async (
       );
     }
 
-    connection = { key, status: "loaded", db };
+    const schema = querySchema(db);
+    connection = { key, status: "loaded", db, schema };
   } catch (err) {
     console.error(err);
     connection = { key, error: err as Error, status: "error" };
@@ -197,3 +208,23 @@ export const insertIntoTable = sqlLogger.time(
     preparedStatement.free();
   }
 );
+
+const querySchema = sqlLogger.time("querySchema", (db: Database) => {
+  const tableResult = db.exec("select * from sqlite_master");
+  const tables = rowsToObjects(tableResult[0]!);
+
+  const dbSchema: DbSchema = { tables: [] };
+  for (const table of tables) {
+    const columnResult = db.exec(`pragma table_info('${tables[0]!.name}')`);
+    const columns = rowsToObjects(columnResult[0]!);
+    dbSchema.tables.push({
+      name: table.name,
+      columns: columns.map((column) => ({
+        name: column.name,
+        type: column.type,
+      })),
+    });
+  }
+
+  return dbSchema;
+});

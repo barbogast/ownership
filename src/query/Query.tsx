@@ -37,6 +37,7 @@ const Query: React.FC<Props> = ({ query }) => {
     runQuery,
     runTransform,
     transformResult,
+    dbSchema,
   } = controller;
 
   const exportQuery = () => {
@@ -69,6 +70,7 @@ const Query: React.FC<Props> = ({ query }) => {
           runQuery={runQuery}
           queryResults={queryResults}
           queryState={queryState}
+          dbSchema={dbSchema}
         />
       ),
     },

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Alert, Button, Select, theme } from "antd";
+import { Alert, Button, Select, Tabs, theme } from "antd";
 import { editor } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -11,12 +11,15 @@ import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinit
 import { QueryState } from "../../useQueryController";
 import { TransformResult } from "../../types";
 import useLocalSettingsStore from "../../localSettingsStore";
+import DbSchemaDisplay from "../DbSchemaDisplay";
+import { DbSchema } from "../../util/database";
 
 type Props = {
   query: Query;
   runQuery: (stmt: string) => void;
   queryResults: TransformResult[];
   queryState: QueryState;
+  dbSchema: DbSchema | undefined;
 };
 
 const { useToken } = theme;
@@ -26,6 +29,7 @@ const QuerySection: React.FC<Props> = ({
   runQuery,
   queryResults,
   queryState,
+  dbSchema,
 }) => {
   const { token } = useToken();
   const { sqlStatement, databaseSource } = query;
@@ -118,9 +122,27 @@ const QuerySection: React.FC<Props> = ({
         style={{ width: 10, background: token.colorSplit, marginRight: 10 }}
       />
       <Panel minSize={10}>
-        {queryResults.map((queryResult, i) => (
-          <TableDisplay transformResult={queryResult} key={i} />
-        ))}
+        <Tabs
+          type="card"
+          items={[
+            {
+              label: "Query Result",
+              key: "preview",
+              children: queryResults.map((queryResult, i) => (
+                <TableDisplay transformResult={queryResult} key={i} />
+              )),
+            },
+            {
+              label: "Database schema",
+              key: "schema",
+              children: dbSchema ? (
+                <DbSchemaDisplay dbSchema={dbSchema} />
+              ) : (
+                "Loading..."
+              ),
+            },
+          ]}
+        />
       </Panel>
     </PanelGroup>
   );
