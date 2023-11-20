@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Papa from "papaparse";
-
 import { Step, WizardStepComponent } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import CodeEditor from "../components/CodeEditor";
@@ -8,7 +6,7 @@ import { Button } from "antd";
 import { ExecutionError } from "../codeExecution/types";
 import TableDisplay from "../display/TableDisplay";
 import { TransformResult } from "../types";
-import { objectsToRows, rowsToObjects } from "../util/transform";
+import { rowsToObjects } from "../util/transform";
 import { analyzeCsvHeader } from "../util/csv";
 import { analyseJsonHeader } from "../util/json";
 import * as postProcessCsv from "../codeExecution/postProcessCsv";
@@ -60,16 +58,9 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
     );
     if (executionResult.success) {
       setPreviewData(executionResult.returnValue);
-      // const { data, columns } = executionResult.returnValue;
-
       const columns = analyseJsonHeader(executionResult.returnValue);
-      const headerRow = columns.map((c) => c.sourceName);
-      const dataRows = objectsToRows(executionResult.returnValue, headerRow);
-      const parsedCsvContent = [headerRow, ...dataRows];
-
       setResults((state) => ({
         ...state,
-        csvContent: Papa.unparse(parsedCsvContent, { newline: "\n" }),
         columns: columns,
       }));
     } else {
