@@ -25,7 +25,7 @@ export const migrate = <State>(
 
   try {
     while (version < config.version) {
-      logger.log("migrate", { version });
+      logger.log(`migrate version ${version} to version ${version + 1}`);
       const migrationFunction = config.migrations[version];
       if (!migrationFunction) {
         throw new Error(`Couldn't find migration function for ${version}`);
