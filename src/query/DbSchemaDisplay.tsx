@@ -8,14 +8,18 @@ const DbSchemaDisplay = ({ dbSchema }: Props) => {
     <>
       <Space direction="horizontal">
         {dbSchema.tables.map((table) => (
-          <Card size="small" style={{ width: 300 }}>
-            <Descriptions title={table.name} size="small" column={1} bordered>
-              {table.columns.map((column) => (
-                <Descriptions.Item label={column.name}>
-                  {column.type}
-                </Descriptions.Item>
-              ))}
-            </Descriptions>
+          <Card size="small" style={{ width: 300 }} key={table.name}>
+            <Descriptions
+              title={table.name}
+              size="small"
+              column={1}
+              bordered
+              items={table.columns.map((column) => ({
+                key: column.name,
+                label: column.name,
+                children: column.type,
+              }))}
+            />
           </Card>
         ))}
       </Space>
