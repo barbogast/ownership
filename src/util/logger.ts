@@ -10,6 +10,7 @@ const ALL_CATEGORIES = [
   "csv",
   "wizard",
   "codeExecution",
+  "nestedStore",
 ] as const;
 type LogCategory = (typeof ALL_CATEGORIES)[number];
 

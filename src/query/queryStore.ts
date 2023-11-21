@@ -64,21 +64,20 @@ const initialState: QueryState = {};
 
 const CURRENT_VERSION = 3;
 
-const migrate = (unknownState: unknown, oldVersion: number) => {
-  const state = unknownState as QueryState;
+const migrate_2_to_3 = (state: QueryState) => {
+  Object.values(state).forEach((query) => {
+    if (query.databaseSource.type === "local") {
+      // @ts-expect-error query.databaseSource.url was available in version 2
+      query.databaseSource.id = query.databaseSource.url;
+      // @ts-expect-error query.databaseSource.url was available in version 2
+      delete query.databaseSource.url;
+    }
+  });
+  return state;
+};
 
-  if (oldVersion < 3) {
-    Object.values(state).forEach((query) => {
-      if (query.databaseSource.type === "local") {
-        // @ts-expect-error query.databaseSource.url was available in version 2
-        query.databaseSource.id = query.databaseSource.url;
-        // @ts-expect-error query.databaseSource.url was available in version 2
-        delete query.databaseSource.url;
-      }
-    });
-  }
-
-  return state as QueryState;
+const migrations: Record<string, (state: QueryState) => QueryState> = {
+  3: migrate_2_to_3,
 };
 
 type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
@@ -109,7 +108,7 @@ export const queryStoreConfig: QueryStoreConfig = {
   name: "queries",
   initialState,
   version: CURRENT_VERSION,
-  migrate,
+  migrations,
 };
 
 export const queryStore = new NestedStore(queryStoreConfig);

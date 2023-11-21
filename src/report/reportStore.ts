@@ -41,12 +41,15 @@ export const filesToReport = (fileContents: ReportFiles): Report => {
 
 const CURRENT_VERSION = 1;
 
+const migrations: Record<string, (state: ReportState) => ReportState> = {};
+
 export const reportStoreConfig: QueryStoreConfig = {
   entityToFiles: reportToFiles,
   filesToEntity: filesToReport,
   name: "reports",
   initialState,
   version: CURRENT_VERSION,
+  migrations,
 };
 
 export const reportStore = new NestedStore(reportStoreConfig);
