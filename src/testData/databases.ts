@@ -57,7 +57,7 @@ export const testTable: DatabaseDefinition = {
   tableName: "aaa",
   columns,
   source: "csv" as const,
-  code: "",
+  importCode: "",
   postProcessingCode: "",
   enablePostProcessing: false,
 };

@@ -83,7 +83,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               jsonContent: "",
               columns: [],
               source: "csv",
-              code: "",
+              importCode: "",
               postProcessingCode: "",
               enablePostProcessing: false,
             }}

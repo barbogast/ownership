@@ -55,11 +55,11 @@ const EditRawMenu = ({ databaseDefinition }: Props) => {
 
     <RawJsonEditor
       button="code"
-      content={databaseDefinition.code}
+      content={databaseDefinition.importCode}
       label={`${databaseDefinition.label}`}
       fileType="typescript"
       onSubmit={(newContent) =>
-        updateDatabaseDefinition(id, { code: newContent })
+        updateDatabaseDefinition(id, { importCode: newContent })
       }
     />,
 

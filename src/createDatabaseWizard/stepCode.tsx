@@ -19,7 +19,7 @@ const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
     useState<ExecutionResult<ReturnValue>>();
 
   const executeCode = async () => {
-    const executionResult = await execute(results.code);
+    const executionResult = await execute(results.importCode);
     setExecutionResult(executionResult);
     if (executionResult.success) {
       const { data, columns } = executionResult.returnValue;
@@ -39,7 +39,7 @@ const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ flex: 1 }}>
         <CodeEditor
-          code={results.code || defaultCode}
+          code={results.importCode || defaultCode}
           setCode={(value) =>
             setResults((state) => ({ ...state, code: value }))
           }

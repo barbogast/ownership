@@ -14,7 +14,7 @@ export type JsonContent = TransformResult;
 export type DatabaseDefinition = {
   id: string;
   source: "code" | "csv" | "json";
-  code: string;
+  importCode: string;
   label: string;
   csvContent: string;
   jsonContent: string;
@@ -28,9 +28,9 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-const CURRENT_VERSION = 7;
+const CURRENT_VERSION = 8;
 
-type Files = "content.csv" | "content.json" | "index.json" | "code.ts";
+type Files = "content.csv" | "content.json" | "index.json" | "importCode.ts";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
@@ -41,12 +41,12 @@ type DatabaseDefinitionStoreConfig = StoreConfig<
 export const databaseToFiles = (
   db: DatabaseDefinition
 ): FileContents<Files> => {
-  const { csvContent, jsonContent, code, ...partialDb } = db;
+  const { csvContent, jsonContent, importCode, ...partialDb } = db;
   const fileContents = {
     "index.json": stableStringify(partialDb),
     "content.csv": csvContent,
     "content.json": jsonContent,
-    "code.ts": code,
+    "importCode.ts": importCode,
   };
   return fileContents;
 };
@@ -58,7 +58,7 @@ export const fileToDatabase = (
     ...JSON.parse(fileContents["index.json"]),
     csvContent: fileContents["content.csv"],
     jsonContent: fileContents["content.json"],
-    code: fileContents["code.ts"],
+    importCode: fileContents["importCode.ts"],
   };
 };
 
@@ -117,6 +117,13 @@ const migrate_6_to_7 = (state: DatabaseState) => {
   return state;
 };
 
+const migrate_7_to_8 = (state: DatabaseState) => {
+  for (const db of Object.values(state as DatabaseState)) {
+    // @ts-expect-error db.importCode was available in version 8
+    db.importCode = db.code;
+    // @ts-expect-error db.code was removed in version 8
+    delete db.code;
+  }
   return state;
 };
 
@@ -126,6 +133,7 @@ const migrations: Record<string, (state: DatabaseState) => DatabaseState> = {
   5: migrate_4_to_5,
   6: migrate_5_to_6,
   7: migrate_6_to_7,
+  8: migrate_7_to_8,
 };
 
 export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {

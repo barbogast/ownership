@@ -45,7 +45,7 @@ const getStep = (isExistingDb: boolean) => {
       const databaseDefinition = {
         id: results.id,
         source: results.source,
-        code: results.code,
+        importCode: results.importCode,
         label: results.label,
         csvContent: results.csvContent,
         jsonContent: results.jsonContent,
