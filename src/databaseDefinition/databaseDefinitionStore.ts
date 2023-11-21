@@ -6,7 +6,7 @@ import { createId, deepCopy } from "../util/utils";
 import { Draft } from "immer";
 import { stableStringify } from "../util/json";
 import { TransformResult } from "../types";
-import migrations from "./migrations";
+import { migrations, CURRENT_VERSION } from "./migrations";
 
 export type JsonContent = TransformResult;
 
@@ -26,8 +26,6 @@ export type DatabaseDefinition = {
 export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
-
-const CURRENT_VERSION = 8;
 
 type Files = "content.csv" | "content.json" | "index.json" | "importCode.ts";
 

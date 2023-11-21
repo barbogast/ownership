@@ -18,6 +18,8 @@ const migrate_2_to_3 = (state: DatabaseState) => {
 const migrate_3_to_4 = (state: DatabaseState) => {
   for (const db of Object.values(state as DatabaseState)) {
     db.source = db.source ?? "csv";
+    // @ts-expect-error db.code was renamed in version 8
+    db.code = "";
   }
   return state;
 };
@@ -68,13 +70,16 @@ const migrate_7_to_8 = (state: DatabaseState) => {
   return state;
 };
 
-const migrations: Record<string, (state: DatabaseState) => DatabaseState> = {
-  3: migrate_2_to_3,
-  4: migrate_3_to_4,
-  5: migrate_4_to_5,
-  6: migrate_5_to_6,
-  7: migrate_6_to_7,
-  8: migrate_7_to_8,
+export const migrations: Record<
+  string,
+  (state: DatabaseState) => DatabaseState
+> = {
+  2: migrate_2_to_3,
+  3: migrate_3_to_4,
+  4: migrate_4_to_5,
+  5: migrate_5_to_6,
+  6: migrate_6_to_7,
+  7: migrate_7_to_8,
 };
 
-export default migrations;
+export const CURRENT_VERSION = 8;
