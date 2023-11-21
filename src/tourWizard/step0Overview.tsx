@@ -8,6 +8,14 @@ const getStep = () => {
     nextStep: "stepImport",
     component: () => (
       <div>
+        <ul>
+          <li>In-browser</li>
+          <li>Serverless</li>
+          <li>Offline-first</li>
+          <li>Decentralized</li>
+          <li>Structured</li>
+        </ul>
+        <h1>Data Exploration Platform</h1>
         <p>
           No lock-in
           <ul>
