@@ -13,6 +13,34 @@ import Logger from "../util/logger";
 
 const logger = new Logger("nestedStore");
 
+export const migrate = <State>(
+  oldState: unknown,
+  version: number,
+  config: {
+    version: number;
+    migrations: Record<string, (state: State) => State>;
+  }
+) => {
+  let state = oldState as State;
+
+  try {
+    while (version < config.version) {
+      logger.log("migrate", { version });
+      const migrationFunction = config.migrations[version];
+      if (!migrationFunction) {
+        throw new Error(`Couldn't find migration function for ${version}`);
+      }
+      state = migrationFunction(state);
+      version += 1;
+    }
+  } catch (e) {
+    console.error(e);
+    throw new Error("Migration failed");
+  }
+
+  return state;
+};
+
 export type StoreConfig<
   Entity extends Record<"id" | string, unknown>,
   State extends Record<string, Entity>,
@@ -45,33 +73,12 @@ class NestedStore<
   info: RepositoryInfo | undefined;
 
   constructor(config: StoreConfig<Entity, State>) {
-    const migrate = (oldState: unknown, version: number) => {
-      let state = oldState as State;
-
-      try {
-        while (version < config.version) {
-          logger.log("migrate", { version });
-          const migrationFunction = config.migrations[version];
-          if (!migrationFunction) {
-            throw new Error(`Couldn't find migration function for ${version}`);
-          }
-          state = migrationFunction(state);
-          version += 1;
-        }
-      } catch (e) {
-        console.error(e);
-        throw new Error("Migration failed");
-      }
-
-      return state;
-    };
-
     const persistConfig: PersistOptions<State> = {
       storage: createJSONStorage(() => localStorage),
       name: `uninitialized${config.name}`,
       skipHydration: true,
       version: config.version,
-      migrate,
+      migrate: (state, version) => migrate(state, version, config),
       merge: (persistedState) =>
         (persistedState as State) || // Drop previous state when rehydrating
         config.initialState, // ... or use the initialState if there is no previous state
