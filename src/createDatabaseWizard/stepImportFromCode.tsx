@@ -14,7 +14,10 @@ import {
 import { stableStringify } from "../util/json";
 
 // eslint-disable-next-line react-refresh/only-export-components
-const Code: WizardStepComponent<StepResult> = ({ results, setResults }) => {
+const ImportFromCode: WizardStepComponent<StepResult> = ({
+  results,
+  setResults,
+}) => {
   const [executionResult, setExecutionResult] =
     useState<ExecutionResult<ReturnValue>>();
 
@@ -65,7 +68,7 @@ const getStep = () => {
     type: "component",
     label: "Run code",
     nextStep: "configureColumns",
-    component: Code,
+    component: ImportFromCode,
   };
   return step;
 };

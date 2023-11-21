@@ -87,7 +87,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               postProcessingCode: "",
               enablePostProcessing: false,
             }}
-            initialStepName="stepSource"
+            initialStepName="source"
             title="Create Database"
             config={getConfig(false)}
             renderTrigger={(openModal) => (

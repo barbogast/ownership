@@ -1,10 +1,10 @@
 import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
 
 export type StepName =
-  | "stepSource"
-  | "code"
-  | "parseCsv"
-  | "parseJson"
+  | "source"
+  | "importFromCode"
+  | "importFromCsv"
+  | "importFromJson"
   | "postProcessing"
   | "configureColumns"
   | "configureDatabase";
