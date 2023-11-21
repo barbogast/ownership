@@ -80,7 +80,7 @@ const Query: React.FC<Props> = ({ query }) => {
       collapsible: progress.queried ? undefined : "disabled",
       children: (
         <PanelGroup direction="horizontal">
-          <Panel defaultSize={50} minSize={10}>
+          <Panel defaultSizePercentage={50} minSizePercentage={10}>
             <Tabs
               onChange={(key) =>
                 updateQuery(query.id, { transformType: key as TransformType })
@@ -132,7 +132,7 @@ const Query: React.FC<Props> = ({ query }) => {
           <PanelResizeHandle
             style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
           />
-          <Panel minSize={10}>
+          <Panel minSizePercentage={10}>
             {transformResult.length ? (
               <TableDisplay transformResult={transformResult} />
             ) : null}

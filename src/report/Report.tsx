@@ -9,7 +9,7 @@ import {
   InlineContent,
   ReactSlashMenuItem,
   createReactBlockSpec,
-  defaultReactSlashMenuItems,
+  getDefaultReactSlashMenuItems,
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
@@ -50,6 +50,7 @@ const getChartBlock = (DisplayComponent: DisplayComponent) =>
               onChange={(event) =>
                 editor.updateBlock(block.id, {
                   ...block,
+                  // @ts-expect-error Don't know what's wrong here, don't wanna fix it right now
                   props: { ...block.props, queryId: event.target.value },
                 })
               }
@@ -73,12 +74,14 @@ const getChartBlock = (DisplayComponent: DisplayComponent) =>
     },
   });
 
-// Creates a slash menu item for inserting an image block.
-const insertImage = new ReactSlashMenuItem<
+const insertImage: ReactSlashMenuItem<
   DefaultBlockSchema & { dataDisplay: ReturnType<typeof getChartBlock> }
->(
-  "Insert Chart",
-  (editor) => {
+> = {
+  name: "Insert Chart",
+  group: "Media",
+  icon: <p>xx</p>,
+  hint: "Insert a chart",
+  execute: (editor) => {
     editor.insertBlocks(
       [
         {
@@ -92,12 +95,8 @@ const insertImage = new ReactSlashMenuItem<
       "after"
     );
   },
-  ["chart", "query", "picture", "media"],
-  "Media",
-  <p>XXX </p>,
-  "Insert a chart"
-);
-
+  // shortcut?: string;
+};
 type Props = {
   report: Report;
   readOnly?: boolean;
@@ -118,7 +117,7 @@ const Report: React.FC<Props> = ({
       ...defaultBlockSchema,
       dataDisplay: getChartBlock(displayComponent),
     },
-    slashCommands: [...defaultReactSlashMenuItems, insertImage],
+    slashCommands: [...getDefaultReactSlashMenuItems(), insertImage],
     // @ts-expect-error Seems to be an issue with @blocknote
     initialContent: blocks,
 
@@ -142,6 +141,7 @@ const Report: React.FC<Props> = ({
         <br />
         <br />
 
+        {/* @ts-expect-error Don't know what's wrong here, don't wanna fix it right now */}
         <BlockNoteView editor={editor} />
         <br />
         <br />

@@ -66,7 +66,7 @@ const QuerySection: React.FC<Props> = ({
 
   return (
     <PanelGroup direction="horizontal">
-      <Panel defaultSize={50} minSize={10}>
+      <Panel defaultSizePercentage={50} minSizePercentage={10}>
         <Select
           value={
             databaseSource.type === "local"
@@ -121,7 +121,7 @@ const QuerySection: React.FC<Props> = ({
       <PanelResizeHandle
         style={{ width: 10, background: token.colorSplit, marginRight: 10 }}
       />
-      <Panel minSize={10}>
+      <Panel minSizePercentage={10}>
         <Tabs
           type="card"
           items={[
