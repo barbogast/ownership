@@ -17,7 +17,8 @@ const MainContainer = () => {
     // If we would set it as a style prop of this component, any siblings
     // (like the portal for antd's <Modal>) would not inherit the style.
     document.body.style.colorScheme = darkModeEnabled ? "dark" : "light";
-  }, [darkModeEnabled]);
+    document.body.style.color = token.colorText;
+  }, [darkModeEnabled, token.colorText]);
 
   useEffect(() => {
     const onChange = (event: Event) =>
