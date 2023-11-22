@@ -2,12 +2,13 @@ import { FileContents } from "../util/fsHelper";
 import {
   DevtoolsOptions,
   PersistOptions,
-  createJSONStorage,
+  PersistStorage,
   devtools,
   persist,
 } from "zustand/middleware";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import * as idb from "idb-keyval";
 import { RepositoryInfo } from "../types";
 import Logger from "../util/logger";
 
@@ -73,8 +74,16 @@ class NestedStore<
   info: RepositoryInfo | undefined;
 
   constructor(config: StoreConfig<Entity, State>) {
+    const storage: PersistStorage<State> = {
+      getItem: async (name) => {
+        return (await idb.get(name)) ?? null;
+      },
+      setItem: idb.set,
+      removeItem: idb.del,
+    };
+
     const persistConfig: PersistOptions<State> = {
-      storage: createJSONStorage(() => localStorage),
+      storage: storage,
       name: `uninitialized${config.name}`,
       skipHydration: true,
       version: config.version,
@@ -109,20 +118,17 @@ class NestedStore<
     void this.store.persist.rehydrate();
   };
 
-  import = (info: RepositoryInfo, folders: FileContents<Files>[]) => {
+  import = async (info: RepositoryInfo, folders: FileContents<Files>[]) => {
     const state: Record<string, Entity> = {};
     for (const fileContent of folders) {
       const entity = this.config.filesToEntity(fileContent);
       state[entity.id] = entity;
     }
 
-    localStorage.setItem(
-      this.#getStoragePath(info),
-      JSON.stringify({
-        state,
-        version: this.config.version,
-      })
-    );
+    await idb.set(this.#getStoragePath(info), {
+      state,
+      version: this.config.version,
+    });
   };
 
   export = () => {
@@ -145,8 +151,8 @@ class NestedStore<
     return folders;
   };
 
-  delete = (info: RepositoryInfo) => {
-    localStorage.removeItem(this.#getStoragePath(info));
+  delete = async (info: RepositoryInfo) => {
+    await idb.del(this.#getStoragePath(info));
   };
 }
 

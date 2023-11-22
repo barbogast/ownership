@@ -31,6 +31,7 @@
     "csv-parse": "^5.5.2",
     "csv-stringify": "^6.4.4",
     "dayjs": "^1.11.10",
+    "idb-keyval": "^6.2.1",
     "immer": "^10.0.3",
     "isomorphic-git": "^1.25.0",
     "monaco-editor": "^0.44.0",
