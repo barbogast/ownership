@@ -27,7 +27,12 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-type Files = "content.csv" | "content.json" | "index.json" | "importCode.ts";
+type Files =
+  | "content.csv"
+  | "content.json"
+  | "index.json"
+  | "importCode.ts"
+  | "postProcessingCode.ts";
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
@@ -38,12 +43,19 @@ type DatabaseDefinitionStoreConfig = StoreConfig<
 export const databaseToFiles = (
   db: DatabaseDefinition
 ): FileContents<Files> => {
-  const { csvContent, jsonContent, importCode, ...partialDb } = db;
+  const {
+    csvContent,
+    jsonContent,
+    importCode,
+    postProcessingCode,
+    ...partialDb
+  } = db;
   const fileContents = {
     "index.json": stableStringify(partialDb),
     "content.csv": csvContent,
     "content.json": jsonContent,
     "importCode.ts": importCode,
+    "postProcessingCode.ts": postProcessingCode,
   };
   return fileContents;
 };
@@ -56,6 +68,7 @@ export const fileToDatabase = (
     csvContent: fileContents["content.csv"],
     jsonContent: fileContents["content.json"],
     importCode: fileContents["importCode.ts"],
+    postProcessingCode: fileContents["postProcessingCode.ts"],
   };
 };
 
