@@ -39,13 +39,11 @@ const SyncRepositoryButton: React.FC<Props> = ({
       <a href="https://github.com/settings/tokens?type=beta" target="_blank">
         https://github.com/settings/tokens?type=beta
       </a>
-      <p>
-        Required settings:
-        <ul>
-          <li>Repository access: Only select repositories</li>
-          <li>Permissions: Contents: Read and write</li>
-        </ul>
-      </p>
+      <p>Required settings:</p>
+      <ul>
+        <li>Repository access: Only select repositories</li>
+        <li>Permissions: Contents: Read and write</li>
+      </ul>
       <Input
         placeholder="Username"
         addonBefore="Username"
