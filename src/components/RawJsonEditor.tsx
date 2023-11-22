@@ -1,3 +1,5 @@
+import { Alert } from "antd";
+
 import AsyncModal from "./AsyncModal";
 import { useState } from "react";
 import { Editor } from "@monaco-editor/react";
@@ -31,14 +33,29 @@ const RawJsonEditor = ({
       okText="Save"
       fullscreen
     >
-      <div style={{ height: `${window.innerHeight * 0.75}px` }}>
-        <Editor
-          defaultLanguage={fileType ?? "json"}
-          defaultValue={content}
-          options={{ automaticLayout: true }}
-          onChange={(value) => setNewContent(value as string)}
-          theme={darkModeEnabled ? "vs-dark" : undefined}
+      <div
+        style={{
+          height: `${window.innerHeight * 0.75}px`,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <Editor
+            defaultLanguage={fileType ?? "json"}
+            defaultValue={content}
+            options={{ automaticLayout: true }}
+            onChange={(value) => setNewContent(value as string)}
+            theme={darkModeEnabled ? "vs-dark" : undefined}
+          />
+        </div>
+
+        <br />
+        <Alert
+          message="Editing raw JSON is dangerous and may break your application or make it corrupt your data. Proceed with caution!"
+          type="warning"
         />
+        <br />
       </div>
     </AsyncModal>
   );
