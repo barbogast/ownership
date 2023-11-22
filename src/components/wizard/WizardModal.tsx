@@ -78,7 +78,7 @@ const WizardModal = <
       {isOpen && (
         <Modal
           width={width ?? "80%"}
-          bodyStyle={{ height: "60vh", overflow: "auto" }}
+          styles={{ body: { height: "60vh", overflow: "auto" } }}
           title={title}
           open={isOpen}
           onCancel={() => setIsOpen(false)}
