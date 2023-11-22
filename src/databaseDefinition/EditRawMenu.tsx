@@ -17,7 +17,12 @@ const EditRawMenu = ({ databaseDefinition }: Props) => {
     <RawJsonEditor
       button="Shortened document"
       content={stableStringify(
-        omit(databaseDefinition, ["jsonContent", "csvContent"])
+        omit(databaseDefinition, [
+          "jsonContent",
+          "csvContent",
+          "importCode",
+          "postProcessingCode",
+        ])
       )}
       label={databaseDefinition.label}
       onSubmit={(newContent) =>
