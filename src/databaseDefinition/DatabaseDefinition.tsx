@@ -35,8 +35,8 @@ const DeleteDatabaseDefinitionModal: React.FC<{
         <>
           This database is used by the following queries:
           <ul>
-            {queries.map((query) => (
-              <li>
+            {queries.map((query, i) => (
+              <li key={i}>
                 <Link href={`/query/${query.id}`}>{query.label}</Link>
               </li>
             ))}
