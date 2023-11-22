@@ -126,6 +126,15 @@ export const updateDatabaseDefinition = (
   });
 };
 
+export const replaceDatabaseDefinition = (
+  id: string,
+  data: DatabaseDefinition
+) => {
+  useDatabaseDefinitionStore.setState((state) => {
+    state[id] = data;
+  });
+};
+
 export const deleteDatabaseDefinition = (id: string) => {
   useDatabaseDefinitionStore.setState((state) => {
     delete state[id];

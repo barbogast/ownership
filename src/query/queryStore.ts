@@ -205,6 +205,13 @@ export const updateQuery = (
   });
 };
 
+export const replaceQuery = (queryId: string, newState: Query) => {
+  add(queryId);
+  useQueryStore.setState((state) => {
+    state[queryId] = newState;
+  });
+};
+
 export const updateTransformConfig = (
   queryId: string,
   newState: Partial<TransformConfig>

@@ -4,6 +4,7 @@ import { parseJson, stableStringify } from "../util/json";
 import { omit } from "../util/utils";
 import {
   DatabaseDefinition,
+  replaceDatabaseDefinition,
   updateDatabaseDefinition,
 } from "./databaseDefinitionStore";
 
@@ -35,7 +36,7 @@ const EditRawMenu = ({ databaseDefinition }: Props) => {
       content={stableStringify(databaseDefinition)}
       label={databaseDefinition.label}
       onSubmit={(newContent) =>
-        updateDatabaseDefinition(id, parseJson(newContent))
+        replaceDatabaseDefinition(id, parseJson(newContent))
       }
     />,
 
