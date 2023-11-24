@@ -108,7 +108,11 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <WizardModal
             title="Edit Database"
             config={getConfig(true)}
-            initialResult={deepCopy(databaseDefinition)}
+            initialResult={{
+              ...deepCopy(databaseDefinition),
+              json: {},
+              csv: {},
+            }}
             initialStepName={sourceToStepMapping[databaseDefinition.source]}
             renderTrigger={(openModal) => (
               <Button onClick={openModal}>Edit</Button>

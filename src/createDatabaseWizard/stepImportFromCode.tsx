@@ -12,6 +12,7 @@ import {
   execute,
 } from "../codeExecution/importFromCode";
 import { stableStringify } from "../util/json";
+import { IMPORTED_FROM_CODE_FILE_NAME } from "../databaseDefinition/databaseDefinitionStore";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const ImportFromCode: WizardStepComponent<StepResult> = ({
@@ -28,12 +29,13 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
       const { data, columns } = executionResult.returnValue;
       setResults((state) => ({
         ...state,
-        jsonContent: stableStringify(data),
+        sourceFiles: { [IMPORTED_FROM_CODE_FILE_NAME]: stableStringify(data) },
         columns: columns.map((c) => ({
           sourceName: c.name,
           dbName: c.name,
           type: c.type,
         })),
+        json: { finalContent: data },
       }));
     }
   };

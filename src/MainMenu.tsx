@@ -79,13 +79,14 @@ const MainMenu: React.FC<Props> = ({ children }) => {
               id: "",
               label: "",
               tableName: "",
-              csvContent: "",
-              jsonContent: "",
+              sourceFiles: {},
               columns: [],
               source: "csv",
               importCode: "",
               postProcessingCode: "",
               enablePostProcessing: false,
+              csv: {},
+              json: {},
             }}
             initialStepName="source"
             title="Create Database"

@@ -1,7 +1,8 @@
 import { TransformResult } from "../types";
 import { executeTypescriptCode } from "./util";
 
-export type Parameters = { data: unknown };
+export type Input = Record<string, unknown>;
+export type Parameters = { files: Input };
 
 export type ReturnValue = TransformResult;
 
@@ -11,13 +12,17 @@ export const execute = (code: string, params: Parameters) =>
 export const defaultCode = `
 type Value = string | number | null | undefined
 type Row = Record<string, Value>
-type ReturnValue = Row[]
 
-// Specify the actual type of the JSON data here
+// TODO: Specify the actual type of the JSON data here
 type Data = unknown
 
-function postProcess(data: Data): ReturnValue | Promise<ReturnValue> {
-  // Your code here ...
+type Filename = string
+type Files = Record<string, Data>
+
+type ReturnValue = Row[]
+
+function postProcess(files: Files): ReturnValue | Promise<ReturnValue> {
+  // Flatten all files into a single array of rows
   return []
 }
 `;

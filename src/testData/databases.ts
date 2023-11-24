@@ -52,8 +52,7 @@ const columns: ColumnDefinition[] = [
 export const testTable: DatabaseDefinition = {
   id: "db1",
   label: "Database 1",
-  csvContent,
-  jsonContent: "",
+  sourceFiles: { "file.csv": csvContent },
   tableName: "aaa",
   columns,
   source: "csv" as const,

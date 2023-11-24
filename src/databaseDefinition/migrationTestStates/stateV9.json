@@ -1,0 +1,51 @@
+{
+  "main": {
+    "columns": [
+      {
+        "dbName": "country",
+        "sourceName": "country",
+        "type": "text"
+      },
+      {
+        "dbName": "time",
+        "sourceName": "Time",
+        "type": "text"
+      },
+      {
+        "dbName": "category_1",
+        "sourceName": "category_1",
+        "type": "text"
+      },
+      {
+        "dbName": "category_2",
+        "sourceName": "category_2",
+        "type": "text"
+      },
+      {
+        "dbName": "category_3",
+        "sourceName": "category_3",
+        "type": "text"
+      },
+      {
+        "dbName": "category_4",
+        "sourceName": "category_4",
+        "type": "text"
+      },
+      {
+        "dbName": "value",
+        "sourceName": "value",
+        "type": "integer"
+      }
+    ],
+    "enablePostProcessing": false,
+    "id": "main",
+    "importCode": "",
+    "label": "main",
+    "postProcessingCode": "",
+    "source": "csv",
+    "sourceFiles": {
+      "file.csv": "country,Time,category_1,category_2,category_3,category_4,value\nbelgium,1995-01-01,Total,Residents,Central bank,,2217\nbelgium,1995-01-01,Total,Residents,OMFIs,,158189\nbelgium,1995-01-01,Total,Residents,Other financial institutions,,30667\nbelgium,1995-01-01,Total,Residents,Other residents,,19960"
+    },
+    "tableName": "debt"
+  }
+}

@@ -1,7 +1,8 @@
-import { Source, StepName } from "./types";
+import { Source } from "../databaseDefinition/databaseDefinitionStore";
+import { StepName } from "./types";
 
 export const sourceToStepMapping: Record<Source, StepName> = {
-  csv: "importFromCsv",
+  csv: "importFromJson",
   json: "importFromJson",
   code: "importFromCode",
 };

@@ -1,4 +1,3 @@
-import stepImportFromCsv from "./stepImportFromCsv";
 import stepImportFromJson from "./stepImportFromJson";
 import stepPostProcessing from "./stepPostProcessing";
 import stepConfigureDatabase from "./stepConfigureDatabase";
@@ -14,7 +13,6 @@ const getConfig = (
   steps: {
     source: stepSource(),
     importFromCode: stepImportFromCode(),
-    importFromCsv: stepImportFromCsv(),
     importFromJson: stepImportFromJson(),
     postProcessing: stepPostProcessing(),
     configureColumns: stepConfigureColumns(),

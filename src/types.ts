@@ -14,7 +14,8 @@ export type BarChartTableDataType = {
 };
 
 export type Value = string | number | null;
-export type TransformResult = Record<string, Value>[];
+export type DataRow = Record<string, Value>;
+export type TransformResult = DataRow[];
 
 export type ChartProps = {
   transformResult: TransformResult;

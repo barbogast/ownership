@@ -113,7 +113,14 @@ const WizardModal = <
                 hideStepNumbers={hideStepNumbers}
               />
             </Sider>
-            <Content style={{ height: "100%", overflow: "auto" }}>
+            <Content
+              style={{
+                height: "100%",
+                overflow: "auto",
+                paddingTop: 20,
+                paddingRight: 20,
+              }}
+            >
               {currentStep.type === "component" ? (
                 <currentStep.component
                   results={currentResults}

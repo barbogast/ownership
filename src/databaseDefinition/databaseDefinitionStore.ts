@@ -1,3 +1,5 @@
+import * as R from "remeda";
+
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { FileContents } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
@@ -10,13 +12,14 @@ import { migrations, CURRENT_VERSION } from "./migrations";
 
 export type JsonContent = TransformResult;
 
+export type Source = "code" | "csv" | "json";
+
 export type DatabaseDefinition = {
   id: string;
-  source: "code" | "csv" | "json";
+  source: Source;
   importCode: string;
   label: string;
-  csvContent: string;
-  jsonContent: string;
+  sourceFiles: Record<string, string>;
   tableName: string;
   columns: ColumnDefinition[];
   enablePostProcessing: boolean;
@@ -27,12 +30,7 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-type Files =
-  | "content.csv"
-  | "content.json"
-  | "index.json"
-  | "importCode.ts"
-  | "postProcessingCode.ts";
+type Files = "index.json" | "importCode.ts" | "postProcessingCode.ts" | string;
 
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
@@ -40,22 +38,21 @@ type DatabaseDefinitionStoreConfig = StoreConfig<
   Files
 >;
 
+const SOURCE_FILES_FOLDER_NAME = "sourceFiles";
+export const IMPORTED_FROM_CODE_FILE_NAME = "file.json";
+
 export const databaseToFiles = (
   db: DatabaseDefinition
 ): FileContents<Files> => {
-  const {
-    csvContent,
-    jsonContent,
-    importCode,
-    postProcessingCode,
-    ...partialDb
-  } = db;
+  const { sourceFiles, importCode, postProcessingCode, ...partialDb } = db;
   const fileContents = {
     "index.json": stableStringify(partialDb),
-    "content.csv": csvContent,
-    "content.json": jsonContent,
     "importCode.ts": importCode,
     "postProcessingCode.ts": postProcessingCode,
+    ...R.mapKeys(
+      sourceFiles,
+      (fileName) => `${SOURCE_FILES_FOLDER_NAME}/${fileName}`
+    ),
   };
   return fileContents;
 };
@@ -64,11 +61,16 @@ export const fileToDatabase = (
   fileContents: FileContents<Files>
 ): DatabaseDefinition => {
   return {
-    ...JSON.parse(fileContents["index.json"]),
+    ...JSON.parse(fileContents["index.json"]!),
     csvContent: fileContents["content.csv"],
     jsonContent: fileContents["content.json"],
     importCode: fileContents["importCode.ts"],
     postProcessingCode: fileContents["postProcessingCode.ts"],
+    ...R.pipe(
+      fileContents,
+      R.omitBy((_, key) => !key.startsWith(`${SOURCE_FILES_FOLDER_NAME}/`)),
+      R.mapKeys((key) => key.slice(`${SOURCE_FILES_FOLDER_NAME}/`.length))
+    ),
   };
 };
 
@@ -123,6 +125,17 @@ export const updateDatabaseDefinition = (
   useDatabaseDefinitionStore.setState((state) => {
     const dbDef = getDbDefFromDraft(state, id);
     Object.assign(dbDef, data);
+  });
+};
+
+export const updateSourceFileContent = (
+  id: string,
+  fileName: string,
+  content: string
+) => {
+  useDatabaseDefinitionStore.setState((state) => {
+    const dbDef = getDbDefFromDraft(state, id);
+    dbDef.sourceFiles[fileName] = content;
   });
 };
 

@@ -6,9 +6,7 @@ import { Button } from "antd";
 import { ExecutionError } from "../codeExecution/types";
 import TableDisplay from "../display/TableDisplay";
 import { TransformResult } from "../types";
-import { rowsToObjects } from "../util/transform";
-import { analyzeCsvHeader } from "../util/csv";
-import { analyseJsonHeader } from "../util/json";
+import { analyzeHeader, arraysToObjects } from "../util/csv";
 import * as postProcessCsv from "../codeExecution/postProcessCsv";
 import * as postProcessJson from "../codeExecution/postProcessJson";
 
@@ -25,21 +23,16 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
     setPreviewData([]);
     const executionResult = await postProcessCsv.execute(
       results.postProcessingCode,
-      { rows: results.parsedCsvContent! }
+      { files: results.csv.beforePostProcessing! }
     );
     if (executionResult.success) {
-      const columns = analyzeCsvHeader(executionResult.returnValue);
+      const columns = analyzeHeader(executionResult.returnValue);
 
-      setPreviewData(
-        rowsToObjects({
-          values: executionResult.returnValue,
-          columns: columns.map((col) => col.sourceName),
-        })
-      );
+      setPreviewData(arraysToObjects(executionResult.returnValue));
 
       setResults((state) => ({
         ...state,
-        parsedCsvContent: executionResult.returnValue,
+        csv: { finalContent: executionResult.returnValue },
         columns,
       }));
     } else {
@@ -53,15 +46,14 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
     const executionResult = await postProcessJson.execute(
       results.postProcessingCode,
       {
-        data: results.parsedJsonContent,
+        files: results.json.beforePostProcessing!,
       }
     );
     if (executionResult.success) {
       setPreviewData(executionResult.returnValue);
-      const columns = analyseJsonHeader(executionResult.returnValue);
       setResults((state) => ({
         ...state,
-        columns: columns,
+        json: { finalContent: executionResult.returnValue },
       }));
     } else {
       setError(executionResult.error);
@@ -77,7 +69,7 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ flex: 1 }}>
         <CodeEditor
-          code={results.postProcessingCode || defaultCode}
+          code={results.postProcessingCode || defaultCode.trim()}
           setCode={(value) =>
             setResults((state) => ({ ...state, postProcessingCode: value }))
           }

@@ -5892,6 +5892,7 @@ __metadata:
     react-dom: ^18.2.0
     react-resizable-panels: ^0.0.61
     recharts: ^2.10.1
+    remeda: ^1.29.0
     safe-stable-stringify: ^2.4.3
     slugify: ^1.6.6
     source-map-js: ^1.0.2
@@ -7280,6 +7281,13 @@ __metadata:
     mdast-util-to-markdown: ^1.0.0
     unified: ^10.0.0
   checksum: 6004e204fba672ee322c3cf0bef090e95802feedf7ef875f88b120c5e6208f1eb09c014486d5ca42a1e199c0a17ce0ed165fb248c66608458afed4bdca51dd3a
+  languageName: node
+  linkType: hard
+
+"remeda@npm:^1.29.0":
+  version: 1.29.0
+  resolution: "remeda@npm:1.29.0"
+  checksum: 57d58825bc29c7eccdafba7e0163f13f627bfc0bf5c7cd2fce398f2349ebcc9eb85b7eabc6eeb91a0a9421ba12a2212eb2734f719dc4c82c4cc1b26dbd59b502
   languageName: node
   linkType: hard
 

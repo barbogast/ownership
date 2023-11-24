@@ -1,17 +1,31 @@
 import { executeTypescriptCode } from "./util";
 
-export type Parameters = { rows: string[][] };
+type Row = string[];
+type FileContent = {
+  header: Row;
+  data: Row[];
+};
+export type Input = Record<string, FileContent>;
+export type Parameters = { files: Input };
 
-export type ReturnValue = string[][];
+export type ReturnValue = FileContent;
 
 export const execute = (code: string, params: Parameters) =>
   executeTypescriptCode<ReturnValue>(code, "postProcess", params);
 
 export const defaultCode = `
-type Rows = string[][]
+type Row = string[]
+type FileContent = {
+    header: Row // Empty array if the csv file has no header
+    data: Row[]
+}
+type Files = Record<string, FileContent>
 
-function postProcess(rows: Rows): Rows | Promise<Rows> {
+function postProcess(files: Files): FileContent | Promise<FileContent> {
   // Your code here ...
-  return rows
+  return {
+    header: [],
+    data: [],
+  }
 }
 `;

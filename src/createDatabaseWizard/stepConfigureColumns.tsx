@@ -1,12 +1,29 @@
 import { Input, Row, Col, Select, Space } from "antd";
 import { Step } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
+import { analyzeHeader } from "../util/csv";
+import { analyseJsonHeader } from "../util/json";
 
 const getStep = () => {
   const step: Step<StepName, StepResult> = {
     type: "component",
     label: "Configure Columns",
     nextStep: "configureDatabase",
+    prepareStep: (results) => {
+      switch (results.source) {
+        case "csv":
+          return {
+            ...results,
+            columns: analyzeHeader(results.csv.finalContent!),
+          };
+        case "json":
+        case "code":
+          return {
+            ...results,
+            columns: analyseJsonHeader(results.json.finalContent!),
+          };
+      }
+    },
     component: ({ results, setResults }) => {
       return (
         <Space direction="vertical" style={{ width: "100%" }}>

@@ -1,17 +1,24 @@
+import * as postProcessJson from "../codeExecution/postProcessJson";
+import * as postProcessCsv from "../codeExecution/postProcessCsv";
 import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStore";
 
 export type StepName =
   | "source"
   | "importFromCode"
-  | "importFromCsv"
   | "importFromJson"
   | "postProcessing"
   | "configureColumns"
   | "configureDatabase";
 
-export type Source = "code" | "csv" | "json";
-
 export type StepResult = DatabaseDefinition & {
-  parsedCsvContent?: string[][];
-  parsedJsonContent?: unknown;
+  // These fields are used to store the various results of parsing the input files
+  json: {
+    beforePostProcessing?: postProcessJson.Input;
+    finalContent?: postProcessJson.ReturnValue;
+  };
+
+  csv: {
+    beforePostProcessing?: postProcessCsv.Input;
+    finalContent?: postProcessCsv.ReturnValue;
+  };
 };

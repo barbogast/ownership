@@ -6,16 +6,17 @@ import useDatabaseConnectionStore, {
   DatabaseConnection,
 } from "../databaseConnectionStore";
 import { DatabaseSource } from "../query/queryStore";
-import Papa from "papaparse";
 import {
   DatabaseDefinition,
+  IMPORTED_FROM_CODE_FILE_NAME,
   JsonContent,
 } from "../databaseDefinition/databaseDefinitionStore";
-import { parseJson } from "./json";
-import { TransformResult } from "../types";
+import { DataRow, TransformResult } from "../types";
 import { rowsToObjects } from "./transform";
 import * as postProcessCsv from "../codeExecution/postProcessCsv";
 import * as postProcessJson from "../codeExecution/postProcessJson";
+import * as csv from "./csv";
+import * as json from "./json";
 
 const dbLogger = new Logger("database");
 const sqlLogger = new Logger("sql");
@@ -77,14 +78,14 @@ const createDb = dbLogger.time(
 );
 
 const loadFromCsv = async (databaseDefinition: DatabaseDefinition) => {
-  const result = Papa.parse<string[]>(databaseDefinition.csvContent);
+  const files = csv.parseSourceFiles(databaseDefinition.sourceFiles);
   if (!databaseDefinition.enablePostProcessing) {
-    return result.data;
+    return csv.mergeFiles(files);
   }
 
   const executionResult = await postProcessCsv.execute(
     databaseDefinition.postProcessingCode,
-    { rows: result.data }
+    { files }
   );
 
   if (!executionResult.success) {
@@ -95,14 +96,15 @@ const loadFromCsv = async (databaseDefinition: DatabaseDefinition) => {
 };
 
 const loadFromJson = async (databaseDefinition: DatabaseDefinition) => {
-  const data = parseJson<TransformResult>(databaseDefinition.jsonContent);
+  const files = json.parseSourceFiles(databaseDefinition.sourceFiles);
+
   if (!databaseDefinition.enablePostProcessing) {
-    return data;
+    return json.mergeFiles<DataRow>(files);
   }
 
   const executionResult = await postProcessJson.execute(
     databaseDefinition.postProcessingCode,
-    { data }
+    { files }
   );
 
   if (!executionResult.success) {
@@ -113,7 +115,9 @@ const loadFromJson = async (databaseDefinition: DatabaseDefinition) => {
 };
 
 const loadFromCode = async (databaseDefinition: DatabaseDefinition) =>
-  parseJson<JsonContent>(databaseDefinition.jsonContent);
+  json.parseJson<JsonContent>(
+    databaseDefinition.sourceFiles[IMPORTED_FROM_CODE_FILE_NAME]!
+  );
 
 export const initialize = async (
   databaseSource: DatabaseSource,
@@ -134,11 +138,7 @@ export const initialize = async (
       let rows: TransformResult;
 
       if (databaseDefinition.source === "csv") {
-        const csvRows = await loadFromCsv(databaseDefinition);
-        rows = rowsToObjects({
-          columns: csvRows[0]!,
-          values: csvRows.slice(1),
-        });
+        rows = csv.arraysToObjects(await loadFromCsv(databaseDefinition));
       } else if (databaseDefinition.source === "json") {
         rows = await loadFromJson(databaseDefinition);
       } else if (databaseDefinition.source === "code") {

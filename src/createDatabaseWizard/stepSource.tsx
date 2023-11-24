@@ -1,6 +1,7 @@
 import { Checkbox, Radio } from "antd";
 import { Step } from "../components/wizard/types";
-import { Source, StepName, StepResult } from "./types";
+import { Source } from "../databaseDefinition/databaseDefinitionStore";
+import { StepName, StepResult } from "./types";
 import { sourceToStepMapping } from "./utils";
 
 const getStep = () => {
