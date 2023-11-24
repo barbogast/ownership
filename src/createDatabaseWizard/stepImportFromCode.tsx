@@ -26,15 +26,10 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
     const executionResult = await execute(results.importCode);
     setExecutionResult(executionResult);
     if (executionResult.success) {
-      const { data, columns } = executionResult.returnValue;
+      const data = executionResult.returnValue;
       setResults((state) => ({
         ...state,
         sourceFiles: { [IMPORTED_FROM_CODE_FILE_NAME]: stableStringify(data) },
-        columns: columns.map((c) => ({
-          sourceName: c.name,
-          dbName: c.name,
-          type: c.type,
-        })),
         json: { finalContent: data },
       }));
     }
@@ -44,7 +39,7 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ flex: 1 }}>
         <CodeEditor
-          code={results.importCode || defaultCode}
+          code={results.importCode || defaultCode.trim()}
           setCode={(value) =>
             setResults((state) => ({ ...state, importCode: value }))
           }
@@ -59,7 +54,7 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
         <Button onClick={executeCode}>Execute</Button>
       </div>
       {executionResult?.success && (
-        <TableDisplay transformResult={executionResult.returnValue.data} />
+        <TableDisplay transformResult={executionResult.returnValue} />
       )}
     </div>
   );
