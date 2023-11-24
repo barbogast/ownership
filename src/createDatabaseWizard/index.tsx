@@ -1,4 +1,4 @@
-import stepImportFromJson from "./stepImportFromJson";
+import stepImportFromFile from "./stepImportFromFile";
 import stepPostProcessing from "./stepPostProcessing";
 import stepConfigureDatabase from "./stepConfigureDatabase";
 import stepConfigureColumns from "./stepConfigureColumns";
@@ -13,7 +13,7 @@ const getConfig = (
   steps: {
     source: stepSource(),
     importFromCode: stepImportFromCode(),
-    importFromJson: stepImportFromJson(),
+    importFromFile: stepImportFromFile(),
     postProcessing: stepPostProcessing(),
     configureColumns: stepConfigureColumns(),
     configureDatabase: stepConfigureDatabase(isExistingDb),

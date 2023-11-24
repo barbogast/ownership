@@ -5,7 +5,7 @@ import { DatabaseDefinition } from "../databaseDefinition/databaseDefinitionStor
 export type StepName =
   | "source"
   | "importFromCode"
-  | "importFromJson"
+  | "importFromFile"
   | "postProcessing"
   | "configureColumns"
   | "configureDatabase";
