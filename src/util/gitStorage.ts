@@ -89,6 +89,6 @@ export const loadFromGit = async (
 
   for (const store of stores) {
     const entityFolders = await load(fs, git, store.config.name);
-    store.import(info, entityFolders);
+    await store.import(info, entityFolders);
   }
 };

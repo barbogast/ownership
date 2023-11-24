@@ -104,14 +104,14 @@ const RepositoryList: React.FC = () => {
               <Col span={RIGHT_COLUMN}>
                 <Popconfirm
                   title="Delete the repository?"
-                  onConfirm={() => {
+                  onConfirm={async () => {
                     deleteRepository(repo.id);
                     const info = getRepoInfo(
                       repo.organization,
                       repo.repository
                     );
                     for (const store of stores) {
-                      store.delete(info);
+                      await store.delete(info);
                     }
                   }}
                 >
