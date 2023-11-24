@@ -44,7 +44,7 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
         <CodeEditor
           code={results.importCode || defaultCode}
           setCode={(value) =>
-            setResults((state) => ({ ...state, code: value }))
+            setResults((state) => ({ ...state, importCode: value }))
           }
           error={
             executionResult && !executionResult.success
