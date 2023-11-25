@@ -43,7 +43,7 @@ const getStep = () => {
                   enablePostProcessing: event.target.checked,
                 }))
               }
-              value={results.enablePostProcessing}
+              checked={results.enablePostProcessing}
             >
               Enable post-processing
             </Checkbox>
