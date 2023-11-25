@@ -9,7 +9,7 @@ export const parseJson = <Shape>(source: string) => JSON.parse(source) as Shape;
 export const stableStringify = (data: unknown): string =>
   stringify(data, null, 2) as string;
 
-export const analyseJsonHeader = (
+export const analyzeJsonHeader = (
   data: TransformResult
 ): ColumnDefinition[] => {
   const jsonTypeToDbType = (value: unknown) => {

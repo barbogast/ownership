@@ -2,7 +2,7 @@ import { Input, Row, Col, Select, Space } from "antd";
 import { Step } from "../components/wizard/types";
 import { StepName, StepResult } from "./types";
 import { analyzeHeader } from "../util/csv";
-import { analyseJsonHeader } from "../util/json";
+import { analyzeJsonHeader } from "../util/json";
 
 const getStep = () => {
   const step: Step<StepName, StepResult> = {
@@ -20,7 +20,7 @@ const getStep = () => {
         case "code":
           return {
             ...results,
-            columns: analyseJsonHeader(results.json.finalContent!),
+            columns: analyzeJsonHeader(results.json.finalContent!),
           };
       }
     },
