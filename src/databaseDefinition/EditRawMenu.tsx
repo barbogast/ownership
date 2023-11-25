@@ -1,7 +1,8 @@
 import { Button, Dropdown } from "antd";
+import * as R from "remeda";
+
 import RawJsonEditor from "../components/RawJsonEditor";
 import { parseJson, stableStringify } from "../util/json";
-import { omit } from "../util/utils";
 import {
   DatabaseDefinition,
   replaceDatabaseDefinition,
@@ -22,7 +23,7 @@ const EditRawMenu = ({ databaseDefinition }: Props) => {
         <RawJsonEditor
           button="Shortened document"
           content={stableStringify(
-            omit(databaseDefinition, [
+            R.omit(databaseDefinition, [
               "sourceFiles",
               "importCode",
               "postProcessingCode",

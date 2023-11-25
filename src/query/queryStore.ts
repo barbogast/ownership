@@ -1,6 +1,7 @@
 import { Draft } from "immer";
+import * as R from "remeda";
 
-import { createId, deepCopy } from "../util/utils";
+import { createId } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
 import { ChartType } from "../display/Index";
@@ -176,7 +177,7 @@ export const duplicate = (queryId: string) => {
   const label = getNewLabel(existingLabels, sourceQuery.label);
 
   useQueryStore.setState((state) => {
-    state[id] = { ...deepCopy(sourceQuery), id, label };
+    state[id] = { ...R.clone(sourceQuery), id, label };
   });
   return id;
 };

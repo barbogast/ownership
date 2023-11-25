@@ -4,7 +4,7 @@ import NestedStore, { StoreConfig } from "../nestedStores";
 import { FileContents } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
 import { getNewLabel } from "../util/labels";
-import { createId, deepCopy } from "../util/utils";
+import { createId } from "../util/utils";
 import { Draft } from "immer";
 import { stableStringify } from "../util/json";
 import { TransformResult } from "../types";
@@ -166,7 +166,7 @@ export const duplicateDatabaseDefinition = (sourceId: string) => {
 
   useDatabaseDefinitionStore.setState((state) => {
     state[id] = {
-      ...deepCopy(sourceDef),
+      ...R.clone(sourceDef),
       id,
       label,
     };

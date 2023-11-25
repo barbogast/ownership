@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
+import * as R from "remeda";
 
 import {
   QueryExecResult,
@@ -20,7 +21,6 @@ import AsyncModal from "../components/AsyncModal";
 import { useQueriesByDatabase } from "../query/queryStore";
 import { Link, useLocation } from "wouter";
 import { sourceToStepMapping } from "../createDatabaseWizard/utils";
-import { deepCopy } from "../util/utils";
 import EditRawMenu from "./EditRawMenu";
 
 const { Title } = Typography;
@@ -109,7 +109,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
             title="Edit Database"
             config={getConfig(true)}
             initialResult={{
-              ...deepCopy(databaseDefinition),
+              ...R.clone(databaseDefinition),
               json: {},
               csv: {},
             }}

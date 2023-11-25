@@ -1,7 +1,7 @@
 import { BrowserContext, Page } from "@playwright/test";
+import * as R from "remeda";
 
 import { getLocalStorageContent } from "../utils";
-import { isObject } from "../../src/util/utils";
 
 export class DatabaseDefinitionStorage {
   readonly #context: BrowserContext;
@@ -21,7 +21,11 @@ export class DatabaseDefinitionStorage {
       `${organization}/${repository}/databases`
     );
 
-    if (isObject(content) && "state" in content && isObject(content.state)) {
+    if (
+      R.isObject(content) &&
+      "state" in content &&
+      R.isObject(content.state)
+    ) {
       return content.state;
     } else {
       throw new Error("Unexpected localStorage content");

@@ -1,7 +1,8 @@
 import { Button, Dropdown } from "antd";
+import * as R from "remeda";
+
 import RawJsonEditor from "../components/RawJsonEditor";
 import { parseJson, stableStringify } from "../util/json";
-import { omit } from "../util/utils";
 import { Query, replaceQuery, updateQuery } from "./queryStore";
 
 type Props = {
@@ -13,7 +14,9 @@ const EditRawMenu = ({ query }: Props) => {
   const editRawItems = [
     <RawJsonEditor
       button="Shortened document"
-      content={stableStringify(omit(query, ["transformCode", "sqlStatement"]))}
+      content={stableStringify(
+        R.omit(query, ["transformCode", "sqlStatement"])
+      )}
       label={query.label}
       onSubmit={(newContent) => updateQuery(id, parseJson(newContent))}
     />,

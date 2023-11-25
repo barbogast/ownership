@@ -1,6 +1,6 @@
 import { Alert, Modal, message } from "antd";
 import { useState } from "react";
-import { isPromise } from "../util/utils";
+import * as R from "remeda";
 
 type Props = {
   onSubmit: () => void | Promise<void>;
@@ -26,7 +26,7 @@ const AsyncModal: React.FC<Props> = ({
 
   const submit = () => {
     const maybePromise = onSubmit();
-    if (isPromise(maybePromise)) {
+    if (R.isPromise(maybePromise)) {
       setIsLoading(true);
       setErrorMessage(undefined);
       maybePromise

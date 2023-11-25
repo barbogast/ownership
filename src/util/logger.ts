@@ -1,4 +1,4 @@
-import { isPromise } from "./utils";
+import * as R from "remeda";
 
 const ALL_CATEGORIES = [
   "main",
@@ -55,7 +55,7 @@ class Logger {
       const start = performance.now();
       const result = func(...args);
 
-      if (isPromise(result)) {
+      if (R.isPromise(result)) {
         void result.then(() =>
           this.log(name + "()", `${Math.round(performance.now() - start)} ms`)
         );
