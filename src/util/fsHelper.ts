@@ -47,6 +47,11 @@ export default class FsHelper {
     fileContents: FileContents<T>
   ) => {
     for (const [filename, contents] of Object.entries<string>(fileContents)) {
+      const folders = filename.split("/").slice(0, -1).join("/");
+      if (folders) {
+        await this.mkdir_p(directory + "/" + folders);
+      }
+
       if (contents) {
         await this.fs.promises.writeFile(directory + "/" + filename, contents);
       }
