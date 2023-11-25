@@ -131,6 +131,16 @@ const getStep = () => {
                     defaultValue={results.sourceFiles[fileName] ?? ""}
                     onMount={(editor) => {
                       fileController.addEditorRef(fileName, editor);
+
+                      // Don't propagate keyboard events to the parent element. This solves the issue of
+                      // antd's modal rerendering its content when `okType="primary"` and the user presses Enter.
+                      editor.getDomNode()!.addEventListener(
+                        "keydown",
+                        (event) => {
+                          event.stopPropagation();
+                        },
+                        true
+                      );
                     }}
                     theme={darkModeEnabled ? "vs-dark" : undefined}
                   />

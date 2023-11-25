@@ -91,7 +91,7 @@ const WizardModal = <
               key="next"
               onClick={onNextButton}
               loading={state === "loading"}
-              type={currentStep.nextButton?.type}
+              type={currentStep.nextButton?.type || "primary"}
             >
               {currentStep.nextButton?.label ||
                 (isFinalStep ? "Finish" : "Next")}

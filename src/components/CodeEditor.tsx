@@ -25,6 +25,16 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
   const onEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
     setMonacoInstances({ editor, monaco });
+
+    // Don't propagate keyboard events to the parent element. This solves the issue of
+    // antd's modal rerendering its content when `okType="primary"` and the user presses Enter.
+    editor.getDomNode()!.addEventListener(
+      "keydown",
+      (event) => {
+        event.stopPropagation();
+      },
+      true
+    );
   };
 
   useEffect(() => {
