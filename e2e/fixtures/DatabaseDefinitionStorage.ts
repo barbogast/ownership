@@ -1,14 +1,12 @@
-import { BrowserContext, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import * as R from "remeda";
 
-import { getLocalStorageContent } from "../utils";
+import { getIndexedDbContent } from "../utils";
 
 export class DatabaseDefinitionStorage {
-  readonly #context: BrowserContext;
   readonly #page: Page;
 
-  constructor(page: Page, context: BrowserContext) {
-    this.#context = context;
+  constructor(page: Page) {
     this.#page = page;
   }
 
@@ -16,8 +14,8 @@ export class DatabaseDefinitionStorage {
     const url = new URL(this.#page.url());
     const [_, organization, repository, __] = url.pathname.split("/");
 
-    const content = await getLocalStorageContent(
-      this.#context,
+    const content = await getIndexedDbContent(
+      this.#page,
       `${organization}/${repository}/databases`
     );
 
