@@ -85,7 +85,11 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
           Execute
         </Button>
       </div>
-      {previewData && <TableDisplay transformResult={previewData} />}
+      {previewData && (
+        <div data-testid="preview">
+          <TableDisplay transformResult={previewData} />
+        </div>
+      )}
     </div>
   );
 };
