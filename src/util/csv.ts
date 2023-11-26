@@ -10,7 +10,7 @@ export type CsvRecords = CsvRow[];
 export type CsvFile = { header: CsvRow; data: CsvRecords };
 
 const guessType = (rows: CsvRecords, headerIndex: number) => {
-  const firstDataRow = rows[1];
+  const firstDataRow = rows[0];
   if (!firstDataRow) {
     return "text";
   }
