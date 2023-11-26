@@ -54,7 +54,9 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
         <Button onClick={executeCode}>Execute</Button>
       </div>
       {executionResult?.success && (
-        <TableDisplay transformResult={executionResult.returnValue} />
+        <div data-testid="preview">
+          <TableDisplay transformResult={executionResult.returnValue} />
+        </div>
       )}
     </div>
   );

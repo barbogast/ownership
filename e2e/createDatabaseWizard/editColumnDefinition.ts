@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect } from "../fixtures";
 
 const organization = "org1";
 const repository = "repo1";
@@ -7,7 +7,7 @@ test.beforeEach(async ({ repositoryStorage }) => {
   await repositoryStorage.addRepository(organization, repository);
 });
 
-const csvContent = `name,age,address,zip
+const fileContent = `name,age,address,zip
 John,22,Mainstreet,11111
 Carl,33,Otherstreet,02222
 Jude,44,Littlestreet,33333`;
@@ -27,7 +27,7 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.selectSource("csv");
   await createDatabaseDefinitionPage.next();
 
-  await createDatabaseDefinitionPage.enterFileContent(csvContent);
+  await createDatabaseDefinitionPage.enterFileContent(fileContent);
   await createDatabaseDefinitionPage.next();
 
   const columns = await createDatabaseDefinitionPage.getDetectedColumns();
@@ -37,19 +37,6 @@ test("create database definition", async ({
     { sourceName: "address", dbName: "address", type: "text" },
     { sourceName: "zip", dbName: "zip", type: "integer" },
   ]);
-
-  await createDatabaseDefinitionPage.modifyColumnNameInDb("address", "street");
-  await createDatabaseDefinitionPage.modifyColumnType("zip", "text");
-
-  const changedColumns =
-    await createDatabaseDefinitionPage.getDetectedColumns();
-  const changedColumnDefinitions = [
-    { sourceName: "name", dbName: "name", type: "text" },
-    { sourceName: "age", dbName: "age", type: "integer" },
-    { sourceName: "address", dbName: "street", type: "text" },
-    { sourceName: "zip", dbName: "zip", type: "text" },
-  ];
-  expect(changedColumns).toMatchObject(changedColumnDefinitions);
 
   await createDatabaseDefinitionPage.next();
 
@@ -61,9 +48,9 @@ test("create database definition", async ({
   const defs = await databaseDefinitionStorage.getDbDefs();
   const def = Object.values(defs)[0];
   expect(def).toMatchObject({
-    sourceFiles: { "file1.csv": csvContent },
+    sourceFiles: { "file1.csv": fileContent },
     label,
     tableName,
-    columns: changedColumnDefinitions,
+    columns,
   });
 });

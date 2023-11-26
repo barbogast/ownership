@@ -14,16 +14,20 @@ export class CreateDatabaseDefinitionPage {
   #buttonFinish: Locator;
   #keyboard: Keyboard;
   #source: SourceLocators;
+  #buttonExecute: Locator;
+  #enablePostProcessing: Locator;
 
   constructor(page: Page) {
     this.#buttonNext = page.getByRole("button", { name: "Next" });
     this.#buttonFinish = page.getByRole("button", { name: "Add new database" });
+    this.#buttonExecute = page.getByRole("button", { name: "Execute" });
     this.#source = {
       csv: page.locator('input[type="radio"][value="csv"]'),
       json: page.locator('input[type="radio"][value="json"]'),
       code: page.locator('input[type="radio"][value="code"]'),
     };
-    this.#monacoEditor = page.locator(".monaco-editor").nth(0);
+    this.#enablePostProcessing = page.locator("text=Enable post-processing");
+    this.#monacoEditor = page.locator(".monaco-editor").first();
     this.#columnRow = page.getByTestId("column-row");
     this.#columnTypeSelect = page.locator(".ant-select-item-option-content");
     this.#tableName = page
@@ -46,14 +50,31 @@ export class CreateDatabaseDefinitionPage {
     await this.#buttonFinish.click();
   }
 
+  async execute() {
+    await this.#buttonExecute.click();
+  }
+
   async selectSource(sourceType: keyof SourceLocators) {
     await this.#source[sourceType].click();
+  }
+
+  async enablePostProcessing() {
+    await this.#enablePostProcessing.check();
   }
 
   async enterFileContent(content: string) {
     await this.#monacoEditor.click();
     await this.#keyboard.press("Meta+KeyA");
     await this.#keyboard.type(content);
+  }
+
+  async replaceFileContent(find: string, replaceWith: string) {
+    await this.#monacoEditor.evaluate(
+      (el, { find, replaceWith }) =>
+        // @ts-expect-error ...
+        el.__uiTestingReplaceText(find, replaceWith),
+      { find, replaceWith }
+    );
   }
 
   async getDetectedColumns() {

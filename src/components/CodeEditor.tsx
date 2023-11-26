@@ -26,15 +26,27 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
     editorRef.current = editor;
     setMonacoInstances({ editor, monaco });
 
+    const element = editor.getDomNode()!;
+
     // Don't propagate keyboard events to the parent element. This solves the issue of
     // antd's modal rerendering its content when `okType="primary"` and the user presses Enter.
-    editor.getDomNode()!.addEventListener(
+    element.addEventListener(
       "keydown",
       (event) => {
         event.stopPropagation();
       },
       true
     );
+
+    // https://github.com/microsoft/playwright/issues/14126#issuecomment-1728221169
+    // attach an imperative method to the element so tests can programmatically update
+    // the value of the editor without dealing with how Monaco handles the exact keystrokes
+    // @ts-expect-error ...
+    element.__uiTestingReplaceText = (find: string, replaceWith: string) => {
+      editor.setValue(editor.getValue().replaceAll(find, replaceWith));
+      // or however you want to mutate the underlying stored value...
+      // you could change the editor's `model` instead
+    };
   };
 
   useEffect(() => {
