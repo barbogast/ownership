@@ -1,20 +1,29 @@
-import { Locator, Page } from "@playwright/test";
+import { Keyboard, Locator, Page } from "@playwright/test";
 
 import { ColumnDefinition } from "../../src/util/database";
 
+type SourceLocators = { csv: Locator; json: Locator; code: Locator };
+
 export class CreateDatabaseDefinitionPage {
   readonly #buttonNext: Locator;
-  readonly #textAreaCsvContent: Locator;
+  readonly #monacoEditor: Locator;
   readonly #columnRow: Locator;
   readonly #columnTypeSelect: Locator;
   #tableName: Locator;
   #databaseLabel: Locator;
   #buttonFinish: Locator;
+  #keyboard: Keyboard;
+  #source: SourceLocators;
 
   constructor(page: Page) {
     this.#buttonNext = page.getByRole("button", { name: "Next" });
     this.#buttonFinish = page.getByRole("button", { name: "Add new database" });
-    this.#textAreaCsvContent = page.getByTestId("csv-textarea");
+    this.#source = {
+      csv: page.locator('input[type="radio"][value="csv"]'),
+      json: page.locator('input[type="radio"][value="json"]'),
+      code: page.locator('input[type="radio"][value="code"]'),
+    };
+    this.#monacoEditor = page.locator(".monaco-editor").nth(0);
     this.#columnRow = page.getByTestId("column-row");
     this.#columnTypeSelect = page.locator(".ant-select-item-option-content");
     this.#tableName = page
@@ -25,6 +34,8 @@ export class CreateDatabaseDefinitionPage {
       .locator(".ant-input-wrapper")
       .filter({ has: page.getByText("Database label") })
       .locator("input");
+
+    this.#keyboard = page.keyboard;
   }
 
   async next() {
@@ -35,8 +46,14 @@ export class CreateDatabaseDefinitionPage {
     await this.#buttonFinish.click();
   }
 
-  async enterCsvContent(content: string) {
-    await this.#textAreaCsvContent.fill(content);
+  async selectSource(sourceType: keyof SourceLocators) {
+    await this.#source[sourceType].click();
+  }
+
+  async enterFileContent(content: string) {
+    await this.#monacoEditor.click();
+    await this.#keyboard.press("Meta+KeyA");
+    await this.#keyboard.type(content);
   }
 
   async getDetectedColumns() {
@@ -57,25 +74,25 @@ export class CreateDatabaseDefinitionPage {
   }
 
   async modifyColumnNameInDb(
-    columnNameInCsv: string,
+    columnNameInSource: string,
     newColumnNameInDb: string
   ) {
     for (const row of await this.#columnRow.all()) {
       const columns = await row.locator("div");
-      const colNameInCsv = await columns.nth(0).textContent();
-      if (colNameInCsv === columnNameInCsv) {
+      const colNameInSource = await columns.nth(0).textContent();
+      if (colNameInSource === columnNameInSource) {
         await columns.nth(1).locator("input").fill(newColumnNameInDb);
         return;
       }
     }
-    throw new Error(`Column ${columnNameInCsv} not found`);
+    throw new Error(`Column ${columnNameInSource} not found`);
   }
 
-  async modifyColumnType(columnNameInCsv: string, columnType: string) {
+  async modifyColumnType(columnNameInSource: string, columnType: string) {
     for (const row of await this.#columnRow.all()) {
       const columns = await row.locator("div");
-      const colNameInCsv = await columns.nth(0).textContent();
-      if (colNameInCsv === columnNameInCsv) {
+      const colNameInSource = await columns.nth(0).textContent();
+      if (colNameInSource === columnNameInSource) {
         await columns.nth(2).click();
 
         // For some weird reason .click() doesn't work here
@@ -85,7 +102,7 @@ export class CreateDatabaseDefinitionPage {
         return;
       }
     }
-    throw new Error(`Column ${columnNameInCsv} not found`);
+    throw new Error(`Column ${columnNameInSource} not found`);
   }
 
   async modifyTableName(newName: string) {

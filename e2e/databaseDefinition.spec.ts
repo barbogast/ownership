@@ -24,15 +24,18 @@ test("create database definition", async ({
 
   await mainMenu.createDatabase();
 
-  await createDatabaseDefinitionPage.enterCsvContent(csvContent);
+  await createDatabaseDefinitionPage.selectSource("csv");
+  await createDatabaseDefinitionPage.next();
+
+  await createDatabaseDefinitionPage.enterFileContent(csvContent);
   await createDatabaseDefinitionPage.next();
 
   const columns = await createDatabaseDefinitionPage.getDetectedColumns();
   expect(columns).toMatchObject([
-    { csvName: "name", dbName: "name", type: "text" },
-    { csvName: "age", dbName: "age", type: "integer" },
-    { csvName: "address", dbName: "address", type: "text" },
-    { csvName: "zip", dbName: "zip", type: "integer" },
+    { sourceName: "name", dbName: "name", type: "text" },
+    { sourceName: "age", dbName: "age", type: "integer" },
+    { sourceName: "address", dbName: "address", type: "text" },
+    { sourceName: "zip", dbName: "zip", type: "integer" },
   ]);
 
   await createDatabaseDefinitionPage.modifyColumnNameInDb("address", "street");
@@ -41,10 +44,10 @@ test("create database definition", async ({
   const changedColumns =
     await createDatabaseDefinitionPage.getDetectedColumns();
   const changedColumnDefinitions = [
-    { csvName: "name", dbName: "name", type: "text" },
-    { csvName: "age", dbName: "age", type: "integer" },
-    { csvName: "address", dbName: "street", type: "text" },
-    { csvName: "zip", dbName: "zip", type: "text" },
+    { sourceName: "name", dbName: "name", type: "text" },
+    { sourceName: "age", dbName: "age", type: "integer" },
+    { sourceName: "address", dbName: "street", type: "text" },
+    { sourceName: "zip", dbName: "zip", type: "text" },
   ];
   expect(changedColumns).toMatchObject(changedColumnDefinitions);
 
@@ -58,7 +61,7 @@ test("create database definition", async ({
   const defs = await databaseDefinitionStorage.getDbDefs();
   const def = Object.values(defs)[0];
   expect(def).toMatchObject({
-    csvContent,
+    sourceFiles: { "file1.csv": csvContent },
     label,
     tableName,
     columns: changedColumnDefinitions,
