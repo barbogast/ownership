@@ -23,7 +23,7 @@ const retrieveValueFromIndexedDB = async ({ path }: { path: string }) => {
 
       query.onsuccess = () => resolve(query.result);
       query.onerror = reject;
-      txn.oncomplete = db.close;
+      txn.oncomplete = () => db.close();
     };
 
     const request = window.indexedDB.open("keyval-store");
