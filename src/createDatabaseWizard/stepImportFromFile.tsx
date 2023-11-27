@@ -136,13 +136,13 @@ const getStep = () => {
 
                       // Don't propagate keyboard events to the parent element. This solves the issue of
                       // antd's modal rerendering its content when `okType="primary"` and the user presses Enter.
-                      editor.getDomNode()!.addEventListener(
-                        "keydown",
-                        (event) => {
-                          event.stopPropagation();
-                        },
-                        true
-                      );
+                      editor
+                        .getDomNode()!
+                        .addEventListener("keydown", (event) => {
+                          if (event.key === "Enter") {
+                            event.stopPropagation();
+                          }
+                        });
                     }}
                     theme={darkModeEnabled ? "vs-dark" : undefined}
                   />

@@ -30,13 +30,11 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
 
     // Don't propagate keyboard events to the parent element. This solves the issue of
     // antd's modal rerendering its content when `okType="primary"` and the user presses Enter.
-    element.addEventListener(
-      "keydown",
-      (event) => {
+    element.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
         event.stopPropagation();
-      },
-      true
-    );
+      }
+    });
 
     // https://github.com/microsoft/playwright/issues/14126#issuecomment-1728221169
     // attach an imperative method to the element so tests can programmatically update
