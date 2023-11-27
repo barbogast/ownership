@@ -14,11 +14,18 @@ export class CreateDatabaseDefinitionPage {
   #source: SourceLocators;
   #buttonExecute: Locator;
   #enablePostProcessing: Locator;
+  #buttonAddFile: Locator;
+  #inputFileName: Locator;
+  #buttonDelete: Locator;
+  #buttonDeleteConfirm: Locator;
 
   constructor(page: Page) {
     this.#buttonNext = page.getByRole("button", { name: "Next" });
     this.#buttonFinish = page.getByRole("button", { name: "Add new database" });
     this.#buttonExecute = page.getByRole("button", { name: "Preview" });
+    this.#buttonAddFile = page.getByRole("button", { name: "Add file" });
+    this.#buttonDelete = page.getByRole("button", { name: "x" });
+    this.#buttonDeleteConfirm = page.getByRole("button", { name: "OK" });
     this.#source = {
       csv: page.locator('input[type="radio"][value="csv"]'),
       json: page.locator('input[type="radio"][value="json"]'),
@@ -35,6 +42,7 @@ export class CreateDatabaseDefinitionPage {
       .locator(".ant-input-wrapper")
       .filter({ has: page.getByText("Database label") })
       .locator("input");
+    this.#inputFileName = page.getByTestId("file-name-input");
   }
 
   async next() {
@@ -43,6 +51,19 @@ export class CreateDatabaseDefinitionPage {
 
   async finish() {
     await this.#buttonFinish.click();
+  }
+
+  async addFile() {
+    await this.#buttonAddFile.click();
+  }
+
+  async deleteFile(index: number) {
+    await this.#buttonDelete.nth(index).click();
+    await this.#buttonDeleteConfirm.click();
+  }
+
+  async setFileName(index: number, fileName: string) {
+    await this.#inputFileName.nth(index).fill(fileName);
   }
 
   async execute() {
