@@ -35,10 +35,9 @@ export const test = base.extend<MyFixtures>({
         messages.push(`[${error.name}] ${error.message}`);
       });
       await use();
-      expect(
-        messages,
-        "Errors where logged to the browser console"
-      ).toStrictEqual([]);
+      expect(messages, "Errors where logged to the browser console").toEqual(
+        []
+      );
     },
     { auto: true },
   ],

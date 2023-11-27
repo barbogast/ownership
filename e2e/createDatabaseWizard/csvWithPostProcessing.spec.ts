@@ -1,3 +1,5 @@
+import * as R from "remeda";
+
 import { test, expect } from "../fixtures";
 
 const organization = "org1";
@@ -56,7 +58,7 @@ test("create database definition", async ({
       }`,
     },
   ];
-  await editor.replaceText(0, replacements);
+  const postProcessingCode = await editor.replaceText(0, replacements);
 
   await createDatabaseDefinitionPage.execute();
 
@@ -85,12 +87,12 @@ test("create database definition", async ({
   ];
 
   const received = await tableDisplay.getTableContent();
-  expect(received).toMatchObject(expected);
+  expect(received).toEqual(expected);
 
   await createDatabaseDefinitionPage.next();
 
   const columns = await createDatabaseDefinitionPage.getDetectedColumns();
-  expect(columns).toMatchObject([
+  expect(columns).toEqual([
     { sourceName: "name", dbName: "name", type: "text" },
     { sourceName: "age", dbName: "age", type: "integer" },
     { sourceName: "street", dbName: "street", type: "text" },
@@ -106,11 +108,15 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.finish();
 
   const defs = await databaseDefinitionStorage.getDbDefs();
-  const def = Object.values(defs)[0];
-  expect(def).toMatchObject({
+  const def = Object.values(defs)[0]!;
+  expect(R.omit(def, ["id"])).toEqual({
+    source: "csv",
+    enablePostProcessing: true,
+    importCode: "",
     sourceFiles: { "file1.csv": fileContent },
+    postProcessingCode,
+    columns,
     label,
     tableName,
-    columns,
   });
 });

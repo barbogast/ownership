@@ -2,6 +2,7 @@ import { Page } from "@playwright/test";
 import * as R from "remeda";
 
 import { getIndexedDbContent } from "../utils";
+import { DatabaseDefinition } from "../../src/databaseDefinition/databaseDefinitionStore";
 
 export class DatabaseDefinitionStorage {
   readonly #page: Page;
@@ -24,7 +25,7 @@ export class DatabaseDefinitionStorage {
       "state" in content &&
       R.isObject(content.state)
     ) {
-      return content.state;
+      return content.state as Record<string, DatabaseDefinition>;
     } else {
       throw new Error("Unexpected localStorage content");
     }

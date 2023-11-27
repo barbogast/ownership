@@ -1,3 +1,5 @@
+import * as R from "remeda";
+
 import { test, expect } from "../fixtures";
 
 const organization = "org1";
@@ -34,7 +36,7 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.next();
 
   const columns = await createDatabaseDefinitionPage.getDetectedColumns();
-  expect(columns).toMatchObject([
+  expect(columns).toEqual([
     { sourceName: "name", dbName: "name", type: "text" },
     { sourceName: "age", dbName: "age", type: "integer" },
     { sourceName: "address", dbName: "address", type: "text" },
@@ -49,11 +51,15 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.finish();
 
   const defs = await databaseDefinitionStorage.getDbDefs();
-  const def = Object.values(defs)[0];
-  expect(def).toMatchObject({
+  const def = Object.values(defs)[0]!;
+  expect(R.omit(def, ["id"])).toEqual({
+    source: "json",
+    enablePostProcessing: false,
+    importCode: "",
     sourceFiles: { "file1.json": fileContent },
+    postProcessingCode: "",
+    columns,
     label,
     tableName,
-    columns,
   });
 });

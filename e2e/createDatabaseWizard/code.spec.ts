@@ -34,7 +34,7 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.selectSource("code");
   await createDatabaseDefinitionPage.next();
 
-  await editor.replaceText(0, [
+  const importCode = await editor.replaceText(0, [
     {
       find: `return []`,
       replaceWith: `return ${JSON.stringify(returnValue, null, 2)}`,
@@ -49,12 +49,12 @@ test("create database definition", async ({
     // the expected values to make them comparable
     R.mapValues(row, (v) => v.toString())
   );
-  expect(received).toMatchObject(expected);
+  expect(received).toEqual(expected);
 
   await createDatabaseDefinitionPage.next();
 
   const columns = await createDatabaseDefinitionPage.getDetectedColumns();
-  expect(columns).toMatchObject([
+  expect(columns).toEqual([
     { sourceName: "name", dbName: "name", type: "text" },
     { sourceName: "age", dbName: "age", type: "integer" },
     { sourceName: "address", dbName: "address", type: "text" },
@@ -69,11 +69,15 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.finish();
 
   const defs = await databaseDefinitionStorage.getDbDefs();
-  const def = Object.values(defs)[0];
-  expect(def).toMatchObject({
+  const def = Object.values(defs)[0]!;
+  expect(R.omit(def, ["id"])).toEqual({
+    source: "code",
+    enablePostProcessing: false,
+    importCode,
     sourceFiles: { "file.json": stringify(returnValue, null, 2) },
+    postProcessingCode: "",
+    columns,
     label,
     tableName,
-    columns,
   });
 });
