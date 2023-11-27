@@ -25,6 +25,7 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
       results.postProcessingCode,
       { files: results.csv.beforePostProcessing! }
     );
+
     if (executionResult.success) {
       const columns = analyzeHeader(executionResult.returnValue);
 
@@ -32,7 +33,7 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
 
       setResults((state) => ({
         ...state,
-        csv: { finalContent: executionResult.returnValue },
+        csv: { ...state.csv, finalContent: executionResult.returnValue },
         columns,
       }));
     } else {
@@ -53,7 +54,7 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
       setPreviewData(executionResult.returnValue);
       setResults((state) => ({
         ...state,
-        json: { finalContent: executionResult.returnValue },
+        json: { ...state.json, finalContent: executionResult.returnValue },
       }));
     } else {
       setError(executionResult.error);
