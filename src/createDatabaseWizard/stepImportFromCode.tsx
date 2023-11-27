@@ -51,7 +51,7 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
         />
       </div>
       <div>
-        <Button onClick={executeCode}>Execute</Button>
+        <Button onClick={executeCode}>Preview</Button>
       </div>
       {executionResult?.success && (
         <div data-testid="preview">

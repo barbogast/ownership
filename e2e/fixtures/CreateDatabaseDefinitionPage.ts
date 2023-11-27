@@ -18,7 +18,7 @@ export class CreateDatabaseDefinitionPage {
   constructor(page: Page) {
     this.#buttonNext = page.getByRole("button", { name: "Next" });
     this.#buttonFinish = page.getByRole("button", { name: "Add new database" });
-    this.#buttonExecute = page.getByRole("button", { name: "Execute" });
+    this.#buttonExecute = page.getByRole("button", { name: "Preview" });
     this.#source = {
       csv: page.locator('input[type="radio"][value="csv"]'),
       json: page.locator('input[type="radio"][value="json"]'),

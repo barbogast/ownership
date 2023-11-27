@@ -83,7 +83,7 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
             results.source === "csv" ? executeCodeForCsv : executeCodeForJson
           }
         >
-          Execute
+          Preview
         </Button>
       </div>
       {previewData && (
