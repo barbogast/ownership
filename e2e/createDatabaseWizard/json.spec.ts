@@ -21,6 +21,7 @@ test("create database definition", async ({
   createDatabaseDefinitionPage,
   mainMenu,
   databaseDefinitionStorage,
+  editor,
 }) => {
   await page.goto(`/${organization}/${repository}`);
 
@@ -29,7 +30,7 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.selectSource("json");
   await createDatabaseDefinitionPage.next();
 
-  await createDatabaseDefinitionPage.enterFileContent(fileContent);
+  await editor.setContent(0, fileContent);
   await createDatabaseDefinitionPage.next();
 
   const columns = await createDatabaseDefinitionPage.getDetectedColumns();

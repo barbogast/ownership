@@ -25,6 +25,7 @@ test("create database definition", async ({
   mainMenu,
   databaseDefinitionStorage,
   tableDisplay,
+  editor,
 }) => {
   await page.goto(`/${organization}/${repository}`);
 
@@ -33,7 +34,7 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.selectSource("code");
   await createDatabaseDefinitionPage.next();
 
-  await createDatabaseDefinitionPage.replaceEditorContent([
+  await editor.replaceText(0, [
     {
       find: `return []`,
       replaceWith: `return ${JSON.stringify(returnValue, null, 2)}`,

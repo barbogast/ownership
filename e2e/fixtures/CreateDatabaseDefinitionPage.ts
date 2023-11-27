@@ -1,22 +1,16 @@
-import { Keyboard, Locator, Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 import { ColumnDefinition } from "../../src/util/database";
-import {
-  CodeEditorElement,
-  Replacements,
-} from "../../src/components/CodeEditor";
 
 type SourceLocators = { csv: Locator; json: Locator; code: Locator };
 
 export class CreateDatabaseDefinitionPage {
   readonly #buttonNext: Locator;
-  readonly #monacoEditor: Locator;
   readonly #columnRow: Locator;
   readonly #columnTypeSelect: Locator;
   #tableName: Locator;
   #databaseLabel: Locator;
   #buttonFinish: Locator;
-  #keyboard: Keyboard;
   #source: SourceLocators;
   #buttonExecute: Locator;
   #enablePostProcessing: Locator;
@@ -31,7 +25,6 @@ export class CreateDatabaseDefinitionPage {
       code: page.locator('input[type="radio"][value="code"]'),
     };
     this.#enablePostProcessing = page.locator("text=Enable post-processing");
-    this.#monacoEditor = page.locator(".monaco-editor").first();
     this.#columnRow = page.getByTestId("column-row");
     this.#columnTypeSelect = page.locator(".ant-select-item-option-content");
     this.#tableName = page
@@ -42,8 +35,6 @@ export class CreateDatabaseDefinitionPage {
       .locator(".ant-input-wrapper")
       .filter({ has: page.getByText("Database label") })
       .locator("input");
-
-    this.#keyboard = page.keyboard;
   }
 
   async next() {
@@ -64,21 +55,6 @@ export class CreateDatabaseDefinitionPage {
 
   async enablePostProcessing() {
     await this.#enablePostProcessing.check();
-  }
-
-  async enterFileContent(content: string) {
-    await this.#monacoEditor.click();
-    await this.#keyboard.press("Meta+KeyA");
-    await this.#keyboard.type(content);
-  }
-
-  async replaceEditorContent(replacements: Replacements) {
-    await this.#monacoEditor.evaluate(
-      (el, { replacements }) => {
-        (el as CodeEditorElement).__uiTestingReplaceText(replacements);
-      },
-      { replacements }
-    );
   }
 
   async getDetectedColumns() {

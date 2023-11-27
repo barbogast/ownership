@@ -6,6 +6,7 @@ import { CreateDatabaseDefinitionPage } from "./CreateDatabaseDefinitionPage";
 import { MainMenu } from "./MainMenu";
 import { DatabaseDefinitionStorage } from "./DatabaseDefinitionStorage";
 import { TableDisplay } from "./TableDisplay";
+import { Editor } from "./Editor";
 
 type MyFixtures = {
   repositoryPage: RepositoryPage;
@@ -16,6 +17,7 @@ type MyFixtures = {
   databaseDefinitionStorage: DatabaseDefinitionStorage;
   tableDisplay: TableDisplay;
   checkConsole: void;
+  editor: Editor;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -68,6 +70,10 @@ export const test = base.extend<MyFixtures>({
   tableDisplay: async ({ page }, use) => {
     const tableDisplay = new TableDisplay(page);
     await use(tableDisplay);
+  },
+  editor: async ({ page }, use) => {
+    const editor = new Editor(page);
+    await use(editor);
   },
 });
 

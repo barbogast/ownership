@@ -21,6 +21,7 @@ test("create database definition", async ({
   mainMenu,
   databaseDefinitionStorage,
   tableDisplay,
+  editor,
 }) => {
   await page.goto(`/${organization}/${repository}`);
 
@@ -30,7 +31,7 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.enablePostProcessing();
   await createDatabaseDefinitionPage.next();
 
-  await createDatabaseDefinitionPage.enterFileContent(fileContent);
+  await editor.setContent(0, fileContent);
   await createDatabaseDefinitionPage.next();
 
   const replacements = [
@@ -55,7 +56,7 @@ test("create database definition", async ({
       }`,
     },
   ];
-  await createDatabaseDefinitionPage.replaceEditorContent(replacements);
+  await editor.replaceText(0, replacements);
 
   await createDatabaseDefinitionPage.execute();
 
