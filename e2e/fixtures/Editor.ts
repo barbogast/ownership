@@ -23,11 +23,12 @@ export class Editor {
   }
 
   async replaceText(index: number, replacements: Replacements) {
-    await this.#getEditorElement(index).evaluate(
+    const newText = await this.#getEditorElement(index).evaluate(
       (el, { replacements }) => {
-        (el as CodeEditorElement).__uiTestingReplaceText(replacements);
+        return (el as CodeEditorElement).__uiTestingReplaceText(replacements);
       },
       { replacements }
     );
+    return newText;
   }
 }

@@ -17,7 +17,7 @@ export type Replacements = { find: string; replaceWith: string }[];
 export type UiTestingReplaceText = (replacements: Replacements) => void;
 
 export interface CodeEditorElement extends HTMLElement {
-  __uiTestingReplaceText: (replacements: Replacements) => void;
+  __uiTestingReplaceText: (replacements: Replacements) => string;
 }
 
 const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
@@ -48,16 +48,17 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
     // attach an imperative method to the element so tests can programmatically update
     // the value of the editor without dealing with how Monaco handles the exact keystrokes
     (element as CodeEditorElement).__uiTestingReplaceText = (replacements) => {
-      editor.setValue(
-        replacements.reduce((text, { find, replaceWith }) => {
-          if (!text.includes(find)) {
-            throw new Error(
-              `Cannot replace text in editor: "${find}" was not found in "${text}"`
-            );
-          }
-          return text.replaceAll(find, replaceWith);
-        }, editor.getValue())
-      );
+      const newText = replacements.reduce((text, { find, replaceWith }) => {
+        if (!text.includes(find)) {
+          throw new Error(
+            `Cannot replace text in editor: "${find}" was not found in "${text}"`
+          );
+        }
+        return text.replaceAll(find, replaceWith);
+      }, editor.getValue());
+
+      editor.setValue(newText);
+      return newText;
     };
   };
 
