@@ -71,7 +71,9 @@ const useFileController = (existingFileNames: string[], sourceType: Source) => {
       Object.fromEntries(
         fileNames.map((fileName) => [
           fileName,
-          editorRef.current![fileName]!.getValue(),
+          // On windows text created in <textarea> and similar elements uses \r\n as line breaks.
+          // We convert them to \n to have consistent line breaks across platforms.
+          editorRef.current![fileName]!.getValue().replace(/\r\n/g, "\n"),
         ])
       ),
   };
