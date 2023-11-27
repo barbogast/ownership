@@ -129,6 +129,11 @@ const useWizardController = <
     return { closeWizard: nextStepName === undefined };
   };
 
+  const goToPreviousStep = () => {
+    history.pop();
+    setErrors([]);
+  };
+
   const jumpToIndex = (index: number) => {
     history.jumpToIndex(index, config.steps);
   };
@@ -148,7 +153,7 @@ const useWizardController = <
     currentStep,
     setResults: setCurrentResults,
     goToNextStep,
-    goToPreviousStep: history.pop,
+    goToPreviousStep,
     jumpToIndex,
     resetState,
     history: history.getHistory(),
