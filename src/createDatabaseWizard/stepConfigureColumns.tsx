@@ -68,9 +68,9 @@ const getStep = () => {
                   }}
                   style={{ width: 250 }}
                 >
-                  <option value="integer">Integer</option>
-                  <option value="real">Real</option>
-                  <option value="text">Text</option>
+                  <Select.Option value="integer">Integer</Select.Option>
+                  <Select.Option value="real">Real</Select.Option>
+                  <Select.Option value="text">Text</Select.Option>
                 </Select>
               </Col>
             </Row>
