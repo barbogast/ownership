@@ -1,6 +1,10 @@
 import { Keyboard, Locator, Page } from "@playwright/test";
 
 import { ColumnDefinition } from "../../src/util/database";
+import {
+  CodeEditorElement,
+  Replacements,
+} from "../../src/components/CodeEditor";
 
 type SourceLocators = { csv: Locator; json: Locator; code: Locator };
 
@@ -68,12 +72,12 @@ export class CreateDatabaseDefinitionPage {
     await this.#keyboard.type(content);
   }
 
-  async replaceFileContent(find: string, replaceWith: string) {
+  async replaceEditorContent(replacements: Replacements) {
     await this.#monacoEditor.evaluate(
-      (el, { find, replaceWith }) =>
-        // @ts-expect-error ...
-        el.__uiTestingReplaceText(find, replaceWith),
-      { find, replaceWith }
+      (el, { replacements }) => {
+        (el as CodeEditorElement).__uiTestingReplaceText(replacements);
+      },
+      { replacements }
     );
   }
 

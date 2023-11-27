@@ -34,10 +34,12 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.selectSource("code");
   await createDatabaseDefinitionPage.next();
 
-  await createDatabaseDefinitionPage.replaceFileContent(
-    `return []`,
-    `return ${JSON.stringify(returnValue, null, 2)}`
-  );
+  await createDatabaseDefinitionPage.replaceEditorContent([
+    {
+      find: `return []`,
+      replaceWith: `return ${JSON.stringify(returnValue, null, 2)}`,
+    },
+  ]);
 
   await createDatabaseDefinitionPage.execute();
 

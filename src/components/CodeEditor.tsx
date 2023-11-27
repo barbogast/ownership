@@ -12,6 +12,14 @@ type Props = {
   error?: ExecutionError;
 };
 
+export type Replacements = { find: string; replaceWith: string }[];
+
+export type UiTestingReplaceText = (replacements: Replacements) => void;
+
+export interface CodeEditorElement extends HTMLElement {
+  __uiTestingReplaceText: (replacements: Replacements) => void;
+}
+
 const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
   const editorRef = useRef<monaco.IStandaloneCodeEditor>();
   const [monacoInstances, setMonacoInstances] = useState<{
@@ -39,11 +47,17 @@ const TransformSection: React.FC<Props> = ({ code, setCode, error }) => {
     // https://github.com/microsoft/playwright/issues/14126#issuecomment-1728221169
     // attach an imperative method to the element so tests can programmatically update
     // the value of the editor without dealing with how Monaco handles the exact keystrokes
-    // @ts-expect-error ...
-    element.__uiTestingReplaceText = (find: string, replaceWith: string) => {
-      editor.setValue(editor.getValue().replaceAll(find, replaceWith));
-      // or however you want to mutate the underlying stored value...
-      // you could change the editor's `model` instead
+    (element as CodeEditorElement).__uiTestingReplaceText = (replacements) => {
+      editor.setValue(
+        replacements.reduce((text, { find, replaceWith }) => {
+          if (!text.includes(find)) {
+            throw new Error(
+              `Cannot replace text in editor: "${find}" was not found in "${text}"`
+            );
+          }
+          return text.replaceAll(find, replaceWith);
+        }, editor.getValue())
+      );
     };
   };
 

@@ -35,20 +35,22 @@ test("create database definition", async ({
   await createDatabaseDefinitionPage.enterFileContent(fileContent);
   await createDatabaseDefinitionPage.next();
 
-  await createDatabaseDefinitionPage.replaceFileContent(
-    `type Data = unknown`,
-    `type Data = { name: string, age: number, address: string, zip: number }[]`
-  );
-
-  // Split address into street and houseNumber
-  await createDatabaseDefinitionPage.replaceFileContent(
-    `return []`,
-    `return Object.values(files)[0]!.map(({ address, ...row }) => ({
-      ...row,
-      street: address.split(" ")[0],
-      houseNumber: address.split(" ")[1],
-    }));`
-  );
+  const replacements = [
+    {
+      find: `type Data = unknown`,
+      replaceWith: `type Data = { name: string, age: number, address: string, zip: number }[]`,
+    },
+    {
+      find: `return []`,
+      // Split address into street and houseNumber
+      replaceWith: `return Object.values(files)[0]!.map(({ address, ...row }) => ({
+        ...row,
+        street: address.split(" ")[0],
+        houseNumber: address.split(" ")[1],
+      }));`,
+    },
+  ];
+  await createDatabaseDefinitionPage.replaceEditorContent(replacements);
 
   await createDatabaseDefinitionPage.execute();
 
