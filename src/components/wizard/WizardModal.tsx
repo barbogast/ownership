@@ -83,7 +83,9 @@ const WizardModal = <
           open={isOpen}
           onCancel={() => setIsOpen(false)}
           footer={[
-            ...errors.map((error) => <Alert message={error} type="error" />),
+            ...errors.map((error, i) => (
+              <Alert key={i} message={error} type="error" />
+            )),
             <Button key="back" onClick={onPrevButton}>
               {isInitialStep ? "Cancel" : "Previous"}
             </Button>,
