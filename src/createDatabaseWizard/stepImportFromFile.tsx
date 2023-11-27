@@ -10,6 +10,7 @@ import { Source } from "../databaseDefinition/databaseDefinitionStore";
 import * as csv from "../util/csv";
 import * as json from "../util/json";
 import { DataRow } from "../types";
+import { createId } from "../util/utils";
 
 const sourceTypeToFileExtension: Record<Source, string> = {
   csv: "csv",
@@ -25,13 +26,15 @@ const sourceTypeToMonacoLanguage: Record<Source, string> = {
 
 const useFileController = (existingFileNames: string[], sourceType: Source) => {
   const extension = sourceTypeToFileExtension[sourceType];
-  const [fileNames, setFileNames] = useState<string[]>(
+  const [fileNames, setFileNames] = useState<{ name: string; id: string }[]>(
     existingFileNames.length > 0
       ? // We need to make sure that all pre-existing files have the correct extension.
         // The user might have started with a different source type (i.e. json), added some files
         // and then went back and chose a different source type (i.e. csv).
-        existingFileNames.filter((name) => name.split(".")[1] === extension)
-      : [`file1.${extension}`]
+        existingFileNames
+          .filter((name) => name.split(".")[1] === extension)
+          .map((name) => ({ name, id: createId() }))
+      : [{ name: `file1.${extension}`, id: createId() }]
   );
 
   // This is used to generate a file name when adding a new file.
@@ -45,35 +48,37 @@ const useFileController = (existingFileNames: string[], sourceType: Source) => {
   return {
     fileNames,
 
-    setFileName: (event: React.ChangeEvent<HTMLInputElement>, index: number) =>
+    setFileName: (id: string, newName: string) =>
       setFileNames((files) =>
-        files.map((f, i) => (index === i ? event.target.value : f))
+        files.map((file) =>
+          file.id === id ? { ...file, name: newName } : file
+        )
       ),
 
     addFile: () => {
       setFileNames((files) => [
         ...files,
-        `file${fileNameIndex + 1}.${extension}`,
+        { name: `file${fileNameIndex + 1}.${extension}`, id: createId() },
       ]);
       setFileNameIndex((index) => index + 1);
     },
 
-    addEditorRef: (fileName: string, editor: editor.IStandaloneCodeEditor) => {
-      editorRef.current[fileName] = editor;
+    addEditorRef: (id: string, editor: editor.IStandaloneCodeEditor) => {
+      editorRef.current[id] = editor;
     },
 
-    deleteFile: (fileName: string) => {
-      setFileNames((files) => files.filter((name) => name !== fileName));
-      delete editorRef.current[fileName];
+    deleteFile: (id: string) => {
+      setFileNames((files) => files.filter((file) => file.id !== id));
+      delete editorRef.current[id];
     },
 
     getFileContents: () =>
       Object.fromEntries(
-        fileNames.map((fileName) => [
-          fileName,
+        fileNames.map((file) => [
+          file.name,
           // On windows text created in <textarea> and similar elements uses \r\n as line breaks.
           // We convert them to \n to have consistent line breaks across platforms.
-          editorRef.current![fileName]!.getValue().replace(/\r\n/g, "\n"),
+          editorRef.current![file.id]!.getValue().replace(/\r\n/g, "\n"),
         ])
       ),
   };
@@ -113,14 +118,15 @@ const getStep = () => {
       const multipleFiles = fileController.fileNames.length > 1;
       return (
         <>
-          {fileController.fileNames.map((fileName, index) => (
-            <Row key={fileName} gutter={[16, 16]} style={{ marginBottom: 32 }}>
+          {fileController.fileNames.map((file) => (
+            <Row key={file.id} gutter={[16, 16]} style={{ marginBottom: 32 }}>
               {multipleFiles && (
                 <Col span={4}>
                   <Input
-                    value={fileName}
+                    data-testid="file-name-input"
+                    value={file.name}
                     onChange={(event) =>
-                      fileController.setFileName(event, index)
+                      fileController.setFileName(file.id, event.target.value)
                     }
                   />
                 </Col>
@@ -130,9 +136,9 @@ const getStep = () => {
                   <Editor
                     height="200px"
                     defaultLanguage={sourceTypeToMonacoLanguage[results.source]}
-                    defaultValue={results.sourceFiles[fileName] ?? ""}
+                    defaultValue={results.sourceFiles[file.name] ?? ""}
                     onMount={(editor) => {
-                      fileController.addEditorRef(fileName, editor);
+                      fileController.addEditorRef(file.id, editor);
 
                       // Don't propagate keyboard events to the parent element. This solves the issue of
                       // antd's modal rerendering its content when `okType="primary"` and the user presses Enter.
@@ -151,8 +157,8 @@ const getStep = () => {
               {multipleFiles && (
                 <Col span={1}>
                   <Popconfirm
-                    title={`Are you sure you want to remove "${fileName}"?`}
-                    onConfirm={() => fileController.deleteFile(fileName)}
+                    title={`Are you sure you want to remove "${file.name}"?`}
+                    onConfirm={() => fileController.deleteFile(file.id)}
                   >
                     <Button danger title="Remove file">
                       x
