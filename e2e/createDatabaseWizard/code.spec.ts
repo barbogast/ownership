@@ -2,7 +2,6 @@ import stringify from "safe-stable-stringify";
 import * as R from "remeda";
 
 import { test, expect } from "../fixtures";
-import { arraysToObjects } from "../../src/util/csv";
 
 const organization = "org1";
 const repository = "repo1";
@@ -43,11 +42,7 @@ test("create database definition", async ({
 
   await createDatabaseDefinitionPage.execute();
 
-  const header = await tableDisplay.getHeader();
-  const data = await tableDisplay.getBody();
-
-  // Convert the arrays to objects, so the order of the columns doesn't matter
-  const received = arraysToObjects({ header, data });
+  const received = await tableDisplay.getTableContent();
   const expected = returnValue.map((row) =>
     // The retrieved values from the DOM are all strings, so we need to convert
     // the expected values to make them comparable

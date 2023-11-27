@@ -1,4 +1,3 @@
-import { arraysToObjects } from "../../src/util/csv";
 import { test, expect } from "../fixtures";
 
 const organization = "org1";
@@ -78,10 +77,8 @@ test("create database definition", async ({
     },
   ];
 
-  const header = await tableDisplay.getHeader();
-  const data = await tableDisplay.getBody();
+  const received = await tableDisplay.getTableContent();
 
-  const received = arraysToObjects({ header, data });
   expect(received).toMatchObject(expected);
 
   await createDatabaseDefinitionPage.next();

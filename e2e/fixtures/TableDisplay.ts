@@ -1,4 +1,5 @@
 import { Locator, Page } from "@playwright/test";
+import { arraysToObjects } from "../../src/util/csv";
 
 export class TableDisplay {
   #header: Locator;
@@ -14,7 +15,7 @@ export class TableDisplay {
       .locator("tbody > tr.ant-table-row");
   }
 
-  async getHeader() {
+  async getTableContent() {
     // Explicitly wait for the container to appear, otherwise the function
     //  will return an empty array instead of waiting for the element
     await this.#container.waitFor();
@@ -23,23 +24,16 @@ export class TableDisplay {
     for (const cell of await this.#header.all()) {
       header.push((await cell.textContent())!);
     }
-    return header;
-  }
 
-  async getBody() {
-    // Explicitly wait for the container to appear, otherwise the function
-    //  will return an empty array instead of waiting for the element
-    await this.#container.waitFor();
-
-    const body: string[][] = [];
+    const data: string[][] = [];
     for (const rowLocator of await this.#body.all()) {
       const row = [];
       for (const cell of await rowLocator.locator("td").all()) {
         row.push((await cell.textContent())!);
       }
-      body.push(row);
+      data.push(row);
     }
 
-    return body;
+    return arraysToObjects({ header, data });
   }
 }
