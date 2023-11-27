@@ -1,4 +1,4 @@
-import { test as base } from "@playwright/test";
+import { test as base, expect } from "@playwright/test";
 import { RepositoryPage } from "./RepositoryPage";
 import { RepositoryStorage } from "./RepositoryStorage";
 import { MainPage } from "./MainPage";
@@ -15,9 +15,32 @@ type MyFixtures = {
   createDatabaseDefinitionPage: CreateDatabaseDefinitionPage;
   databaseDefinitionStorage: DatabaseDefinitionStorage;
   tableDisplay: TableDisplay;
+  checkConsole: void;
 };
 
 export const test = base.extend<MyFixtures>({
+  checkConsole: [
+    async ({ page }, use) => {
+      const messages: string[] = [];
+      page.on("console", (msg) => {
+        // Ignore regular log messages; we are only interested in errors.
+        if (msg.type() === "error" || msg.type() === "warning") {
+          messages.push(`[${msg.type()}] ${msg.text()}`);
+        }
+      });
+      // Uncaught (in promise) TypeError + friends are page errors.
+      page.on("pageerror", (error) => {
+        messages.push(`[${error.name}] ${error.message}`);
+      });
+      await use();
+      expect(
+        messages,
+        "Errors where logged to the browser console"
+      ).toStrictEqual([]);
+    },
+    { auto: true },
+  ],
+
   repositoryPage: async ({ page }, use) => {
     const repositoryPage = new RepositoryPage(page);
     await use(repositoryPage);
