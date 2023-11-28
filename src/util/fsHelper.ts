@@ -1,4 +1,6 @@
 import LightningFS from "@isomorphic-git/lightning-fs";
+import * as R from "remeda";
+
 import Logger from "./logger";
 
 const logger = new Logger("fs");
@@ -34,10 +36,21 @@ export default class FsHelper {
 
   readFilesInDirectory = async (directory: string) => {
     const fileContents: FileContents<string> = {};
-    const files = await this.fs.promises.readdir(directory);
-    for (const file of files) {
-      const content = await this.readFile(directory + "/" + file);
-      fileContents[file] = content as string;
+    const entries = await this.fs.promises.readdir(directory);
+    for (const entry of entries) {
+      const path = directory + "/" + entry;
+      const stat = await this.fs.promises.stat(path);
+      if (stat.isDirectory()) {
+        const subDirectoryFileContents = await this.readFilesInDirectory(path);
+        //
+        Object.assign(
+          fileContents,
+          R.mapKeys(subDirectoryFileContents, (key) => entry + "/" + key)
+        );
+      } else {
+        const content = await this.readFile(path);
+        fileContents[entry] = content as string;
+      }
     }
     return fileContents;
   };
