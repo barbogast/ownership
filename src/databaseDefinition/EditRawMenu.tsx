@@ -80,7 +80,7 @@ const EditRawMenu = ({ databaseDefinition }: Props) => {
     {
       label: "sourceFiles",
       key: "7",
-      children: Object.entries(databaseDefinition.sourceFiles).map(
+      children: Object.entries(databaseDefinition.sourceFiles || {}).map(
         ([name, content], i) => ({
           key: i,
           label: (
