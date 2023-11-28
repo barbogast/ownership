@@ -171,7 +171,7 @@ const useQueryController = (query: Query) => {
     runQuery: (statement: string) => runQuery(db, statement),
     runTransform: runTransformCode,
     transformResult,
-    dbSchema: db.status === "loaded" ? db.schema : undefined,
+    dbSchema: db.status === "loaded" ? db.info : undefined,
   };
 };
 

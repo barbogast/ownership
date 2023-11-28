@@ -1,13 +1,13 @@
 import { Card, Descriptions, Space } from "antd";
-import { DbSchema } from "../util/database";
+import { DbInfo } from "../util/database";
 
-type Props = { dbSchema: DbSchema };
+type Props = { dbInfo: DbInfo };
 
-const DbSchemaDisplay = ({ dbSchema }: Props) => {
+const DbSchemaDisplay = ({ dbInfo }: Props) => {
   return (
     <>
       <Space direction="horizontal">
-        {dbSchema.tables.map((table) => (
+        {dbInfo.tables.map((table) => (
           <Card size="small" style={{ width: 300 }} key={table.name}>
             <Descriptions
               title={table.name}
@@ -25,7 +25,7 @@ const DbSchemaDisplay = ({ dbSchema }: Props) => {
       </Space>
       <br />
       <br />
-      SQLite version: {dbSchema.version}
+      SQLite version: {dbInfo.version}
     </>
   );
 };

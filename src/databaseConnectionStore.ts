@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { Database } from "sql.js";
-import { DbSchema } from "./util/database";
+import { DbInfo } from "./util/database";
 
 export type { Database, QueryExecResult } from "sql.js";
 
@@ -18,7 +18,7 @@ export type DatabaseConnection =
       key: string;
       status: "loaded";
       db: Database;
-      schema: DbSchema;
+      info: DbInfo;
     }
   | {
       key: string;

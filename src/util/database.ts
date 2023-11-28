@@ -29,7 +29,7 @@ export type ColumnDefinition = {
   type: ColumnType;
 };
 
-export type DbSchema = {
+export type DbInfo = {
   version: string;
   tables: {
     name: string;
@@ -158,7 +158,7 @@ export const initialize = async (
     }
 
     const schema = querySchema(db);
-    connection = { key, status: "loaded", db, schema };
+    connection = { key, status: "loaded", db, info: schema };
   } catch (err) {
     console.error(err);
     connection = { key, error: err as Error, status: "error" };
@@ -210,18 +210,18 @@ export const insertIntoTable = sqlLogger.time(
   }
 );
 
-const querySchema = sqlLogger.time("querySchema", (db: Database) => {
+const querySchema = (db: Database) => {
   const versionResult = db.exec("select sqlite_version()");
   const version = versionResult[0]!.values[0]![0] as string;
 
   const tableResult = db.exec("select * from sqlite_master");
   const tables = rowsToObjects(tableResult[0]!);
 
-  const dbSchema: DbSchema = { tables: [], version };
+  const dbInfo: DbInfo = { tables: [], version };
   for (const table of tables) {
     const columnResult = db.exec(`pragma table_info('${tables[0]!.name}')`);
     const columns = rowsToObjects(columnResult[0]!);
-    dbSchema.tables.push({
+    dbInfo.tables.push({
       name: table.name,
       columns: columns.map((column) => ({
         name: column.name,
@@ -230,5 +230,5 @@ const querySchema = sqlLogger.time("querySchema", (db: Database) => {
     });
   }
 
-  return dbSchema;
-});
+  return dbInfo;
+};

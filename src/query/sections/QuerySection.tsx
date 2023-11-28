@@ -11,15 +11,15 @@ import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinit
 import { QueryState } from "../../useQueryController";
 import { TransformResult } from "../../types";
 import useLocalSettingsStore from "../../localSettingsStore";
-import DbSchemaDisplay from "../DbSchemaDisplay";
-import { DbSchema } from "../../util/database";
+import DbInfoDisplay from "../DbInfoDisplay";
+import { DbInfo } from "../../util/database";
 
 type Props = {
   query: Query;
   runQuery: (stmt: string) => void;
   queryResults: TransformResult[];
   queryState: QueryState;
-  dbSchema: DbSchema | undefined;
+  dbSchema: DbInfo | undefined;
 };
 
 const { useToken } = theme;
@@ -29,7 +29,7 @@ const QuerySection: React.FC<Props> = ({
   runQuery,
   queryResults,
   queryState,
-  dbSchema,
+  dbSchema: dbInfo,
 }) => {
   const { token } = useToken();
   const { sqlStatement, databaseSource } = query;
@@ -133,10 +133,10 @@ const QuerySection: React.FC<Props> = ({
               )),
             },
             {
-              label: "Database schema",
+              label: "Database info",
               key: "schema",
-              children: dbSchema ? (
-                <DbSchemaDisplay dbSchema={dbSchema} />
+              children: dbInfo ? (
+                <DbInfoDisplay dbInfo={dbInfo} />
               ) : (
                 "Loading..."
               ),
