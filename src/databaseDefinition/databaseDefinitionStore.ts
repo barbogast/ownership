@@ -66,7 +66,7 @@ export const fileToDatabase = (
     jsonContent: fileContents["content.json"],
     importCode: fileContents["importCode.ts"],
     postProcessingCode: fileContents["postProcessingCode.ts"],
-    ...R.pipe(
+    sourceFiles: R.pipe(
       fileContents,
       R.omitBy((_, key) => !key.startsWith(`${SOURCE_FILES_FOLDER_NAME}/`)),
       R.mapKeys((key) => key.slice(`${SOURCE_FILES_FOLDER_NAME}/`.length))
