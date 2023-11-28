@@ -23,6 +23,9 @@ const DbSchemaDisplay = ({ dbSchema }: Props) => {
           </Card>
         ))}
       </Space>
+      <br />
+      <br />
+      SQLite version: {dbSchema.version}
     </>
   );
 };

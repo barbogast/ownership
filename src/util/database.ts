@@ -30,6 +30,7 @@ export type ColumnDefinition = {
 };
 
 export type DbSchema = {
+  version: string;
   tables: {
     name: string;
     columns: {
@@ -210,10 +211,13 @@ export const insertIntoTable = sqlLogger.time(
 );
 
 const querySchema = sqlLogger.time("querySchema", (db: Database) => {
+  const versionResult = db.exec("select sqlite_version()");
+  const version = versionResult[0]!.values[0]![0] as string;
+
   const tableResult = db.exec("select * from sqlite_master");
   const tables = rowsToObjects(tableResult[0]!);
 
-  const dbSchema: DbSchema = { tables: [] };
+  const dbSchema: DbSchema = { tables: [], version };
   for (const table of tables) {
     const columnResult = db.exec(`pragma table_info('${tables[0]!.name}')`);
     const columns = rowsToObjects(columnResult[0]!);
