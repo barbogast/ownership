@@ -4,6 +4,7 @@ import * as R from "remeda";
 
 type Props = {
   onSubmit: () => void | Promise<void>;
+  onCancel?: () => void | Promise<void>;
   renderTrigger: (openModal: () => void) => React.ReactNode;
   children: React.ReactNode;
   label: string;
@@ -14,6 +15,7 @@ type Props = {
 const AsyncModal: React.FC<Props> = ({
   children,
   onSubmit,
+  onCancel,
   renderTrigger,
   label,
   okText,
@@ -57,6 +59,13 @@ const AsyncModal: React.FC<Props> = ({
     }
   };
 
+  const cancel = async () => {
+    if (onCancel) {
+      await onCancel();
+    }
+    setIsOpen(false);
+  };
+
   return (
     <>
       {renderTrigger(() => setIsOpen(true))}
@@ -66,7 +75,7 @@ const AsyncModal: React.FC<Props> = ({
           title={label}
           open={isOpen}
           onOk={() => submit()}
-          onCancel={() => setIsOpen(false)}
+          onCancel={cancel}
           confirmLoading={isLoading}
           width={fullscreen ? "90%" : undefined}
           style={fullscreen ? { top: 50, bottom: 50 } : {}}

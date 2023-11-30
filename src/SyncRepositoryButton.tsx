@@ -33,12 +33,16 @@ const SyncRepositoryButton: React.FC<Props> = ({
           {buttonLabel}
         </Button>
       )}
-      onSubmit={() => {
+      onSubmit={async () => {
         // User may append the repository after the username, so it's possible to see which entry
         // to pick in the password manager.
         const [username, _] = user.split("/");
-        return callback(repositoryInfo, username!, password);
+        await callback(repositoryInfo, username!, password);
+        // Reset password, so it doesn't remain in the application state longer than necessary.
+        setPassword("");
       }}
+      // Reset password, so it doesn't remain in the application state longer than necessary.
+      onCancel={() => setPassword("")}
     >
       To create a Github token go to{" "}
       <a href="https://github.com/settings/tokens?type=beta" target="_blank">
