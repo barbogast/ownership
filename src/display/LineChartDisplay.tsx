@@ -25,7 +25,7 @@ const LineChartDisplay: React.FC<Props> = ({
       X axis: <br />
       <br />
       <LineChart
-        width={500}
+        width={1000}
         height={300}
         data={transformResult}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}

@@ -95,7 +95,7 @@ const QuerySection: React.FC<Props> = ({
           <>
             SQL:
             <Editor
-              height="200px"
+              height="500px"
               defaultLanguage="sql"
               defaultValue={sqlStatement}
               onMount={onEditorMount}
