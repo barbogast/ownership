@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Alert, Button, Input } from "antd";
 
 import AsyncModal from "./components/AsyncModal";
 import { useState } from "react";
@@ -33,7 +33,12 @@ const SyncRepositoryButton: React.FC<Props> = ({
           {buttonLabel}
         </Button>
       )}
-      onSubmit={() => callback(repositoryInfo, user, password)}
+      onSubmit={() => {
+        // User may append the repository after the username, so it's possible to see which entry
+        // to pick in the password manager.
+        const [username, _] = user.split("/");
+        return callback(repositoryInfo, username!, password);
+      }}
     >
       To create a Github token go to{" "}
       <a href="https://github.com/settings/tokens?type=beta" target="_blank">
@@ -56,6 +61,12 @@ const SyncRepositoryButton: React.FC<Props> = ({
         addonBefore="Password"
         value={password}
         onChange={(event) => setPassword(event.target.value)}
+      />
+      <br />
+      <br />
+      <Alert
+        type="info"
+        message={`Do you want to use your password manager to store multiple tokens? You can write <username>/<repository> in the "Username" field, which helps to select the correct entry in your password manager.`}
       />
     </AsyncModal>
   );
