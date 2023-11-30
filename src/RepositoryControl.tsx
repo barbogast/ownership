@@ -4,7 +4,7 @@ import { saveToGit, loadFromGit } from "./util/gitStorage";
 import useRepositoryStore from "./repository/repositoryStore";
 import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
-import SyncRepositoryButton from "./SyncRepositoryButton";
+import SyncRepositoryModal from "./SyncRepositoryModal";
 import { reset } from "./modifiedStore";
 
 const RepositoryControl: React.FC = () => {
@@ -39,13 +39,13 @@ const RepositoryControl: React.FC = () => {
       </Row>
 
       <Row justify="space-between" style={{ marginTop: 10 }}>
-        <SyncRepositoryButton
+        <SyncRepositoryModal
           buttonLabel="Load ..."
           label="Loading repository"
           callback={loadFromGit}
           repositoryInfo={repositoryInfo}
         />
-        <SyncRepositoryButton
+        <SyncRepositoryModal
           buttonLabel="Save ..."
           label="Saving repository"
           callback={async (info, user, pw) => {

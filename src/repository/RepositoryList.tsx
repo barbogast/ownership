@@ -8,7 +8,7 @@ import useRepositoryStore, {
 import { Link } from "wouter";
 import { loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
-import SyncRepositoryButton from "../SyncRepositoryButton";
+import SyncRepositoryModal from "../SyncRepositoryModal";
 import stores from "../nestedStores/stores";
 
 const LEFT_COLUMNS = 6;
@@ -163,7 +163,7 @@ const RepositoryList: React.FC = () => {
           </Button>
         </Col>
         <Col span={RIGHT_COLUMN}>
-          <SyncRepositoryButton
+          <SyncRepositoryModal
             buttonLabel="Import"
             buttonStyle={BUTTON_STYLE}
             label="Importing from Github"
