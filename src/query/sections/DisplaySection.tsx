@@ -23,6 +23,7 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
           { value: "pieChart", label: "Pie chart" },
           { value: "stackedPieChart", label: "Stacked Pie chart" },
           { value: "lineChart", label: "Line chart" },
+          { value: "timeSeriesDayChart", label: "Time series day chart" },
           { value: "table", label: "Table" },
         ]}
         style={{ width: 200 }}

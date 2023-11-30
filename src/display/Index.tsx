@@ -7,6 +7,7 @@ import { ChartProps, TransformResult } from "../types";
 import StackedBarChart from "./StackedBarChartDisplay";
 import StackedPieChart from "./StackedPieChartDisplay";
 import { objectToArray } from "../util/transform";
+import TimeSeriesDaysDisplay from "./TimeSeriesDaysDisplay";
 import Logger from "../util/logger";
 
 const logger = new Logger("chart");
@@ -17,7 +18,8 @@ export type ChartType =
   | "stackedBarChart"
   | "pieChart"
   | "stackedPieChart"
-  | "lineChart";
+  | "lineChart"
+  | "timeSeriesDayChart";
 
 type Props = {
   query: Query;
@@ -33,6 +35,7 @@ const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
   pieChart: PieChartDisplay,
   stackedPieChart: StackedPieChart,
   lineChart: LineChartDisplay,
+  timeSeriesDayChart: TimeSeriesDaysDisplay,
   table: TableDisplay,
 };
 
