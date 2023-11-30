@@ -142,7 +142,7 @@ const useQueryController = (query: Query) => {
 
   useEffect(() => {
     const run = async () => {
-      if (!queryResults.length) {
+      if (!queryResults.length || db.status !== "loaded") {
         return;
       }
 
