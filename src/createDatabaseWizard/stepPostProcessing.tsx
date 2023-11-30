@@ -63,8 +63,8 @@ const PostProcessing: WizardStepComponent<StepResult> = ({
 
   const defaultCode =
     results.source === "csv"
-      ? postProcessCsv.defaultCode
-      : postProcessJson.defaultCode;
+      ? postProcessCsv.initialCode
+      : postProcessJson.initialCode;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>

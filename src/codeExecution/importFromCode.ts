@@ -8,7 +8,7 @@ export type ReturnValue = TransformResult;
 export const execute = (code: string) =>
   executeTypescriptCode<ReturnValue>(code, "execute", {});
 
-export const defaultCode = `
+export const initialCode = `
 type Value = string | number | null | undefined
 type Row = Record<string, Value>
 type ReturnValue = Row[]

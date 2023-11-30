@@ -8,7 +8,7 @@ export type ReturnValue = TransformResult;
 export const execute = (code: string, parameters: Parameters) =>
   executeTypescriptCode<ReturnValue>(code, "transform", parameters);
 
-export const defaultCode = `
+export const initialCode = `
 type Value = string | number | null | Row[]
 type Row = {
     // TODO: Add the types for columns returned by the database query

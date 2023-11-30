@@ -13,7 +13,7 @@ export type ReturnValue = FileContent;
 export const execute = (code: string, params: Parameters) =>
   executeTypescriptCode<ReturnValue>(code, "postProcess", params);
 
-export const defaultCode = `
+export const initialCode = `
 type Row = string[]
 type FileContent = {
     header: Row // Empty array if the csv file has no header

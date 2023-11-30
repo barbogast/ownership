@@ -8,7 +8,7 @@ import { ExecutionResult } from "../codeExecution/types";
 import TableDisplay from "../display/TableDisplay";
 import {
   ReturnValue,
-  defaultCode,
+  initialCode,
   execute,
 } from "../codeExecution/importFromCode";
 import { stableStringify } from "../util/json";
@@ -39,7 +39,7 @@ const ImportFromCode: WizardStepComponent<StepResult> = ({
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ flex: 1 }}>
         <CodeEditor
-          code={results.importCode || defaultCode.trim()}
+          code={results.importCode || initialCode.trim()}
           setCode={(value) =>
             setResults((state) => ({ ...state, importCode: value }))
           }
