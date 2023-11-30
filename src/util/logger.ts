@@ -11,6 +11,7 @@ const ALL_CATEGORIES = [
   "wizard",
   "codeExecution",
   "nestedStore",
+  "chart",
 ] as const;
 type LogCategory = (typeof ALL_CATEGORIES)[number];
 

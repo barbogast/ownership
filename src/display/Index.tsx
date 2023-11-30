@@ -7,6 +7,9 @@ import { ChartProps, TransformResult } from "../types";
 import StackedBarChart from "./StackedBarChartDisplay";
 import StackedPieChart from "./StackedPieChartDisplay";
 import { objectToArray } from "../util/transform";
+import Logger from "../util/logger";
+
+const logger = new Logger("chart");
 
 export type ChartType =
   | "table"
@@ -42,6 +45,11 @@ const ChartDisplay: React.FC<Props> = ({ query, transformResult }) => {
   const transformResult2 = SINGLE_DATASET_CHART_TYPES.includes(query.chartType!)
     ? objectToArray(transformResult, query.transformConfig.dataRowIndex)
     : transformResult;
+
+  logger.log("Render chart", query.chartType, {
+    transformResult: transformResult2,
+    transformConfig: query.transformConfig,
+  });
 
   return (
     <>
