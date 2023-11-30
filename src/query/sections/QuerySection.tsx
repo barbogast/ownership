@@ -40,6 +40,13 @@ const QuerySection: React.FC<Props> = ({
   );
 
   const run = () => {
+    // Changes to the query are saved by the onChange handler of the <Editor /> component.
+    // The user might directly run the initial query without changing anything, so we need to
+    // make sure it is saved.
+    updateQuery(query.id, {
+      sqlStatement: editorRef.current!.getModel()!.getValue(),
+    });
+
     const sel = editorRef.current!.getSelection();
     if (sel) {
       const selectedText = editorRef.current!.getModel()!.getValueInRange(sel);
@@ -63,6 +70,10 @@ const QuerySection: React.FC<Props> = ({
       run,
     });
   };
+
+  const initialSqlCode = dbInfo?.tables[0]
+    ? `SELECT * FROM ${dbInfo.tables[0].name}`
+    : "";
 
   return (
     <PanelGroup direction="horizontal">
@@ -97,7 +108,7 @@ const QuerySection: React.FC<Props> = ({
             <Editor
               height="500px"
               defaultLanguage="sql"
-              defaultValue={sqlStatement}
+              defaultValue={sqlStatement || initialSqlCode}
               onMount={onEditorMount}
               onChange={(sqlStatement) =>
                 sqlStatement && updateQuery(query.id, { sqlStatement })
