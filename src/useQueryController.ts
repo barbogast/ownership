@@ -107,8 +107,7 @@ const useQueryController = (query: Query) => {
   useEffect(() => {
     if (db.status === "error") {
       // This code branch is relevant when the query was initialized with a
-      // valid DB and dthen switched to a failed one
-      setQueryState({ state: "dbInitError", errorMessage: db.error.message });
+      // valid DB and then switched to a failed one
       return;
     }
     if (!query.databaseSource || !databaseDefintion) {
@@ -117,16 +116,7 @@ const useQueryController = (query: Query) => {
 
     if (db.status === "uninitialized") {
       setQueryState({ state: "dbInitializing" });
-      initialize(query.databaseSource, databaseDefintion)
-        .then((conn) => {
-          if (conn.status === "error") {
-            setQueryState({
-              state: "dbInitError",
-              errorMessage: conn.error.message,
-            });
-          }
-        })
-        .catch(console.error);
+      initialize(query.databaseSource, databaseDefintion).catch(console.error);
       return;
     }
 
@@ -139,6 +129,11 @@ const useQueryController = (query: Query) => {
     // sql query would be run on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, databaseDefintion, query.databaseSource]);
+
+  // Update queryState when db changes
+  useEffect(() => {
+    setQueryState(getStateFromDbState(db));
+  }, [db]);
 
   useEffect(() => {
     const run = async () => {
