@@ -1,5 +1,6 @@
 import { Table } from "antd";
 import { ChartProps } from "../types";
+import { useEffect, useState } from "react";
 
 type DataType = Record<string, unknown>;
 
@@ -18,6 +19,12 @@ const recursivelyAddKeyProp = <T extends Record<string, unknown>>(
 const QueryTable: React.FC<Pick<ChartProps, "transformResult">> = ({
   transformResult,
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Reset page when transformResult changes. Keeping the same page after
+  // running a different SQL can be quite confusing.
+  useEffect(() => setCurrentPage(1), [transformResult]);
+
   const firstTransformResult = transformResult[0];
   if (!firstTransformResult) {
     return null;
@@ -49,6 +56,10 @@ const QueryTable: React.FC<Pick<ChartProps, "transformResult">> = ({
       dataSource={recursivelyAddKeyProp(transformResult, 1)}
       size="small"
       bordered
+      pagination={{
+        current: currentPage,
+        onChange: (page) => setCurrentPage(page),
+      }}
     />
   );
 };
