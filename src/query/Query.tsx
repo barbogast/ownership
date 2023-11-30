@@ -19,6 +19,7 @@ import TransformConfigForm from "./TransformConfigForm";
 import TableDisplay from "../display/TableDisplay";
 import CodeEditor from "../components/CodeEditor";
 import EditRawMenu from "./EditRawMenu";
+import { initialCode } from "../codeExecution/transformQuery";
 
 type Props = {
   query: Query;
@@ -104,7 +105,7 @@ const Query: React.FC<Props> = ({ query }) => {
                   children: (
                     <div style={{ height: 300 }}>
                       <CodeEditor
-                        code={query.transformCode}
+                        code={query.transformCode || initialCode.trim()}
                         setCode={(code) =>
                           updateQuery(query.id, { transformCode: code })
                         }

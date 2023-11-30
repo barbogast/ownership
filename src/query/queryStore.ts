@@ -7,7 +7,6 @@ import { add } from "../modifiedStore";
 import { ChartType } from "../display/Index";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
-import { initialCode } from "../codeExecution/transformQuery";
 import { stableStringify } from "../util/json";
 
 export type TransformType = "config" | "code";
@@ -58,7 +57,7 @@ export const getDefaults = (dataSourceId: string) => ({
   },
   databaseFileName: "",
   sqlStatement: "",
-  transformCode: initialCode,
+  transformCode: "",
 });
 
 const initialState: QueryState = {};
