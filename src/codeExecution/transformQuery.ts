@@ -10,7 +10,9 @@ export const execute = (code: string, parameters: Parameters) =>
 
 export const defaultCode = `
 type Value = string | number | null | Row[]
-type Row = Record<string, Value>
+type Row = {
+    // TODO: Add the types for columns returned by the database query
+}
 type Table = Row[]
 
 function transform(tables: Table[]): Table {
