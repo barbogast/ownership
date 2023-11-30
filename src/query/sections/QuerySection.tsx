@@ -8,8 +8,7 @@ import { Query, updateQuery } from "./../queryStore";
 import TableDisplay from "../../display/TableDisplay";
 import { editorDefaultOptions } from "../../constants";
 import useDatabaseDefinitionStore from "../../databaseDefinition/databaseDefinitionStore";
-import { QueryState } from "../../useQueryController";
-import { TransformResult } from "../../types";
+import { ExecutionResult, QueryState } from "../../useQueryController";
 import useLocalSettingsStore from "../../localSettingsStore";
 import DbInfoDisplay from "../DbInfoDisplay";
 import { DbInfo } from "../../util/database";
@@ -17,7 +16,7 @@ import { DbInfo } from "../../util/database";
 type Props = {
   query: Query;
   runQuery: (stmt: string) => void;
-  queryResults: TransformResult[];
+  queryResults: ExecutionResult;
   queryState: QueryState;
   dbSchema: DbInfo | undefined;
 };
@@ -139,9 +138,16 @@ const QuerySection: React.FC<Props> = ({
             {
               label: "Query Result",
               key: "preview",
-              children: queryResults.map((queryResult, i) => (
-                <TableDisplay transformResult={queryResult} key={i} />
-              )),
+              children: queryResults && (
+                <>
+                  {queryResults.data.map((queryResult, i) => (
+                    <TableDisplay transformResult={queryResult} key={i} />
+                  ))}
+                  <small style={{ textAlign: "right", display: "block" }}>
+                    Execution time: {queryResults.executionTime.toFixed(3)}s
+                  </small>
+                </>
+              ),
             },
             {
               label: "Database info",

@@ -119,7 +119,8 @@ const Query: React.FC<Props> = ({ query }) => {
                       <Button
                         type="primary"
                         onClick={() =>
-                          runTransform(queryResults, transformCode)
+                          queryResults &&
+                          runTransform(queryResults.data, transformCode)
                         }
                       >
                         Transform

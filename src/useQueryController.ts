@@ -29,6 +29,13 @@ export type QueryState =
       error: ExecutionError;
     };
 
+export type ExecutionResult =
+  | {
+      data: TransformResult[];
+      executionTime: number;
+    }
+  | undefined;
+
 const getStateFromDbState = (db: DatabaseConnection): QueryState => {
   switch (db.status) {
     case "uninitialized":
@@ -53,7 +60,7 @@ const useQueryController = (query: Query) => {
   const databaseDefintion =
     useDatabaseDefinitionStore()[query.databaseSource.id];
 
-  const [queryResults, setQueryResults] = useState<TransformResult[]>([]);
+  const [queryResults, setQueryResults] = useState<ExecutionResult>();
   const [transformResult, setTransformResult] = useState<TransformResult>([]);
 
   const [queryState, setQueryState] = useState<QueryState>(
@@ -69,8 +76,14 @@ const useQueryController = (query: Query) => {
 
     try {
       setQueryState({ state: "dbQueryRunning" });
+      setQueryResults(undefined);
+      const start = performance.now();
       const results = db.db.exec(statement);
-      setQueryResults(results.map(rowsToObjects));
+      const duration = performance.now() - start;
+      setQueryResults({
+        data: results.map(rowsToObjects),
+        executionTime: duration / 1000,
+      });
       setProgress({ queried: true });
       setQueryState({ state: "ready" });
       return results;
@@ -80,7 +93,7 @@ const useQueryController = (query: Query) => {
         state: "dbQueryError",
         errorMessage: (err as Error).message,
       });
-      setQueryResults([]);
+      setQueryResults(undefined);
       return [];
     }
   };
@@ -137,14 +150,14 @@ const useQueryController = (query: Query) => {
 
   useEffect(() => {
     const run = async () => {
-      if (!queryResults.length || db.status !== "loaded") {
+      if (!queryResults || db.status !== "loaded") {
         return;
       }
 
       if (query.transformType === "code") {
-        await runTransformCode(queryResults, query.transformCode);
+        await runTransformCode(queryResults.data, query.transformCode);
       } else {
-        const firstQueryResult = queryResults[0];
+        const firstQueryResult = queryResults.data[0];
         if (firstQueryResult) {
           const { dataOrientation, labelColumn } = query.transformConfig;
           const data =
