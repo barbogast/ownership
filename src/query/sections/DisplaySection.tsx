@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Checkbox, Select } from "antd";
 
 import { updateQuery, Query, updateTransformConfig } from "../queryStore";
 import { TransformResult } from "../../types";
@@ -10,7 +10,16 @@ type Props = {
 };
 
 const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
-  const { labelColumn, dataRowIndex } = query.transformConfig;
+  const { labelColumn, dataRowIndex, selectedColumns } = query.transformConfig;
+
+  const firstTransformResult = transformResult[0];
+  if (!firstTransformResult) {
+    return null;
+  }
+
+  const selectedColumnOptions = Object.keys(firstTransformResult).filter(
+    (col) => col !== labelColumn
+  );
 
   return (
     <>
@@ -28,6 +37,20 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
         ]}
         style={{ width: 200 }}
       />
+      <br />
+      <>
+        Columns to display:
+        <Checkbox.Group
+          options={selectedColumnOptions}
+          value={selectedColumns}
+          onChange={(values) => {
+            updateTransformConfig(query.id, {
+              selectedColumns: values as string[],
+            });
+          }}
+        />
+        <br />
+      </>
       <br />
       {query.chartType &&
         SINGLE_DATASET_CHART_TYPES.includes(query.chartType) &&
