@@ -1,0 +1,21 @@
+{
+  "6b92cced-dded-40b3-97d9-4845eaa9e96e": {
+    "transformType": "code",
+    "databaseSource": {
+      "type": "local",
+      "id": "9da37cc6-b8c1-4ea2-88b9-d0d29260f10c"
+    },
+    "transformConfig": {
+      "dataOrientation": "row",
+      "selectedColumns": [],
+      "labelColumn": "",
+      "dataRowIndex": 0
+    },
+    "databaseFileName": "",
+    "sqlStatement": "",
+    "transformCode": "",
+    "id": "6b92cced-dded-40b3-97d9-4845eaa9e96e",
+    "label": "Heart rate comparison by time of day",
+    "chartType": "lineChart"
+  }
+}

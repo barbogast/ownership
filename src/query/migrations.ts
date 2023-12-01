@@ -13,7 +13,7 @@ const migrate_2_to_3 = (state: QueryState) => {
 };
 
 export const migrations: Record<string, (state: QueryState) => QueryState> = {
-  3: migrate_2_to_3,
+  2: migrate_2_to_3,
 };
 
 export const CURRENT_VERSION = 3;
