@@ -8,6 +8,7 @@ import { ChartType } from "../display/Index";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { stableStringify } from "../util/json";
+import { CURRENT_VERSION, migrations } from "./migrations";
 
 export type TransformType = "config" | "code";
 export type DataOrientation = "row" | "column";
@@ -41,7 +42,7 @@ export type Query = {
   transformConfig: TransformConfig;
 };
 
-type QueryState = { [queryId: string]: Query };
+export type QueryState = Record<string, Query>;
 
 export const getDefaults = (dataSourceId: string) => ({
   transformType: "config" as const,
@@ -61,24 +62,6 @@ export const getDefaults = (dataSourceId: string) => ({
 });
 
 const initialState: QueryState = {};
-
-const CURRENT_VERSION = 3;
-
-const migrate_2_to_3 = (state: QueryState) => {
-  Object.values(state).forEach((query) => {
-    if (query.databaseSource.type === "local") {
-      // @ts-expect-error query.databaseSource.url was available in version 2
-      query.databaseSource.id = query.databaseSource.url;
-      // @ts-expect-error query.databaseSource.url was available in version 2
-      delete query.databaseSource.url;
-    }
-  });
-  return state;
-};
-
-const migrations: Record<string, (state: QueryState) => QueryState> = {
-  3: migrate_2_to_3,
-};
 
 type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
 
