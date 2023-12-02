@@ -37,7 +37,13 @@ const LineChartDisplay: React.FC<Props> = ({
         <Legend />
 
         {transformConfig.selectedColumns.map((c, i) => (
-          <Line key={i} type="monotone" dataKey={c} stroke={getColor(i)} />
+          <Line
+            key={i}
+            type="monotone"
+            dataKey={c}
+            stroke={getColor(i)}
+            dot={false}
+          />
         ))}
       </LineChart>
     </>
