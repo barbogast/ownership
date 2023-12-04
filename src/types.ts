@@ -1,3 +1,4 @@
+import { ChartConfig } from "./display/Index";
 import { TransformConfig } from "./query/queryStore";
 
 export type DataType = {
@@ -20,6 +21,8 @@ export type TransformResult = DataRow[];
 export type ChartProps = {
   transformResult: TransformResult;
   transformConfig: TransformConfig;
+  chartConfig: ChartConfig;
+  queryId: string;
 };
 
 export type RepositoryInfo = {

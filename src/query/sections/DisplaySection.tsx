@@ -1,6 +1,6 @@
 import { Checkbox, Select } from "antd";
 
-import { updateQuery, Query, updateTransformConfig } from "../queryStore";
+import { Query, updateTransformConfig, updateChartConfig } from "../queryStore";
 import { TransformResult } from "../../types";
 import ChartDisplay, { SINGLE_DATASET_CHART_TYPES } from "../../display/Index";
 
@@ -24,8 +24,8 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
   return (
     <>
       <Select
-        value={query.chartType}
-        onChange={(chartType) => updateQuery(query.id, { chartType })}
+        value={query.chartConfig?.chartType}
+        onChange={(chartType) => updateChartConfig(query.id, { chartType })}
         options={[
           { value: "barChart", label: "Bar chart" },
           { value: "stackedBarChart", label: "Stacked Bar chart" },
@@ -33,27 +33,30 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
           { value: "stackedPieChart", label: "Stacked Pie chart" },
           { value: "lineChart", label: "Line chart" },
           { value: "timeSeriesDayChart", label: "Time series day chart" },
+          { value: "vegaChart", label: "Vega Chart" },
           { value: "table", label: "Table" },
         ]}
         style={{ width: 200 }}
       />
       <br />
-      <>
-        Columns to display:
-        <Checkbox.Group
-          options={selectedColumnOptions}
-          value={selectedColumns}
-          onChange={(values) => {
-            updateTransformConfig(query.id, {
-              selectedColumns: values as string[],
-            });
-          }}
-        />
-        <br />
-      </>
+      {query.chartConfig?.chartType !== "vegaChart" && (
+        <>
+          Columns to display:
+          <Checkbox.Group
+            options={selectedColumnOptions}
+            value={selectedColumns}
+            onChange={(values) => {
+              updateTransformConfig(query.id, {
+                selectedColumns: values as string[],
+              });
+            }}
+          />
+          <br />
+        </>
+      )}
       <br />
-      {query.chartType &&
-        SINGLE_DATASET_CHART_TYPES.includes(query.chartType) &&
+      {query.chartConfig &&
+        SINGLE_DATASET_CHART_TYPES.includes(query.chartConfig.chartType) &&
         transformResult.length > 1 && (
           <>
             <br />

@@ -1,25 +1,36 @@
-import { Query } from "../query/queryStore";
+import { Query, TransformConfig } from "../query/queryStore";
 import TableDisplay from "./TableDisplay";
 import BarChartDisplay from "./BarChartDisplay";
 import PieChartDisplay from "./PieChartDisplay";
 import LineChartDisplay from "./LineChartDisplay";
-import { ChartProps, TransformResult } from "../types";
+import { TransformResult } from "../types";
 import StackedBarChart from "./StackedBarChartDisplay";
 import StackedPieChart from "./StackedPieChartDisplay";
 import { objectToArray } from "../util/transform";
 import TimeSeriesDaysDisplay from "./TimeSeriesDaysDisplay";
 import Logger from "../util/logger";
+import VegaChart from "./VegaChart";
+import { ReactElement } from "react";
 
 const logger = new Logger("chart");
 
-export type ChartType =
-  | "table"
-  | "barChart"
-  | "stackedBarChart"
-  | "pieChart"
-  | "stackedPieChart"
-  | "lineChart"
-  | "timeSeriesDayChart";
+export type VegaChartProps = {
+  chartType: "vegaChart";
+  vegaSpec: string;
+};
+
+export type ChartConfig =
+  | {
+      chartType:
+        | "table"
+        | "barChart"
+        | "stackedBarChart"
+        | "pieChart"
+        | "stackedPieChart"
+        | "lineChart"
+        | "timeSeriesDayChart";
+    }
+  | VegaChartProps;
 
 type Props = {
   query: Query;
@@ -27,44 +38,110 @@ type Props = {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const SINGLE_DATASET_CHART_TYPES: ChartType[] = ["barChart", "pieChart"];
+export const SINGLE_DATASET_CHART_TYPES: ChartConfig["chartType"][] = [
+  "barChart",
+  "pieChart",
+];
 
-const chartComponents: Record<ChartType, React.FC<ChartProps>> = {
-  barChart: BarChartDisplay,
-  stackedBarChart: StackedBarChart,
-  pieChart: PieChartDisplay,
-  stackedPieChart: StackedPieChart,
-  lineChart: LineChartDisplay,
-  timeSeriesDayChart: TimeSeriesDaysDisplay,
-  table: TableDisplay,
+// Extra function so that TS complains if the switch statement is not exhaustive
+const renderChart = (
+  chartConfig: ChartConfig,
+  transformResult: TransformResult,
+  transformConfig: TransformConfig,
+  queryId: string
+): ReactElement => {
+  switch (chartConfig.chartType) {
+    case "barChart":
+      return (
+        <BarChartDisplay
+          transformResult={transformResult}
+          transformConfig={transformConfig}
+          chartConfig={chartConfig}
+          queryId={queryId}
+        />
+      );
+
+    case "stackedBarChart":
+      return (
+        <StackedBarChart
+          transformResult={transformResult}
+          transformConfig={transformConfig}
+        />
+      );
+
+    case "pieChart":
+      return (
+        <PieChartDisplay
+          transformResult={transformResult}
+          transformConfig={transformConfig}
+        />
+      );
+
+    case "stackedPieChart":
+      return (
+        <StackedPieChart
+          transformResult={transformResult}
+          transformConfig={transformConfig}
+        />
+      );
+
+    case "lineChart":
+      return (
+        <LineChartDisplay
+          transformResult={transformResult}
+          transformConfig={transformConfig}
+        />
+      );
+
+    case "timeSeriesDayChart":
+      return (
+        <TimeSeriesDaysDisplay
+          transformResult={transformResult}
+          transformConfig={transformConfig}
+        />
+      );
+
+    case "vegaChart":
+      return (
+        <VegaChart
+          transformResult={transformResult}
+          chartConfig={chartConfig}
+          queryId={queryId}
+        />
+      );
+
+    case "table":
+      return <TableDisplay transformResult={transformResult} />;
+  }
 };
 
 const ChartDisplay: React.FC<Props> = ({ query, transformResult }) => {
-  if (!query.chartType) {
+  if (!query.chartConfig) {
     return null;
   }
-  const ChartComponent = chartComponents[query.chartType];
 
-  const transformResult2 = SINGLE_DATASET_CHART_TYPES.includes(query.chartType!)
+  const chartConfig = query.chartConfig;
+
+  const transformResult2 = SINGLE_DATASET_CHART_TYPES.includes(
+    query.chartConfig.chartType
+  )
     ? objectToArray(transformResult, query.transformConfig.dataRowIndex)
     : transformResult;
 
-  logger.log("Render chart", query.chartType, {
+  if (!transformResult2.length) {
+    return null;
+  }
+
+  logger.log("Render chart", query.chartConfig.chartType, {
     transformResult: transformResult2,
     transformConfig: query.transformConfig,
   });
 
-  return (
-    <>
-      {transformResult2.length
-        ? ChartComponent && (
-            <ChartComponent
-              transformConfig={query.transformConfig}
-              transformResult={transformResult2}
-            />
-          )
-        : null}
-    </>
+  return renderChart(
+    chartConfig,
+    transformResult2,
+    query.transformConfig,
+    query.id
   );
 };
 

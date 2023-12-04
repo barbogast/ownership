@@ -39,6 +39,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-resizable-panels": "^0.0.61",
+    "react-vega": "^7.6.0",
     "recharts": "^2.10.1",
     "remeda": "^1.29.0",
     "safe-stable-stringify": "^2.4.3",
@@ -46,6 +47,8 @@
     "source-map-js": "^1.0.2",
     "sql.js": "^1.8.0",
     "uuid": "^9.0.1",
+    "vega": "^5.26.1",
+    "vega-lite": "^5.16.3",
     "wouter": "^2.12.1",
     "zustand": "^4.4.6"
   },

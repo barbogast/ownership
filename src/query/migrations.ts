@@ -12,8 +12,25 @@ const migrate_2_to_3 = (state: QueryState) => {
   return state;
 };
 
-export const migrations: Record<string, (state: QueryState) => QueryState> = {
-  2: migrate_2_to_3,
+const migrate_3_to_4 = (state: QueryState) => {
+  Object.values(state).forEach((query) => {
+    // @ts-expect-error query.databaseSource.url was available in version 3
+    query.chartConfig = query.chartType
+      ? {
+          // @ts-expect-error query.databaseSource.url was available in version 3
+          chartType: query.chartType,
+        }
+      : undefined;
+
+    // @ts-expect-error query.databaseSource.url was available in version 3
+    delete query.chartType;
+  });
+  return state;
 };
 
-export const CURRENT_VERSION = 3;
+export const migrations: Record<string, (state: QueryState) => QueryState> = {
+  2: migrate_2_to_3,
+  3: migrate_3_to_4,
+};
+
+export const CURRENT_VERSION = 4;

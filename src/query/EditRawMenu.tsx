@@ -3,7 +3,12 @@ import * as R from "remeda";
 
 import RawJsonEditor from "../components/RawJsonEditor";
 import { parseJson, stableStringify } from "../util/json";
-import { Query, replaceQuery, updateQuery } from "./queryStore";
+import {
+  Query,
+  replaceQuery,
+  updateChartConfig,
+  updateQuery,
+} from "./queryStore";
 
 type Props = {
   query: Query;
@@ -43,6 +48,18 @@ const EditRawMenu = ({ query }: Props) => {
       fileType="typescript"
       onSubmit={(newContent) => updateQuery(id, { transformCode: newContent })}
     />,
+
+    query.chartConfig?.chartType === "vegaChart" ? (
+      <RawJsonEditor
+        button="chartConfig.vegaSpec"
+        content={query.chartConfig.vegaSpec}
+        label={`${query.label}`}
+        fileType="json"
+        onSubmit={(newContent) =>
+          updateChartConfig(id, { vegaSpec: newContent })
+        }
+      />
+    ) : null,
   ];
 
   return (

@@ -4,7 +4,7 @@ import * as R from "remeda";
 import { createId } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
-import { ChartType } from "../display/Index";
+import { ChartConfig } from "../display/Index";
 import { FileContents } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { stableStringify } from "../util/json";
@@ -37,7 +37,7 @@ export type Query = {
   databaseSource: DatabaseSource;
   sqlStatement: string;
   transformCode: string;
-  chartType?: ChartType;
+  chartConfig?: ChartConfig;
   transformType: TransformType;
   transformConfig: TransformConfig;
 };
@@ -63,26 +63,45 @@ export const getDefaults = (dataSourceId: string) => ({
 
 const initialState: QueryState = {};
 
-type Files = "index.json" | "sqlStatement.sql" | "transformCode.ts";
+type Files =
+  | "index.json"
+  | "sqlStatement.sql"
+  | "transformCode.ts"
+  | "vegaSpec.json";
 
 type QueryStoreConfig = StoreConfig<Query, Record<string, Query>, Files>;
 
 export const queryToFiles = (query: Query): FileContents<Files> => {
-  const { sqlStatement, transformCode, ...partialQuery } = query;
+  const { sqlStatement, transformCode, chartConfig, ...partialQuery } = query;
+  const vegaSpec =
+    chartConfig?.chartType === "vegaChart" ? chartConfig.vegaSpec : "";
+
   const fileContents = {
-    "index.json": stableStringify(partialQuery),
+    "index.json": stableStringify({
+      ...partialQuery,
+      chartConfig: chartConfig
+        ? chartConfig.chartType === "vegaChart"
+          ? R.omit(chartConfig, ["vegaSpec"])
+          : chartConfig
+        : undefined,
+    }),
     "sqlStatement.sql": sqlStatement,
     "transformCode.ts": transformCode,
+    "vegaSpec.json": vegaSpec,
   };
   return fileContents;
 };
 
 export const filesToQuery = (fileContents: FileContents<Files>): Query => {
-  return {
+  const query = {
     ...JSON.parse(fileContents["index.json"]),
     sqlStatement: fileContents["sqlStatement.sql"],
     transformCode: fileContents["transformCode.ts"],
-  };
+  } as Query;
+  if (query.chartConfig?.chartType === "vegaChart") {
+    query.chartConfig.vegaSpec = fileContents["vegaSpec.json"];
+  }
+  return query;
 };
 
 export const queryStoreConfig: QueryStoreConfig = {
@@ -202,6 +221,17 @@ export const updateTransformConfig = (
   useQueryStore.setState((state) => {
     const query = getQueryFromDraft(state, queryId);
     Object.assign(query.transformConfig, newState);
+  });
+  add(queryId);
+};
+
+export const updateChartConfig = (
+  queryId: string,
+  newState: Partial<ChartConfig>
+) => {
+  useQueryStore.setState((state) => {
+    const query = getQueryFromDraft(state, queryId);
+    Object.assign(query.chartConfig ?? {}, newState);
   });
   add(queryId);
 };
