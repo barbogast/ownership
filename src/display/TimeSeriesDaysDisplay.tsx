@@ -80,12 +80,18 @@ const TimeSeriesDaysDisplay: React.FC<Props> = ({
             const { value } = payload as { value: number };
 
             const date = new Date(value * 1000);
-            const strDate = date.toISOString().split("T")[0];
 
             // Date labels (i.e. 2023-11-08) at noon
             if (date.getHours() === 12 && date.getMinutes() === 0) {
+              const strDate = date.toISOString().split("T")[0];
               return (
-                <text x={x} y={y + 10} textAnchor="middle">
+                <text
+                  x={x}
+                  y={y + 10}
+                  textAnchor="middle"
+                  // Same as https://github.com/recharts/recharts/blob/336d15b9d483fcadd35e2eb73ec0619b68b77f2b/src/cartesian/CartesianAxis.tsx#L79
+                  fill={"#666"}
+                >
                   {strDate}
                 </text>
               );
