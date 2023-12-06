@@ -16,6 +16,7 @@ const ALL_CATEGORIES = [
 type LogCategory = (typeof ALL_CATEGORIES)[number];
 
 class Logger {
+  timers: Record<string, number>;
   static activeCategories: readonly LogCategory[] = [];
 
   static enable(...categories: LogCategory[]) {
@@ -26,6 +27,11 @@ class Logger {
 
   constructor(category: LogCategory) {
     this.category = category;
+    this.timers = {};
+  }
+
+  #getDuraction(start: number | undefined) {
+    return start ? `${Math.round(performance.now() - start)} ms` : "??  ms";
   }
 
   setActiveCategories(categories: LogCategory[]) {
@@ -36,6 +42,10 @@ class Logger {
     if (Logger.activeCategories.includes(this.category)) {
       console.info(`[${this.category}]`, msg, ...extra);
     }
+  }
+
+  error(msg: string, ...extra: (Record<string, unknown> | string)[]) {
+    console.error(`[${this.category}]`, msg, ...extra);
   }
 
   wrap<T extends Array<unknown>, U>(name: string, func: (...args: T) => U) {
@@ -65,6 +75,16 @@ class Logger {
       }
       return result;
     };
+  }
+
+  time(name: string) {
+    this.log(name, "Start");
+    this.timers[name] = performance.now();
+  }
+
+  timeEnd(name: string) {
+    this.log(name, this.#getDuraction(this.timers[name]));
+    delete this.timers[name];
   }
 }
 
