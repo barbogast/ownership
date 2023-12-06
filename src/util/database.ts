@@ -63,7 +63,7 @@ const initializeDbFromUrl = dbLogger.wrap(
   }
 );
 
-const createDb = dbLogger.time(
+const createDb = dbLogger.duration(
   "initializeFromCsv",
   async (
     tableName: string,
@@ -183,7 +183,7 @@ export const createTable = (
   db.exec(createTableStatement);
 };
 
-export const insertIntoTable = sqlLogger.time(
+export const insertIntoTable = sqlLogger.duration(
   "insertIntoTable",
   (
     db: Database,

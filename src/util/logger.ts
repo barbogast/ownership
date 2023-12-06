@@ -51,7 +51,7 @@ class Logger {
     };
   }
 
-  time<T extends Array<unknown>, U>(name: string, func: (...args: T) => U) {
+  duration<T extends Array<unknown>, U>(name: string, func: (...args: T) => U) {
     return (...args: T): U => {
       const start = performance.now();
       const result = func(...args);
