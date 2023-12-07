@@ -2,6 +2,7 @@ import Routes from "./Routes";
 
 import { ConfigProvider, theme } from "antd";
 import useLocalSettingsStore, { setDarkMode } from "./localSettingsStore";
+import "./util/debug";
 import { useEffect } from "react";
 
 const { defaultAlgorithm, darkAlgorithm, useToken } = theme;
