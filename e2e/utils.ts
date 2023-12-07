@@ -27,7 +27,7 @@ const retrieveValueFromIndexedDB = async ({ path }: { path: string }) => {
     };
 
     const request = window.indexedDB.open("keyval-store");
-    request.onerror = () => reject(`Database error}`);
+    request.onerror = () => reject(`Database error`);
 
     request.onsuccess = () => {
       const db = request.result;
