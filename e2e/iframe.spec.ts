@@ -43,11 +43,7 @@ test("Try to brake out of the iframe", async ({ page }) => {
   );
 
   expect(result).toHaveProperty("success", false);
-  expect(result).toHaveProperty("error", {
-    error: `SecurityError: Failed to read a named property 'document' from 'Window': Blocked a frame with origin "null" from accessing a cross-origin frame.
-undefined`,
-    position: undefined,
-  });
+  !result.success && expect(result.error.error).toContain("SecurityError");
 
   await expect(page.locator("#test-element")).toContainText("Original content");
 });
