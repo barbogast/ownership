@@ -1,4 +1,4 @@
-import LightningFS from "@isomorphic-git/lightning-fs";
+import { PromiseFsClient } from "isomorphic-git";
 import * as R from "remeda";
 
 import Logger from "./logger";
@@ -8,12 +8,10 @@ const logger = new Logger("fs");
 export type FileContents<T extends string> = Record<T, string>;
 
 export default class FsHelper {
-  fs: LightningFS;
+  fs: PromiseFsClient;
 
-  constructor(name: string) {
-    // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
-    const options: LightningFS.Options = { wipe: true };
-    this.fs = new LightningFS(name, options);
+  constructor(fs: PromiseFsClient) {
+    this.fs = fs;
   }
 
   readFile = (path: string) => this.fs.promises.readFile(path, "utf8");

@@ -1,3 +1,5 @@
+import http from "isomorphic-git/http/web";
+import LightningFS from "@isomorphic-git/lightning-fs";
 import stores from "../nestedStores/stores";
 import { RepositoryInfo } from "../types";
 import FsHelper, { FileContents } from "./fsHelper";
@@ -12,7 +14,7 @@ const getRelativeEntryPath = (entryName: string, entryId: string) =>
 const getEntryPath = (gitRoot: string, entryName: string, entryId: string) =>
   `${gitRoot}/${entryName}/${entryId}`;
 
-const save = async (
+export const save = async (
   fsHelper: FsHelper,
   gitHelper: GitHelper,
   entryName: string,
@@ -63,9 +65,13 @@ export const saveToGit = async (
   const { organization, repository } = repositoryInfo;
   const gitRoot = "/" + repository;
 
-  const fsHelper = new FsHelper(organization);
-  const gitHelper = new GitHelper(fsHelper.fs, gitRoot);
-  await gitHelper.clone(repositoryInfo.path, username, password);
+  // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
+  const options: LightningFS.Options = { wipe: true };
+  const fs = new LightningFS(organization, options);
+  const fsHelper = new FsHelper(fs);
+
+  const gitHelper = new GitHelper(fs, http, gitRoot);
+  await gitHelper.cloneFromGithub(repositoryInfo.path, username, password);
 
   for (const store of stores) {
     await save(fsHelper, gitHelper, store.config.name, store.export());
@@ -83,12 +89,15 @@ export const loadFromGit = async (
   const { organization, path } = info;
   const gitRoot = "/" + path;
 
-  const fs = new FsHelper(organization);
-  const git = new GitHelper(fs.fs, gitRoot);
-  await git.clone(gitRoot, username, password);
+  // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
+  const options: LightningFS.Options = { wipe: true };
+  const fs = new LightningFS(organization, options);
+  const fsHelper = new FsHelper(fs);
+  const git = new GitHelper(fs, http, gitRoot);
+  await git.cloneFromGithub(gitRoot, username, password);
 
   for (const store of stores) {
-    const entityFolders = await load(fs, git, store.config.name);
+    const entityFolders = await load(fsHelper, git, store.config.name);
     await store.import(info, entityFolders);
   }
 };

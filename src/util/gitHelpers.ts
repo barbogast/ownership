@@ -1,9 +1,7 @@
 import { Buffer } from "buffer";
 globalThis.Buffer = Buffer;
 
-import LightningFS from "@isomorphic-git/lightning-fs";
-import git from "isomorphic-git";
-import http from "isomorphic-git/http/web";
+import git, { HttpClient, PromiseFsClient } from "isomorphic-git";
 
 const author = {
   name: "Mr. Test",
@@ -11,22 +9,36 @@ const author = {
 };
 
 export default class GitHelper {
-  fs: LightningFS;
+  fs: PromiseFsClient;
   root: string;
+  http: HttpClient;
 
-  constructor(fs: LightningFS, root: string) {
+  constructor(fs: PromiseFsClient, http: HttpClient, root: string) {
     this.fs = fs;
+    this.http = http;
     this.root = root;
   }
 
-  clone = (repositoryPath: string, username: string, password: string) =>
+  cloneFromGithub = (
+    repositoryPath: string,
+    username: string,
+    password: string
+  ) =>
     git.clone({
       fs: this.fs,
-      http,
+      http: this.http,
       dir: this.root,
       url: "https://github.com/" + repositoryPath,
       corsProxy: "https://cors.isomorphic-git.org", // TODO: we probably can't keep using this
       onAuth: () => ({ username, password }),
+    });
+
+  clone = (url: string) =>
+    git.clone({
+      fs: this.fs,
+      http: this.http,
+      dir: this.root,
+      url,
     });
 
   commit = () =>
@@ -51,7 +63,7 @@ export default class GitHelper {
     git.push({
       fs: this.fs,
       dir: this.root,
-      http,
+      http: this.http,
       onAuth: () => ({ username, password }),
     });
 }
