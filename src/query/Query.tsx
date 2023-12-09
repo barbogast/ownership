@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Col, Collapse, Input, Row, Tabs } from "antd";
 import * as dayjs from "dayjs";
 import { useLocation } from "wouter";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Panel, PanelGroup } from "react-resizable-panels";
 
 import useQueryController from "../useQueryController";
 import {
@@ -20,6 +20,7 @@ import TableDisplay from "../display/TableDisplay";
 import CodeEditor from "../components/CodeEditor";
 import EditRawMenu from "./EditRawMenu";
 import { initialCode } from "../codeExecution/transformQuery";
+import ResizeHandle from "../components/ResizeHandle";
 
 type Props = {
   query: Query;
@@ -131,9 +132,7 @@ const Query: React.FC<Props> = ({ query }) => {
               ]}
             />
           </Panel>
-          <PanelResizeHandle
-            style={{ width: 10, background: "#f0f0f0", marginRight: 10 }}
-          />
+          <ResizeHandle />
           <Panel minSizePercentage={10}>
             {transformResult.length ? (
               <TableDisplay transformResult={transformResult} />

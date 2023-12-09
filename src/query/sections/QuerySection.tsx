@@ -1,8 +1,8 @@
 import { useRef } from "react";
-import { Alert, Button, Select, Tabs, theme } from "antd";
+import { Alert, Button, Select, Tabs } from "antd";
 import { editor } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Panel, PanelGroup } from "react-resizable-panels";
 
 import { Query, updateQuery } from "./../queryStore";
 import TableDisplay from "../../display/TableDisplay";
@@ -12,6 +12,7 @@ import { ExecutionResult, QueryState } from "../../useQueryController";
 import useLocalSettingsStore from "../../localSettingsStore";
 import DbInfoDisplay from "../DbInfoDisplay";
 import { DbInfo } from "../../util/database";
+import ResizeHandle from "../../components/ResizeHandle";
 
 type Props = {
   query: Query;
@@ -21,8 +22,6 @@ type Props = {
   dbSchema: DbInfo | undefined;
 };
 
-const { useToken } = theme;
-
 const QuerySection: React.FC<Props> = ({
   query,
   runQuery,
@@ -30,7 +29,6 @@ const QuerySection: React.FC<Props> = ({
   queryState,
   dbSchema: dbInfo,
 }) => {
-  const { token } = useToken();
   const { sqlStatement, databaseSource } = query;
   const databases = useDatabaseDefinitionStore();
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
@@ -128,9 +126,7 @@ const QuerySection: React.FC<Props> = ({
           </>
         )}
       </Panel>
-      <PanelResizeHandle
-        style={{ width: 10, background: token.colorSplit, marginRight: 10 }}
-      />
+      <ResizeHandle />
       <Panel minSizePercentage={10}>
         <Tabs
           type="card"

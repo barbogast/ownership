@@ -1,7 +1,7 @@
-import { Badge, Divider, Menu, Switch, theme } from "antd";
+import { Badge, Divider, Menu, Switch } from "antd";
 import { ReactElement, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Panel, PanelGroup } from "react-resizable-panels";
 
 import useQueryStore, {
   Query,
@@ -16,8 +16,7 @@ import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionS
 import getConfig from "./createDatabaseWizard";
 import WizardModal from "./components/wizard/WizardModal";
 import useLocalSettingsStore, { setDarkMode } from "./localSettingsStore";
-
-const { useToken } = theme;
+import ResizeHandle from "./components/ResizeHandle";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -34,7 +33,6 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const darkModeEnabled = useLocalSettingsStore(
     (state) => state.darkModeEnabled
   );
-  const { token } = useToken();
 
   const openFolder = (submenus: string[]) =>
     setOpenFolders((state) => [...new Set(state.concat(submenus))]);
@@ -209,9 +207,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           />
         </div>
       </Panel>
-      <PanelResizeHandle
-        style={{ width: 10, background: token.colorSplit, marginRight: 10 }}
-      />
+      <ResizeHandle />
       <Panel
         minSizePercentage={30}
         style={{ height: "100%", overflow: "scroll" }}
