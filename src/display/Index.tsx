@@ -137,11 +137,15 @@ const ChartDisplay: React.FC<Props> = ({ query, transformResult }) => {
     transformConfig: query.transformConfig,
   });
 
-  return renderChart(
-    chartConfig,
-    transformResult2,
-    query.transformConfig,
-    query.id
+  return (
+    <div style={{ width: "100%", height: 500 }}>
+      {renderChart(
+        chartConfig,
+        transformResult2,
+        query.transformConfig,
+        query.id
+      )}
+    </div>
   );
 };
 

@@ -1,5 +1,13 @@
 import { Tooltip } from "antd";
-import { BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar } from "recharts";
+import {
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Legend,
+  Bar,
+  ResponsiveContainer,
+} from "recharts";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
 import { getColor } from "../util/utils";
@@ -13,7 +21,7 @@ const StackedBarChart: React.FC<Props> = ({
   transformConfig,
 }) => {
   return (
-    <>
+    <ResponsiveContainer>
       <BarChart
         width={500}
         height={300}
@@ -34,7 +42,7 @@ const StackedBarChart: React.FC<Props> = ({
           <Bar key={i} dataKey={col} stackId="a" fill={getColor(i)} />
         ))}
       </BarChart>
-    </>
+    </ResponsiveContainer>
   );
 };
 

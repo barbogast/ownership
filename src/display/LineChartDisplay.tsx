@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 
 import { TransformResult } from "../types";
@@ -24,28 +25,30 @@ const LineChartDisplay: React.FC<Props> = ({
     <>
       X axis: <br />
       <br />
-      <LineChart
-        width={1000}
-        height={300}
-        data={transformResult}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={transformConfig.labelColumn} />
-        <YAxis />
-        <Tooltip />
-        <Legend />
+      <ResponsiveContainer>
+        <LineChart
+          width={1000}
+          height={300}
+          data={transformResult}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey={transformConfig.labelColumn} />
+          <YAxis />
+          <Tooltip />
+          <Legend />
 
-        {transformConfig.selectedColumns.map((c, i) => (
-          <Line
-            key={i}
-            type="monotone"
-            dataKey={c}
-            stroke={getColor(i)}
-            dot={false}
-          />
-        ))}
-      </LineChart>
+          {transformConfig.selectedColumns.map((c, i) => (
+            <Line
+              key={i}
+              type="monotone"
+              dataKey={c}
+              stroke={getColor(i)}
+              dot={false}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
     </>
   );
 };

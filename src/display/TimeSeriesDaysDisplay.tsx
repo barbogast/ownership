@@ -7,6 +7,7 @@ import {
   Tooltip,
   Legend,
   ReferenceArea,
+  ResponsiveContainer,
 } from "recharts";
 
 import { TransformResult } from "../types";
@@ -55,10 +56,8 @@ const TimeSeriesDaysDisplay: React.FC<Props> = ({
     .map((entry) => entry.timestamp);
 
   return (
-    <>
+    <ResponsiveContainer>
       <LineChart
-        width={1500}
-        height={300}
         data={data}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
@@ -143,7 +142,7 @@ const TimeSeriesDaysDisplay: React.FC<Props> = ({
           />
         ))}
       </LineChart>
-    </>
+    </ResponsiveContainer>
   );
 };
 

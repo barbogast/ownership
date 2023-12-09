@@ -1,5 +1,5 @@
 import React from "react";
-import { Cell, Pie, PieChart } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { TransformResult } from "../types";
 import { TransformConfig } from "../query/queryStore";
 import { getColor } from "../util/utils";
@@ -13,7 +13,7 @@ const PieChartDisplay: React.FC<Props> = ({
   transformConfig,
 }) => {
   return (
-    <>
+    <ResponsiveContainer>
       <PieChart width={600} height={320}>
         <Pie
           data={transformResult.filter(
@@ -48,7 +48,7 @@ const PieChartDisplay: React.FC<Props> = ({
           ))}
         </Pie>
       </PieChart>
-    </>
+    </ResponsiveContainer>
   );
 };
 
