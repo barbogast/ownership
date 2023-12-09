@@ -141,9 +141,20 @@ const QuerySection: React.FC<Props> = ({
               children: queryResults && (
                 <>
                   {queryResults.data.map((queryResult, i) => (
-                    <TableDisplay transformResult={queryResult} key={i} />
+                    <>
+                      <TableDisplay transformResult={queryResult} key={i} />
+                      <small style={{ textAlign: "right", display: "block" }}>
+                        {queryResult.length} rows
+                      </small>
+                    </>
                   ))}
-                  <small style={{ textAlign: "right", display: "block" }}>
+                  <small
+                    style={{
+                      textAlign: "right",
+                      display: "block",
+                      paddingTop: 5,
+                    }}
+                  >
                     Execution time: {queryResults.executionTime.toFixed(3)}s
                   </small>
                 </>
