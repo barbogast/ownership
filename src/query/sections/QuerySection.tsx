@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Alert, Button, Select, Tabs } from "antd";
+import { Alert, Button, Select, Space, Tabs } from "antd";
 import { editor } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
 import { Panel, PanelGroup } from "react-resizable-panels";
@@ -75,56 +75,53 @@ const QuerySection: React.FC<Props> = ({
   return (
     <PanelGroup direction="horizontal">
       <Panel defaultSizePercentage={50} minSizePercentage={10}>
-        <Select
-          value={
-            databaseSource.type === "local"
-              ? databaseSource.id
-              : databaseSource.url
-          }
-          onChange={(name) =>
-            updateQuery(query.id, {
-              databaseSource: { type: "local", id: name },
-            })
-          }
-          options={Object.values(databases).map((db) => ({
-            value: db.id,
-            label: db.label,
-          }))}
-          style={{ width: 250 }}
-          placeholder="Select database..."
-        />
-        <br />
-        {queryState.state === "dbInitError" ? (
-          <>
-            Error initializing database
-            <Alert message={queryState.errorMessage} type="error" />
-          </>
-        ) : (
-          <>
-            SQL:
-            <Editor
-              height="500px"
-              defaultLanguage="sql"
-              defaultValue={sqlStatement || initialSqlCode}
-              onMount={onEditorMount}
-              onChange={(sqlStatement) =>
-                sqlStatement && updateQuery(query.id, { sqlStatement })
-              }
-              options={editorDefaultOptions}
-              theme={darkModeEnabled ? "vs-dark" : undefined}
-            />
-            <br />
-            <br />
-            <Button type="primary" onClick={run}>
-              Run query
-            </Button>
-            <br />
-            <br />
-            {queryState.state === "dbQueryError" && (
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Select
+            value={
+              databaseSource.type === "local"
+                ? databaseSource.id
+                : databaseSource.url
+            }
+            onChange={(name) =>
+              updateQuery(query.id, {
+                databaseSource: { type: "local", id: name },
+              })
+            }
+            options={Object.values(databases).map((db) => ({
+              value: db.id,
+              label: db.label,
+            }))}
+            style={{ width: 250 }}
+            placeholder="Select database..."
+          />
+          {queryState.state === "dbInitError" ? (
+            <>
+              Error initializing database
               <Alert message={queryState.errorMessage} type="error" />
-            )}
-          </>
-        )}
+            </>
+          ) : (
+            <>
+              SQL:
+              <Editor
+                height="500px"
+                defaultLanguage="sql"
+                defaultValue={sqlStatement || initialSqlCode}
+                onMount={onEditorMount}
+                onChange={(sqlStatement) =>
+                  sqlStatement && updateQuery(query.id, { sqlStatement })
+                }
+                options={editorDefaultOptions}
+                theme={darkModeEnabled ? "vs-dark" : undefined}
+              />
+              <Button type="primary" onClick={run}>
+                Run query
+              </Button>
+              {queryState.state === "dbQueryError" && (
+                <Alert message={queryState.errorMessage} type="error" />
+              )}
+            </>
+          )}
+        </Space>
       </Panel>
       <ResizeHandle />
       <Panel minSizePercentage={10}>

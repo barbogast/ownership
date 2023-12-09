@@ -185,7 +185,11 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       <Panel
         defaultSizePercentage={20}
         minSizePercentage={10}
-        style={{ marginRight: 10, display: "flex", flexDirection: "column" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginTop: 10,
+        }}
       >
         <RepositoryControl />
         <Divider style={{ margin: "12px 0" }} />
@@ -210,7 +214,10 @@ const MainMenu: React.FC<Props> = ({ children }) => {
       <ResizeHandle />
       <Panel
         minSizePercentage={30}
-        style={{ height: "100%", overflow: "scroll" }}
+        style={{
+          height: "100%",
+          overflow: "auto",
+        }}
       >
         {children}
       </Panel>

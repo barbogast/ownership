@@ -152,7 +152,14 @@ const Query: React.FC<Props> = ({ query }) => {
   ];
 
   return (
-    <div style={{ display: "block", flexDirection: "column" }}>
+    <div
+      style={{
+        display: "block",
+        flexDirection: "column",
+        marginTop: 10,
+        marginRight: 10,
+      }}
+    >
       <>
         <Row>
           <Col span={12}>

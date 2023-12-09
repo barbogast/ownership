@@ -10,8 +10,8 @@ const ResizeHandle = () => {
         width: 10,
         background: token.colorSplit,
         marginRight: 10,
+        marginLeft: 10,
         display: "flex",
-        // height: "100%",
       }}
     >
       <svg viewBox="0 0 24 24">

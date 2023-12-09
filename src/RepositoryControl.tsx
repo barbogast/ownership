@@ -17,7 +17,7 @@ const RepositoryControl: React.FC = () => {
   }
 
   return (
-    <>
+    <div style={{ marginLeft: 10 }}>
       <Row wrap={false}>
         <Col>
           <Button onClick={() => setLocation("/")} type="text">
@@ -55,7 +55,7 @@ const RepositoryControl: React.FC = () => {
           repositoryInfo={repositoryInfo}
         />
       </Row>
-    </>
+    </div>
   );
 };
 
