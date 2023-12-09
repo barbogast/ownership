@@ -19,7 +19,7 @@ import Logger from "../src/util/logger";
 import { resolve } from "path";
 import slugify from "slugify";
 
-Logger.enable("fs", "git", "gitTest", "sh");
+// Logger.enable("fs", "git", "gitTest", "sh");
 const gitTestLogger = new Logger("gitTest");
 const shLogger = new Logger("sh");
 
