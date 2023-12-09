@@ -14,7 +14,7 @@ import {
   updateDatabaseDefinition,
   DatabaseDefinition,
 } from "./databaseDefinitionStore";
-import { Alert, Button, Col, Input, Row, Typography } from "antd";
+import { Alert, Button, Col, Input, Row, Spin, Typography } from "antd";
 import getConfig from "../createDatabaseWizard";
 import WizardModal from "../components/wizard/WizardModal";
 import AsyncModal from "../components/AsyncModal";
@@ -90,7 +90,7 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
   }, [conn, id, databaseDefinition]);
 
   return (
-    <div style={{ display: "block", flexDirection: "column" }}>
+    <div style={{ display: "block", flexDirection: "column", height: "100%" }}>
       <Row>
         <Col span={12}>
           <Input
@@ -136,7 +136,18 @@ const DatabaseDefinition: React.FC<Props> = ({ databaseDefinition }) => {
           <EditRawMenu databaseDefinition={databaseDefinition} />
         </Col>
       </Row>
-
+      {conn.status === "loading" && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
       {conn.status === "loaded" &&
         queryResults.map((queryResult, i) => (
           <Fragment key={i}>
