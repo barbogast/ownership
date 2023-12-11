@@ -91,9 +91,6 @@ export const executeTypescriptCode = async <ReturnValue>(
   functionName: string,
   functionArguments: Record<string, unknown>
 ): Promise<ExecutionResult<ReturnValue>> => {
-  // @ts-expect-error Hack for typescript in browser to not crash
-  window.process = { versions: {} };
-
   const ts: { default: typeof import("typescript") } = await import(
     // @ts-expect-error Didn't find a way to make vscode understand the types for this
     "https://esm.run/typescript@5.1.6"
