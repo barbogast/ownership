@@ -6,7 +6,7 @@ import useRepositoryStore, {
   updateRepository,
 } from "./repositoryStore";
 import { Link } from "wouter";
-import { loadFromGit } from "../util/gitStorage";
+import { getHelpersBrowser, loadFromGit } from "../util/gitStorage";
 import { getRepoInfo } from "../util/utils";
 import SyncRepositoryModal from "../SyncRepositoryModal";
 import stores from "../nestedStores/stores";
@@ -168,7 +168,12 @@ const RepositoryList: React.FC = () => {
             buttonStyle={BUTTON_STYLE}
             label="Importing from Github"
             callback={async (repositoryInfo, username, password) => {
-              await loadFromGit(repositoryInfo, username, password);
+              await loadFromGit(
+                getHelpersBrowser(repositoryInfo),
+                repositoryInfo,
+                username,
+                password
+              );
               addRepository(repositoryInfo);
               setNewRepo(initialNewRepoState);
             }}

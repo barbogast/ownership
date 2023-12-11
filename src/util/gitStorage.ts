@@ -5,6 +5,22 @@ import { RepositoryInfo } from "../types";
 import FsHelper, { FileContents } from "./fsHelper";
 import GitHelper from "./gitHelpers";
 
+// @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
+const fsOptions: LightningFS.Options = { wipe: true };
+
+export const getHelpersBrowser = (info: RepositoryInfo) => {
+  const fs = new LightningFS(info.organization, fsOptions);
+  const fsHelper = new FsHelper(fs);
+  const gitHelper = new GitHelper(fs, http, "/" + info.path);
+  return { fsHelper, gitHelper };
+};
+
+export const getHelpersNode = (gitRoot: string) => {
+  const fsHelper = new FsHelper(fs);
+  const gitHelper = new GitHelper(fs, http, gitRoot);
+  return { fsHelper, gitHelper };
+};
+
 const getEntryFolderPath = (gitRoot: string, entryName: string) =>
   `${gitRoot}/${entryName}`;
 
@@ -58,19 +74,12 @@ const load = async (
 };
 
 export const saveToGit = async (
+  helpers: { fsHelper: FsHelper; gitHelper: GitHelper },
   repositoryInfo: RepositoryInfo,
   username: string,
   password: string
 ) => {
-  const { organization, repository } = repositoryInfo;
-  const gitRoot = "/" + repository;
-
-  // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
-  const options: LightningFS.Options = { wipe: true };
-  const fs = new LightningFS(organization, options);
-  const fsHelper = new FsHelper(fs);
-
-  const gitHelper = new GitHelper(fs, http, gitRoot);
+  const { fsHelper, gitHelper } = helpers; // const gitRoot = "/" + repository;
   await gitHelper.cloneFromGithub(repositoryInfo.path, username, password);
 
   for (const store of stores) {
@@ -82,22 +91,16 @@ export const saveToGit = async (
 };
 
 export const loadFromGit = async (
+  helpers: { fsHelper: FsHelper; gitHelper: GitHelper },
   info: RepositoryInfo,
   username: string,
   password: string
 ) => {
-  const { organization, path } = info;
-  const gitRoot = "/" + path;
-
-  // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
-  const options: LightningFS.Options = { wipe: true };
-  const fs = new LightningFS(organization, options);
-  const fsHelper = new FsHelper(fs);
-  const git = new GitHelper(fs, http, gitRoot);
-  await git.cloneFromGithub(gitRoot, username, password);
+  const { fsHelper, gitHelper } = helpers;
+  await gitHelper.cloneFromGithub(gitHelper.root, username, password);
 
   for (const store of stores) {
-    const entityFolders = await load(fsHelper, git, store.config.name);
+    const entityFolders = await load(fsHelper, gitHelper, store.config.name);
     await store.import(info, entityFolders);
   }
 };

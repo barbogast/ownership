@@ -1,6 +1,6 @@
 import { Button, Col, Row, Select } from "antd";
 
-import { saveToGit, loadFromGit } from "./util/gitStorage";
+import { saveToGit, loadFromGit, getHelpersBrowser } from "./util/gitStorage";
 import useRepositoryStore from "./repository/repositoryStore";
 import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
@@ -42,14 +42,16 @@ const RepositoryControl: React.FC = () => {
         <SyncRepositoryModal
           buttonLabel="Load ..."
           label="Loading repository"
-          callback={loadFromGit}
+          callback={(info, user, pw) =>
+            loadFromGit(getHelpersBrowser(info), info, user, pw)
+          }
           repositoryInfo={repositoryInfo}
         />
         <SyncRepositoryModal
           buttonLabel="Save ..."
           label="Saving repository"
           callback={async (info, user, pw) => {
-            await saveToGit(info, user, pw);
+            await saveToGit(getHelpersBrowser(info), info, user, pw);
             reset();
           }}
           repositoryInfo={repositoryInfo}

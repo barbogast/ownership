@@ -10,11 +10,9 @@ import {
   test,
 } from "vitest";
 import { temporaryDirectory } from "tempy";
-import http from "isomorphic-git/http/node";
 
-import { save } from "../src/util/gitStorage";
-import FsHelper, { FileContents } from "../src/util/fsHelper";
-import GitHelper from "../src/util/gitHelpers";
+import { getHelpersNode, save } from "../src/util/gitStorage";
+import { FileContents } from "../src/util/fsHelper";
 import Logger from "../src/util/logger";
 import { resolve } from "path";
 import slugify from "slugify";
@@ -167,8 +165,9 @@ describe("Test git", () => {
       },
     };
 
-    const fsHelper = new FsHelper(fs);
-    const gitHelper = new GitHelper(fs, http, `${testDirectory}/test/${name}`);
+    const { fsHelper, gitHelper } = getHelpersNode(
+      `${testDirectory}/test/${name}`
+    );
 
     await gitHelper.clone(`${GIT_URL}/${name}`);
     await save(fsHelper, gitHelper, "query", folders);
