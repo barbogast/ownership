@@ -169,10 +169,8 @@ const RepositoryList: React.FC = () => {
             label="Importing from Github"
             callback={async (repositoryInfo, username, password) => {
               await loadFromGit(
-                getHelpersBrowser(repositoryInfo),
-                repositoryInfo,
-                username,
-                password
+                getHelpersBrowser(repositoryInfo, { username, password }),
+                repositoryInfo
               );
               addRepository(repositoryInfo);
               setNewRepo(initialNewRepoState);

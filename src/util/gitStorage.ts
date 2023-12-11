@@ -3,21 +3,35 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import stores from "../nestedStores/stores";
 import { RepositoryInfo } from "../types";
 import FsHelper, { FileContents } from "./fsHelper";
-import GitHelper from "./gitHelpers";
+import GitHelper, { Auth } from "./gitHelpers";
 
 // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
 const fsOptions: LightningFS.Options = { wipe: true };
 
-export const getHelpersBrowser = (info: RepositoryInfo) => {
+export const getHelpersBrowser = (info: RepositoryInfo, auth?: Auth) => {
   const fs = new LightningFS(info.organization, fsOptions);
   const fsHelper = new FsHelper(fs);
-  const gitHelper = new GitHelper(fs, http, "/" + info.path);
+  const gitHelper = new GitHelper({ fs, http, root: "/" + info.path, auth });
   return { fsHelper, gitHelper };
 };
 
-export const getHelpersNode = (gitRoot: string) => {
+export const getHelpersNode = ({
+  gitRoot,
+  auth,
+  disableCorsProxy,
+}: {
+  gitRoot: string;
+  auth?: Auth;
+  disableCorsProxy?: boolean;
+}) => {
   const fsHelper = new FsHelper(fs);
-  const gitHelper = new GitHelper(fs, http, gitRoot);
+  const gitHelper = new GitHelper({
+    fs,
+    http,
+    root: gitRoot,
+    auth,
+    disableCorsProxy,
+  });
   return { fsHelper, gitHelper };
 };
 
@@ -75,29 +89,25 @@ const load = async (
 
 export const saveToGit = async (
   helpers: { fsHelper: FsHelper; gitHelper: GitHelper },
-  repositoryInfo: RepositoryInfo,
-  username: string,
-  password: string
+  repositoryInfo: RepositoryInfo
 ) => {
-  const { fsHelper, gitHelper } = helpers; // const gitRoot = "/" + repository;
-  await gitHelper.cloneFromGithub(repositoryInfo.path, username, password);
+  const { fsHelper, gitHelper } = helpers;
+  await gitHelper.clone("https://github.com/" + repositoryInfo.path);
 
   for (const store of stores) {
     await save(fsHelper, gitHelper, store.config.name, store.export());
   }
 
   await gitHelper.commit();
-  await gitHelper.push(username, password);
+  await gitHelper.push();
 };
 
 export const loadFromGit = async (
   helpers: { fsHelper: FsHelper; gitHelper: GitHelper },
-  info: RepositoryInfo,
-  username: string,
-  password: string
+  info: RepositoryInfo
 ) => {
   const { fsHelper, gitHelper } = helpers;
-  await gitHelper.cloneFromGithub(gitHelper.root, username, password);
+  await gitHelper.clone("https://github.com/" + gitHelper.root);
 
   for (const store of stores) {
     const entityFolders = await load(fsHelper, gitHelper, store.config.name);

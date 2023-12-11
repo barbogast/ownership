@@ -165,14 +165,15 @@ describe("Test git", () => {
       },
     };
 
-    const { fsHelper, gitHelper } = getHelpersNode(
-      `${testDirectory}/test/${name}`
-    );
+    const { fsHelper, gitHelper } = getHelpersNode({
+      gitRoot: `${testDirectory}/test/${name}`,
+      disableCorsProxy: true,
+    });
 
     await gitHelper.clone(`${GIT_URL}/${name}`);
     await save(fsHelper, gitHelper, "query", folders);
     await gitHelper.commit();
-    await gitHelper.push("asdf", "asdf");
+    await gitHelper.push();
 
     await execP(`git clone ${GIT_URL}/${name}`, {
       cwd: `${testDirectory}/result`,

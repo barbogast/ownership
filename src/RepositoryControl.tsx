@@ -42,16 +42,19 @@ const RepositoryControl: React.FC = () => {
         <SyncRepositoryModal
           buttonLabel="Load ..."
           label="Loading repository"
-          callback={(info, user, pw) =>
-            loadFromGit(getHelpersBrowser(info), info, user, pw)
+          callback={(info, username, password) =>
+            loadFromGit(getHelpersBrowser(info, { username, password }), info)
           }
           repositoryInfo={repositoryInfo}
         />
         <SyncRepositoryModal
           buttonLabel="Save ..."
           label="Saving repository"
-          callback={async (info, user, pw) => {
-            await saveToGit(getHelpersBrowser(info), info, user, pw);
+          callback={async (info, username, password) => {
+            await saveToGit(
+              getHelpersBrowser(info, { username, password }),
+              info
+            );
             reset();
           }}
           repositoryInfo={repositoryInfo}
