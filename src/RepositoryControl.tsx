@@ -1,11 +1,15 @@
 import { Button, Col, Row, Select } from "antd";
 
-import { saveToGit, loadFromGit, getHelpersBrowser } from "./util/gitStorage";
+import { loadFromGit, getHelpersBrowser, saveToGit } from "./util/gitStorage";
 import useRepositoryStore from "./repository/repositoryStore";
 import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
 import SyncRepositoryModal from "./SyncRepositoryModal";
 import { reset } from "./modifiedStore";
+import {
+  exportStoresToFolder,
+  importStoresFromFolder,
+} from "./nestedStores/stores";
 
 const RepositoryControl: React.FC = () => {
   const [, setLocation] = useLocation();
@@ -42,9 +46,13 @@ const RepositoryControl: React.FC = () => {
         <SyncRepositoryModal
           buttonLabel="Load ..."
           label="Loading repository"
-          callback={(info, username, password) =>
-            loadFromGit(getHelpersBrowser(info, { username, password }), info)
-          }
+          callback={async (info, username, password) => {
+            const folder = await loadFromGit(
+              getHelpersBrowser(info, { username, password }),
+              "https://github.com/" + info.path
+            );
+            await importStoresFromFolder(info, folder);
+          }}
           repositoryInfo={repositoryInfo}
         />
         <SyncRepositoryModal
@@ -53,7 +61,8 @@ const RepositoryControl: React.FC = () => {
           callback={async (info, username, password) => {
             await saveToGit(
               getHelpersBrowser(info, { username, password }),
-              info
+              "https://github.com/" + info.path,
+              exportStoresToFolder()
             );
             reset();
           }}

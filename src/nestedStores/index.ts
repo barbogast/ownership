@@ -1,4 +1,4 @@
-import { FileContents } from "../util/fsHelper";
+import { Folder } from "../util/fsHelper";
 import {
   DevtoolsOptions,
   PersistOptions,
@@ -44,11 +44,10 @@ export const migrate = <State>(
 
 export type StoreConfig<
   Entity extends Record<"id" | string, unknown>,
-  State extends Record<string, Entity>,
-  Files extends string = string
+  State extends Record<string, Entity>
 > = {
-  entityToFiles: (entity: Entity) => FileContents<Files>;
-  filesToEntity: (files: FileContents<Files>) => Entity;
+  exportToFolder: (state: State) => Folder;
+  importFromFolder: (folder: Folder) => State;
   name: string;
   initialState: State;
   version: number;
@@ -57,8 +56,7 @@ export type StoreConfig<
 
 class NestedStore<
   Entity extends { id: string } & Record<string, unknown>,
-  State extends Record<string, Entity>,
-  Files extends string = string
+  State extends Record<string, Entity>
 > {
   store: ReturnType<
     typeof create<
@@ -70,7 +68,7 @@ class NestedStore<
       ]
     >
   >;
-  config: StoreConfig<Entity, State, Files>;
+  config: StoreConfig<Entity, State>;
   info: RepositoryInfo | undefined;
 
   constructor(config: StoreConfig<Entity, State>) {
@@ -118,37 +116,16 @@ class NestedStore<
     void this.store.persist.rehydrate();
   };
 
-  import = async (info: RepositoryInfo, folders: FileContents<Files>[]) => {
-    const state: Record<string, Entity> = {};
-    for (const fileContent of folders) {
-      const entity = this.config.filesToEntity(fileContent);
-      state[entity.id] = entity;
-    }
-
+  import = async (info: RepositoryInfo, folder: Folder) => {
+    this.info = info;
     await idb.set(this.#getStoragePath(info), {
-      state,
+      state: this.config.importFromFolder(folder),
       version: this.config.version,
     });
   };
 
   export = () => {
-    const folders: Record<string, FileContents<Files>> = {};
-    for (const entry of Object.values<Entity>(this.store.getState())) {
-      const files = this.config.entityToFiles(entry);
-
-      const filesWithContent: FileContents<string> = {};
-      for (const [filename, content] of Object.entries<string | undefined>(
-        files
-      )) {
-        if (content) {
-          filesWithContent[filename] = content;
-        }
-      }
-
-      folders[entry.id] = filesWithContent;
-    }
-
-    return folders;
+    return this.config.exportToFolder(this.store.getState());
   };
 
   delete = async (info: RepositoryInfo) => {

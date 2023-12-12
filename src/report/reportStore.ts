@@ -1,9 +1,9 @@
-import { FileContents } from "../util/fsHelper";
+import * as R from "remeda";
+import { Folder, getFile, getFolder } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
 import { Draft } from "immer";
 import { createId } from "../util/utils";
-import { stableStringify } from "../util/json";
-// import { Block } from "@blocknote/core";
+import { parseJson, stableStringify } from "../util/json";
 
 type Block = string[];
 export type Report = {
@@ -16,36 +16,43 @@ export type ReportState = { [reportId: string]: Report };
 
 const initialState: ReportState = {};
 
-type Files = "index.json" | "blocks.json";
+type QueryStoreConfig = StoreConfig<Report, Record<string, Report>>;
 
-type QueryStoreConfig = StoreConfig<Report, Record<string, Report>, Files>;
+export const exportToFolder = (state: ReportState): Folder => {
+  const reportFolder: Folder = { files: {}, folders: {} };
+  for (const report of Object.values(state)) {
+    const { blocks, ...partialReport } = report;
 
-type ReportFiles = FileContents<"index.json" | "blocks.json">;
-export const reportToFiles = (report: Report): ReportFiles => {
-  const { blocks, ...partialReport } = report;
-  const fileContents = {
-    "index.json": stableStringify(partialReport),
-    "blocks.json": blocks ? stableStringify(blocks) : "",
-  };
-  return fileContents;
+    reportFolder.folders[report.id] = {
+      files: {
+        "index.json": stableStringify(partialReport),
+        "blocks.json": stableStringify(blocks),
+      },
+      folders: {},
+    };
+  }
+  return { files: {}, folders: { reports: reportFolder } };
 };
 
-export const filesToReport = (fileContents: ReportFiles): Report => {
-  return {
-    ...JSON.parse(fileContents["index.json"]),
-    sqlStatement: fileContents["blocks.json"]
-      ? JSON.parse(fileContents["blocks.json"])
-      : [],
-  };
-};
+export const importFromFolder = (root: Folder): ReportState =>
+  R.mapValues(
+    getFolder(root, "reports", { folders: {}, files: {} }).folders,
+    (folder) => {
+      const report = {
+        ...parseJson(getFile(folder, "index.json")),
+        blocks: JSON.parse(getFile(folder, "blocks.json", "")),
+      } as Report;
+      return report;
+    }
+  );
 
 const CURRENT_VERSION = 1;
 
 const migrations: Record<string, (state: ReportState) => ReportState> = {};
 
 export const reportStoreConfig: QueryStoreConfig = {
-  entityToFiles: reportToFiles,
-  filesToEntity: filesToReport,
+  exportToFolder,
+  importFromFolder,
   name: "reports",
   initialState,
   version: CURRENT_VERSION,

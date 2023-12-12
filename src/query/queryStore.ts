@@ -5,9 +5,9 @@ import { createId } from "../util/utils";
 import { getNewLabel } from "../util/labels";
 import { add } from "../modifiedStore";
 import { ChartConfig } from "../display/Index";
-import { FileContents } from "../util/fsHelper";
+import { Folder, getFile, getFolder } from "../util/fsHelper";
 import NestedStore, { StoreConfig } from "../nestedStores";
-import { stableStringify } from "../util/json";
+import { parseJson, stableStringify } from "../util/json";
 import { CURRENT_VERSION, migrations } from "./migrations";
 
 export type TransformType = "config" | "code";
@@ -63,50 +63,50 @@ export const getDefaults = (dataSourceId: string) => ({
 
 const initialState: QueryState = {};
 
-type Files =
-  | "index.json"
-  | "sqlStatement.sql"
-  | "transformCode.ts"
-  | "vegaSpec.json";
+type QueryStoreConfig = StoreConfig<Query, Record<string, Query>>;
 
-type QueryStoreConfig = StoreConfig<Query, Record<string, Query>, Files>;
-
-export const queryToFiles = (query: Query): FileContents<Files> => {
-  const { sqlStatement, transformCode, chartConfig, ...partialQuery } = query;
-  const vegaSpec =
-    chartConfig?.chartType === "vegaChart" ? chartConfig.vegaSpec : "";
-
-  const fileContents = {
-    "index.json": stableStringify({
-      ...partialQuery,
-      chartConfig: chartConfig
-        ? chartConfig.chartType === "vegaChart"
-          ? R.omit(chartConfig, ["vegaSpec"])
-          : chartConfig
-        : undefined,
-    }),
-    "sqlStatement.sql": sqlStatement,
-    "transformCode.ts": transformCode,
-    "vegaSpec.json": vegaSpec,
-  };
-  return fileContents;
-};
-
-export const filesToQuery = (fileContents: FileContents<Files>): Query => {
-  const query = {
-    ...JSON.parse(fileContents["index.json"]),
-    sqlStatement: fileContents["sqlStatement.sql"],
-    transformCode: fileContents["transformCode.ts"],
-  } as Query;
-  if (query.chartConfig?.chartType === "vegaChart") {
-    query.chartConfig.vegaSpec = fileContents["vegaSpec.json"];
+export const exportToFolder = (state: QueryState): Folder => {
+  const queryFolder: Folder = { files: {}, folders: {} };
+  for (const query of Object.values(state)) {
+    const { sqlStatement, transformCode, chartConfig, ...partialQuery } = query;
+    const vegaSpec =
+      chartConfig?.chartType === "vegaChart" ? chartConfig.vegaSpec : "";
+    queryFolder.folders[query.id] = {
+      files: {
+        "index.json": stableStringify({
+          ...partialQuery,
+          chartConfig: chartConfig
+            ? chartConfig.chartType === "vegaChart"
+              ? R.omit(chartConfig, ["vegaSpec"])
+              : chartConfig
+            : undefined,
+        }),
+        "sqlStatement.sql": sqlStatement,
+        "transformCode.ts": transformCode,
+        "vegaSpec.json": vegaSpec,
+      },
+      folders: {},
+    };
   }
-  return query;
+  return { files: {}, folders: { queries: queryFolder } };
 };
+
+export const importFromFolder = (root: Folder): QueryState =>
+  R.mapValues(getFolder(root, "queries").folders, (folder) => {
+    const query = {
+      ...parseJson(getFile(folder, "index.json")),
+      sqlStatement: getFile(folder, "sqlStatement.sql", ""),
+      transformCode: getFile(folder, "transformCode.ts", ""),
+    } as Query;
+    if (query.chartConfig?.chartType === "vegaChart") {
+      query.chartConfig.vegaSpec = getFile(folder, "vegaSpec.json");
+    }
+    return query;
+  });
 
 export const queryStoreConfig: QueryStoreConfig = {
-  entityToFiles: queryToFiles,
-  filesToEntity: filesToQuery,
+  exportToFolder,
+  importFromFolder,
   name: "queries",
   initialState,
   version: CURRENT_VERSION,

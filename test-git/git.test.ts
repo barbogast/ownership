@@ -11,13 +11,13 @@ import {
 } from "vitest";
 import { temporaryDirectory } from "tempy";
 
-import { getHelpersNode, save } from "../src/util/gitStorage";
-import { FileContents } from "../src/util/fsHelper";
+import { getHelpersNode, loadFromGit, saveToGit } from "../src/util/gitStorage";
+import { Folder } from "../src/util/fsHelper";
 import Logger from "../src/util/logger";
 import { resolve } from "path";
 import slugify from "slugify";
 
-// Logger.enable("fs", "git", "gitTest", "sh");
+Logger.enable("fs", "git", "gitTest", "sh");
 const gitTestLogger = new Logger("gitTest");
 const shLogger = new Logger("sh");
 
@@ -41,6 +41,8 @@ const execP = (command: string, options?: ExecOptions) =>
     });
   });
 
+const readFile = (path: string) => fs.promises.readFile(path, "utf-8");
+
 const startGitServer = async (testDirectory: string) => {
   const env = {
     ...process.env,
@@ -55,29 +57,9 @@ const startGitServer = async (testDirectory: string) => {
 };
 
 const getTestSlug = () =>
-  slugify(expect.getState().currentTestName!.split(" > ").at(-1)!);
-
-const compareResult = async (
-  root: string,
-  testName: string,
-  folders: Record<string, FileContents<string>>
-) => {
-  for (const [folder, files] of Object.entries(folders)) {
-    const directory = `${root}/result/${testName}/query/${folder}`;
-    for (const [filename, content] of Object.entries(files)) {
-      const path = `${directory}/${filename}`;
-      const actual = await fs.promises.readFile(path, "utf-8");
-      expect(actual).toBe(content);
-    }
-
-    const directoryContents = await fs.promises.readdir(directory);
-    for (const filename of directoryContents) {
-      if (!(filename in files)) {
-        throw new Error(`File ${filename} should not exist`);
-      }
-    }
-  }
-};
+  slugify(
+    expect.getState().currentTestName!.split(" > ").at(-1)!.toLowerCase()
+  );
 
 /*
     Folders:
@@ -152,16 +134,21 @@ describe("Test git", () => {
     await execP(`git clone --bare source/${testName} server/${testName}`);
   });
 
-  test("test 4", async () => {
+  test("Save", async () => {
     const name = getTestSlug();
 
-    const folders = {
-      queryA: {
-        "index.json": '{"name": "queryA"}',
-        "sqlStatement.sql": "SELECT * FROM tableA",
+    const folder: Folder = {
+      folders: {
+        subfolderA: {
+          files: {
+            "file3.txt": "Hello World!",
+          },
+          folders: {},
+        },
       },
-      queryB: {
-        "index.json": '{"name": "queryB"}',
+      files: {
+        "file1.csv": "col1,col1\n1,2",
+        "file2.json": "{hello: 'world'}",
       },
     };
 
@@ -170,14 +157,54 @@ describe("Test git", () => {
       disableCorsProxy: true,
     });
 
-    await gitHelper.clone(`${GIT_URL}/${name}`);
-    await save(fsHelper, gitHelper, "query", folders);
+    const url = `${GIT_URL}/${name}`;
+    await gitHelper.clone(url);
+    await saveToGit({ fsHelper, gitHelper }, url, folder);
     await gitHelper.commit();
     await gitHelper.push();
 
     await execP(`git clone ${GIT_URL}/${name}`, {
       cwd: `${testDirectory}/result`,
     });
-    await compareResult(testDirectory, name, folders);
+
+    await expect(
+      readFile(`${testDirectory}/result/${name}/file1.csv`)
+    ).resolves.toBe("col1,col1\n1,2");
+    await expect(
+      readFile(`${testDirectory}/result/${name}/file2.json`)
+    ).resolves.toBe("{hello: 'world'}");
+    await expect(
+      readFile(`${testDirectory}/result/${name}/subfolderA/file3.txt`)
+    ).resolves.toBe("Hello World!");
+  });
+
+  test("Load", async () => {
+    const name = getTestSlug();
+
+    const expectedFolder: Folder = {
+      folders: {
+        subfolderA: {
+          files: {
+            "file3.txt": "Hello World!",
+          },
+          folders: {},
+        },
+      },
+      files: {
+        "file1.csv": "col1,col1\n1,2",
+        "file2.json": "{hello: 'world'}",
+      },
+    };
+
+    const { fsHelper, gitHelper } = getHelpersNode({
+      gitRoot: `${testDirectory}/test/${name}`,
+      disableCorsProxy: true,
+    });
+
+    const url = `${GIT_URL}/${name}`;
+    await gitHelper.clone(url);
+    const receivedFolder = await loadFromGit({ fsHelper, gitHelper }, url);
+
+    expect(receivedFolder).toEqual(expectedFolder);
   });
 });

@@ -1,7 +1,7 @@
 import * as R from "remeda";
 
 import NestedStore, { StoreConfig } from "../nestedStores";
-import { FileContents } from "../util/fsHelper";
+import { Folder, getFile, getFolder } from "../util/fsHelper";
 import { ColumnDefinition } from "../util/database";
 import { getNewLabel } from "../util/labels";
 import { createId } from "../util/utils";
@@ -30,53 +30,46 @@ export type DatabaseState = Record<string, DatabaseDefinition>;
 
 const initialState: DatabaseState = {};
 
-type Files = "index.json" | "importCode.ts" | "postProcessingCode.ts" | string;
-
 type DatabaseDefinitionStoreConfig = StoreConfig<
   DatabaseDefinition,
-  Record<string, DatabaseDefinition>,
-  Files
+  Record<string, DatabaseDefinition>
 >;
 
 const SOURCE_FILES_FOLDER_NAME = "sourceFiles";
 export const IMPORTED_FROM_CODE_FILE_NAME = "file.json";
 
-export const databaseToFiles = (
-  db: DatabaseDefinition
-): FileContents<Files> => {
-  const { sourceFiles, importCode, postProcessingCode, ...partialDb } = db;
-  const fileContents = {
-    "index.json": stableStringify(partialDb),
-    "importCode.ts": importCode,
-    "postProcessingCode.ts": postProcessingCode,
-    ...R.mapKeys(
-      sourceFiles,
-      (fileName) => `${SOURCE_FILES_FOLDER_NAME}/${fileName}`
-    ),
-  };
-  return fileContents;
+export const exportToFolder = (state: DatabaseState): Folder => {
+  const dbRoot: Folder = { files: {}, folders: {} };
+  for (const db of Object.values(state)) {
+    const { sourceFiles, importCode, postProcessingCode, ...partialDb } = db;
+    dbRoot.folders[db.id] = {
+      files: {
+        "index.json": stableStringify(partialDb),
+        "importCode.ts": importCode,
+        "postProcessingCode.ts": postProcessingCode,
+      },
+      folders: {
+        [SOURCE_FILES_FOLDER_NAME]: { files: sourceFiles, folders: {} },
+      },
+    };
+  }
+  return { files: {}, folders: { databases: dbRoot } };
 };
 
-export const fileToDatabase = (
-  fileContents: FileContents<Files>
-): DatabaseDefinition => {
-  return {
-    ...JSON.parse(fileContents["index.json"]!),
-    csvContent: fileContents["content.csv"],
-    jsonContent: fileContents["content.json"],
-    importCode: fileContents["importCode.ts"],
-    postProcessingCode: fileContents["postProcessingCode.ts"],
-    sourceFiles: R.pipe(
-      fileContents,
-      R.omitBy((_, key) => !key.startsWith(`${SOURCE_FILES_FOLDER_NAME}/`)),
-      R.mapKeys((key) => key.slice(`${SOURCE_FILES_FOLDER_NAME}/`.length))
-    ),
-  };
-};
+export const importFromFolder = (root: Folder): DatabaseState =>
+  R.mapValues(getFolder(root, "databases").folders, (folder) => {
+    const db: DatabaseDefinition = {
+      ...JSON.parse(getFile(folder, "index.json")),
+      sourceFiles: getFolder(folder, SOURCE_FILES_FOLDER_NAME).files,
+      importCode: getFile(folder, "importCode.ts", ""),
+      postProcessingCode: getFile(folder, "postProcessingCode.ts", ""),
+    };
+    return db;
+  });
 
 export const databaseDefinitionStoreConfig: DatabaseDefinitionStoreConfig = {
-  entityToFiles: databaseToFiles,
-  filesToEntity: fileToDatabase,
+  exportToFolder,
+  importFromFolder,
   name: "databases",
   initialState,
   version: CURRENT_VERSION,

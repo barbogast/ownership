@@ -170,7 +170,7 @@ const RepositoryList: React.FC = () => {
             callback={async (repositoryInfo, username, password) => {
               await loadFromGit(
                 getHelpersBrowser(repositoryInfo, { username, password }),
-                repositoryInfo
+                "https://github.com/" + repositoryInfo.path
               );
               addRepository(repositoryInfo);
               setNewRepo(initialNewRepoState);
