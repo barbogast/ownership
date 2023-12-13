@@ -1,6 +1,6 @@
 import { test as base, expect } from "@playwright/test";
-import { RepositoryPage } from "./RepositoryPage";
-import { RepositoryStorage } from "./RepositoryStorage";
+import { ProjectPage } from "./RepositoryPage";
+import { ProjectStorage as ProjectStorage } from "./RepositoryStorage";
 import { MainPage } from "./MainPage";
 import { CreateDatabaseDefinitionPage } from "./CreateDatabaseDefinitionPage";
 import { MainMenu } from "./MainMenu";
@@ -9,8 +9,8 @@ import { TableDisplay } from "./TableDisplay";
 import { Editor } from "./Editor";
 
 type MyFixtures = {
-  repositoryPage: RepositoryPage;
-  repositoryStorage: RepositoryStorage;
+  projectPage: ProjectPage;
+  projectStorage: ProjectStorage;
   mainPage: MainPage;
   mainMenu: MainMenu;
   createDatabaseDefinitionPage: CreateDatabaseDefinitionPage;
@@ -42,13 +42,13 @@ export const test = base.extend<MyFixtures>({
     { auto: true },
   ],
 
-  repositoryPage: async ({ page }, use) => {
-    const repositoryPage = new RepositoryPage(page);
-    await use(repositoryPage);
+  projectPage: async ({ page }, use) => {
+    const projectPage = new ProjectPage(page);
+    await use(projectPage);
   },
-  repositoryStorage: async ({ context, page }, use) => {
-    const repositoryStorage = new RepositoryStorage(page, context);
-    await use(repositoryStorage);
+  projectStorage: async ({ context, page }, use) => {
+    const projectStorage = new ProjectStorage(page, context);
+    await use(projectStorage);
   },
   databaseDefinitionStorage: async ({ page, context }, use) => {
     const f = new DatabaseDefinitionStorage(page, context);

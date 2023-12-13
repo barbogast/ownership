@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
-export class RepositoryPage {
+export class ProjectPage {
   readonly #inputName: Locator;
   readonly #buttonCreate: Locator;
   readonly #buttonOpen: Locator;

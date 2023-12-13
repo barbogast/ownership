@@ -69,7 +69,7 @@ export const useReport = (id: string) => useReportStore((state) => state[id]);
 const getReportFromDraft = (state: Draft<ReportState>, reportId: string) => {
   const repo = state[reportId];
   if (repo === undefined) {
-    throw new Error(`No repository with id "${reportId}" found`);
+    throw new Error(`No report with id "${reportId}" found`);
   }
   return repo;
 };

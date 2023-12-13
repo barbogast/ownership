@@ -3,9 +3,9 @@ import * as R from "remeda";
 
 import { getLocalStorageContent, setLocalStorageContent } from "../utils";
 import { createId } from "../../src/util/utils";
-import { Repository } from "../../src/repository/repositoryStore";
+import { Project } from "../../src/repository/repositoryStore";
 
-export class RepositoryStorage {
+export class ProjectStorage {
   readonly #context: BrowserContext;
   readonly #page: Page;
 
@@ -14,35 +14,35 @@ export class RepositoryStorage {
     this.#page = page;
   }
 
-  async getRepositories() {
-    const repositoriesState = await getLocalStorageContent(
+  async getProjects() {
+    const projectState = await getLocalStorageContent(
       this.#context,
-      "repositories"
+      "projects"
     );
 
     if (
-      R.isObject(repositoriesState) &&
-      "state" in repositoriesState &&
-      R.isObject(repositoriesState.state) &&
-      "repositories" in repositoriesState.state &&
-      R.isObject(repositoriesState.state.repositories)
+      R.isObject(projectState) &&
+      "state" in projectState &&
+      R.isObject(projectState.state) &&
+      "projects" in projectState.state &&
+      R.isObject(projectState.state.projects)
     ) {
-      return repositoriesState.state.repositories;
+      return projectState.state.projects as Record<string, Project>;
     } else {
       throw new Error("Unexpected localStorage content");
     }
   }
 
-  async addRepository(projectName: string) {
+  async addProject(projectName: string) {
     const id = createId();
-    const newRepository: Repository = {
+    const newProject: Project = {
       id,
       name: projectName,
     };
     const content = {
-      state: { repositories: { [id]: newRepository } },
+      state: { projects: { [id]: newProject } },
       version: 0,
     };
-    await setLocalStorageContent(this.#page, "repositories", content);
+    await setLocalStorageContent(this.#page, "projects", content);
   }
 }

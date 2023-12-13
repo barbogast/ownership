@@ -1,13 +1,13 @@
 import { Locator, Page, expect } from "@playwright/test";
 
 export class MainPage {
-  readonly #repositorySelect: Locator;
+  readonly #projectSelect: Locator;
 
   constructor(page: Page) {
-    this.#repositorySelect = page.getByTestId("repository-select");
+    this.#projectSelect = page.getByTestId("project-select");
   }
 
-  async checkRepositorySelect(repository: string) {
-    await expect(this.#repositorySelect).toContainText(`${repository}`);
+  async checkProjectSelect(projectName: string) {
+    await expect(this.#projectSelect).toContainText(`${projectName}`);
   }
 }

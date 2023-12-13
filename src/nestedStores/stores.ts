@@ -1,7 +1,7 @@
 import { databaseDefinitionStore } from "../databaseDefinition/databaseDefinitionStore";
 import { queryStore } from "../query/queryStore";
 import { reportStore } from "../report/reportStore";
-import { Repository } from "../repository/repositoryStore";
+import { Project } from "../repository/repositoryStore";
 import { Folder, mergeFolders } from "../util/fsHelper";
 
 const stores = [queryStore, databaseDefinitionStore, reportStore];
@@ -15,10 +15,10 @@ export const exportStoresToFolder = () =>
   );
 
 export const importStoresFromFolder = async (
-  repository: Repository,
+  project: Project,
   folder: Folder
 ) => {
   for (const store of stores) {
-    await store.import(repository.id, folder);
+    await store.import(project.id, folder);
   }
 };

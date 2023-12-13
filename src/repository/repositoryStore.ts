@@ -5,70 +5,73 @@ import { Draft } from "immer";
 import { createId } from "../util/utils";
 import { useLocation } from "wouter";
 
-export type Repository = {
+export type Project = {
   id: string;
   name: string;
 };
 
-export type RepositoryState = {
-  repositories: { [repositoryId: string]: Repository };
+export type ProjectStoreState = {
+  projects: { [projectId: string]: Project };
 };
 
-const initialState: RepositoryState = {
-  repositories: {},
+const initialState: ProjectStoreState = {
+  projects: {},
 };
 
 const persistConfig = {
-  name: "repositories",
+  name: "projects",
   storage: createJSONStorage(() => localStorage),
 };
 
-const useRepositoryStore = create(
+const useProjectStore = create(
   persist(
-    immer<RepositoryState>(() => initialState),
+    immer<ProjectStoreState>(() => initialState),
     persistConfig
   )
 );
 
-export default useRepositoryStore;
+export default useProjectStore;
 
-export const useRepository = (id: string) =>
-  useRepositoryStore((state) => state.repositories[id]);
+export const useProject = (id: string) =>
+  useProjectStore((state) => state.projects[id]);
 
-export const useRepositoryByName = (name: string) =>
-  useRepositoryStore((state) => {
-    const repo = Object.values(state.repositories).find(
-      (repo) => repo.name === name
+export const useProjectByName = (name: string) =>
+  useProjectStore((state) => {
+    const project = Object.values(state.projects).find(
+      (project) => project.name === name
     );
-    if (!repo) {
-      throw new Error("No repo");
+    if (!project) {
+      throw new Error("No project");
     }
-    return repo;
+    return project;
   });
 
-export const useRepositoryFromUrl = () => {
+export const useProjectFromUrl = () => {
   const [location] = useLocation();
   const [_, name] = location.split("/");
-  return useRepositoryStore((state) => {
-    const repo = Object.values(state.repositories).find(
-      (repo) => repo.name === name
+  return useProjectStore((state) => {
+    const project = Object.values(state.projects).find(
+      (project) => project.name === name
     );
-    return repo;
+    return project;
   });
 };
 
-const getRepoFromDraft = (state: Draft<RepositoryState>, repoId: string) => {
-  const repo = state.repositories[repoId];
-  if (repo === undefined) {
-    throw new Error(`No repository with id "${repoId}" found`);
+const getProjectFromDraft = (
+  state: Draft<ProjectStoreState>,
+  projectId: string
+) => {
+  const project = state.projects[projectId];
+  if (project === undefined) {
+    throw new Error(`No project with id "${projectId}" found`);
   }
-  return repo;
+  return project;
 };
 
-export const addRepository = (name: string) => {
+export const addProject = (name: string) => {
   const id = createId();
-  useRepositoryStore.setState((state) => {
-    state.repositories[id] = {
+  useProjectStore.setState((state) => {
+    state.projects[id] = {
       id,
       name,
     };
@@ -76,18 +79,18 @@ export const addRepository = (name: string) => {
   return id;
 };
 
-export const updateRepository = (
-  repositoryId: string,
-  update: Partial<Omit<Repository, "id">>
+export const updateProject = (
+  projectId: string,
+  update: Partial<Omit<Project, "id">>
 ) => {
-  useRepositoryStore.setState((state) => {
-    const repo = getRepoFromDraft(state, repositoryId);
-    Object.assign(repo, update);
+  useProjectStore.setState((state) => {
+    const project = getProjectFromDraft(state, projectId);
+    Object.assign(project, update);
   });
 };
 
-export const deleteRepository = (repositoryId: string) => {
-  useRepositoryStore.setState((state) => {
-    delete state.repositories[repositoryId];
+export const deleteProject = (projectId: string) => {
+  useProjectStore.setState((state) => {
+    delete state.projects[projectId];
   });
 };

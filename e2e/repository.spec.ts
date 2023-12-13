@@ -1,22 +1,22 @@
 import { test, expect } from "./fixtures";
 
-test("create repository", async ({
+test("create project", async ({
   page,
-  repositoryPage,
-  repositoryStorage,
+  projectPage,
+  projectStorage,
   mainPage,
 }) => {
   await page.goto("/");
 
-  const project = "Project1";
-  await repositoryPage.enterName(project);
-  await repositoryPage.clickCreate();
+  const projectName = "Project1";
+  await projectPage.enterName(projectName);
+  await projectPage.clickCreate();
 
-  const repos = await repositoryStorage.getRepositories();
-  const repo = Object.values(repos)[0];
-  expect(repo).toMatchObject({ name: project });
+  const projects = await projectStorage.getProjects();
+  const project = Object.values(projects)[0];
+  expect(project).toMatchObject({ name: projectName });
 
-  await repositoryPage.clickOpen();
-  await page.waitForURL(`/${project}`);
-  await mainPage.checkRepositorySelect(project);
+  await projectPage.clickOpen();
+  await page.waitForURL(`/${projectName}`);
+  await mainPage.checkProjectSelect(projectName);
 });

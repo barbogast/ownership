@@ -5,7 +5,7 @@ import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
 import DatabaseDefinition from "./databaseDefinition/DatabaseDefinition";
-import RepositoryList from "./repository/RepositoryList";
+import ProjectList from "./repository/RepositoryList";
 import NestedRoutes from "./components/NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";
 import DevTools from "./DevTools";
@@ -40,17 +40,17 @@ const Routes = () => {
             <br />
             <br />
             <br />
-            <RepositoryList />{" "}
+            <ProjectList />{" "}
           </>
         )}
       ></Route>
       <MainMenu>
         <Route path="/ownership" component={Ownership} />
         <Route
-          path="/:repository/:rest*"
+          path="/:projectName/:rest*"
           component={({ params }) => (
-            <WithNestedStores repositoryName={params.repository}>
-              <NestedRoutes base={`/${params.repository}`}>
+            <WithNestedStores projectName={params.projectName}>
+              <NestedRoutes base={`/${params.projectName}`}>
                 <Route
                   path="/db/:databaseDefinitionId"
                   component={(props) => (

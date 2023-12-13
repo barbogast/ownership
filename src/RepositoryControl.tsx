@@ -1,8 +1,8 @@
 import { Button, Col, Row, Select } from "antd";
 
 import { loadFromGit, getHelpersBrowser, saveToGit } from "./util/gitStorage";
-import useRepositoryStore, {
-  useRepositoryFromUrl,
+import useProjectStore, {
+  useProjectFromUrl,
 } from "./repository/repositoryStore";
 import { useLocation } from "wouter";
 import SyncRepositoryModal from "./SyncRepositoryModal";
@@ -12,10 +12,10 @@ import {
   importStoresFromFolder,
 } from "./nestedStores/stores";
 
-const RepositoryControl: React.FC = () => {
+const ProjectControl: React.FC = () => {
   const [, setLocation] = useLocation();
-  const repository = useRepositoryFromUrl()!;
-  const projects = useRepositoryStore().repositories;
+  const project = useProjectFromUrl()!;
+  const projects = useProjectStore().projects;
 
   return (
     <div style={{ marginLeft: 10 }}>
@@ -27,12 +27,12 @@ const RepositoryControl: React.FC = () => {
         </Col>
         <Col flex={1}>
           <Select
-            data-testid="repository-select"
+            data-testid="project-select"
             options={Object.values(projects).map((project) => ({
               title: project.name,
               value: project.name,
             }))}
-            value={repository.name}
+            value={project.name}
             style={{ width: "100%" }}
             onSelect={(value) => setLocation("/" + value)}
           />
@@ -42,21 +42,21 @@ const RepositoryControl: React.FC = () => {
       <Row justify="space-between" style={{ marginTop: 10 }}>
         <SyncRepositoryModal
           buttonLabel="Load ..."
-          label="Loading repository"
+          label="Import from repository"
           callback={async (url, username, password) => {
             const folder = await loadFromGit(
-              getHelpersBrowser(repository.id, { username, password }),
+              getHelpersBrowser(project.id, { username, password }),
               url
             );
-            await importStoresFromFolder(repository, folder);
+            await importStoresFromFolder(project, folder);
           }}
         />
         <SyncRepositoryModal
           buttonLabel="Save ..."
-          label="Saving repository"
+          label="Export to repository"
           callback={async (url, username, password) => {
             await saveToGit(
-              getHelpersBrowser(repository.id, { username, password }),
+              getHelpersBrowser(project.id, { username, password }),
               url,
               exportStoresToFolder()
             );
@@ -68,4 +68,4 @@ const RepositoryControl: React.FC = () => {
   );
 };
 
-export default RepositoryControl;
+export default ProjectControl;

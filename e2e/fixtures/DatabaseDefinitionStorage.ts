@@ -1,9 +1,9 @@
 import { Page, BrowserContext } from "@playwright/test";
 import * as R from "remeda";
 
-import { getIndexedDbContent, getLocalStorageContent } from "../utils";
+import { getIndexedDbContent } from "../utils";
 import { DatabaseDefinition } from "../../src/databaseDefinition/databaseDefinitionStore";
-import { RepositoryState } from "../../src/repository/repositoryStore";
+import { ProjectStorage } from "./RepositoryStorage";
 
 export class DatabaseDefinitionStorage {
   readonly #page: Page;
@@ -15,23 +15,19 @@ export class DatabaseDefinitionStorage {
   }
 
   async getDbDefs() {
-    const store = (await getLocalStorageContent(
-      this.#context,
-      "repositories"
-    )) as { state: RepositoryState; version: number };
+    const projectStorage = new ProjectStorage(this.#page, this.#context);
+    const projects = await projectStorage.getProjects();
     const url = new URL(this.#page.url());
     const [_, name, __] = url.pathname.split("/");
 
-    const repository = Object.values(store.state.repositories).find(
-      (r) => r.name === name
-    );
-    if (!repository) {
-      throw new Error(`No repository found for ${name}`);
+    const project = Object.values(projects).find((p) => p.name === name);
+    if (!project) {
+      throw new Error(`No project found for ${name}`);
     }
 
     const content = await getIndexedDbContent(
       this.#page,
-      `${repository.id}/databases`
+      `${project.id}/databases`
     );
 
     if (

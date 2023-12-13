@@ -5,8 +5,8 @@ import { test, expect } from "../fixtures";
 
 const projectName = "project1";
 
-test.beforeEach(async ({ repositoryStorage }) => {
-  await repositoryStorage.addRepository(projectName);
+test.beforeEach(async ({ projectStorage }) => {
+  await projectStorage.addProject(projectName);
 });
 
 const returnValue = [

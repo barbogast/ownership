@@ -11,13 +11,13 @@ import useQueryStore, {
 import useReportStore, { addReport } from "./report/reportStore";
 import { sortByLabel } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
-import RepositoryControl from "./RepositoryControl";
+import ProjectControl from "./RepositoryControl";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import getConfig from "./createDatabaseWizard";
 import WizardModal from "./components/wizard/WizardModal";
 import useLocalSettingsStore, { setDarkMode } from "./localSettingsStore";
 import ResizeHandle from "./components/ResizeHandle";
-import { useRepositoryFromUrl } from "./repository/repositoryStore";
+import { useProjectFromUrl } from "./repository/repositoryStore";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;
@@ -29,7 +29,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
   const [location, setLocation] = useLocation();
   const [activeMenuItem, setActiveMenuItem] = useState("");
   const [openFolders, setOpenFolders] = useState<string[]>([]);
-  const repository = useRepositoryFromUrl();
+  const project = useProjectFromUrl();
   const { modifiedQueries } = useModifiedStore();
   const darkModeEnabled = useLocalSettingsStore(
     (state) => state.darkModeEnabled
@@ -54,11 +54,11 @@ const MainMenu: React.FC<Props> = ({ children }) => {
     }
   }, [location]);
 
-  if (!repository) {
+  if (!project) {
     return children;
   }
 
-  const basepath = "/" + repository.name;
+  const basepath = "/" + project.name;
 
   const databases = {
     key: `db`,
@@ -192,7 +192,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
           marginTop: 10,
         }}
       >
-        <RepositoryControl />
+        <ProjectControl />
         <Divider style={{ margin: "12px 0" }} />
         <Menu
           mode="inline"

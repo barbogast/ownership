@@ -1,9 +1,9 @@
 import { Button, Col, Input, Popconfirm, Row } from "antd";
 import { Fragment, useState } from "react";
-import useRepositoryStore, {
-  addRepository,
-  deleteRepository,
-  updateRepository,
+import useProjectStore, {
+  addProject,
+  deleteProject,
+  updateProject,
 } from "./repositoryStore";
 import { Link } from "wouter";
 import stores from "../nestedStores/stores";
@@ -12,28 +12,28 @@ const LEFT_COLUMNS = 8;
 const RIGHT_COLUMN = 3;
 const BUTTON_STYLE = { width: 75 };
 
-const RepositoryList: React.FC = () => {
-  const repositories = useRepositoryStore().repositories;
-  const initialNewRepoState = { name: "" };
-  const [newRepo, setNewRepo] = useState(initialNewRepoState);
+const ProjectList: React.FC = () => {
+  const projects = useProjectStore().projects;
+  const initialNewProjectState = { name: "" };
+  const [newProject, setNewProject] = useState(initialNewProjectState);
 
-  const initialEditRepoState = {
+  const initialEditProjectState = {
     id: "",
     name: "",
   };
-  const [editRepo, setEditRepo] = useState(initialEditRepoState);
+  const [editProject, setEditProject] = useState(initialEditProjectState);
 
   return (
     <Row gutter={[16, 16]} style={{ width: 700 }}>
-      {Object.values(repositories).map((repo, i) => (
+      {Object.values(projects).map((project, i) => (
         <Fragment key={i}>
-          {editRepo.id === repo.id ? (
+          {editProject.id === project.id ? (
             <>
               <Col span={LEFT_COLUMNS}>
                 <Input
-                  value={editRepo.name}
+                  value={editProject.name}
                   onChange={(event) =>
-                    setEditRepo((state) => ({
+                    setEditProject((state) => ({
                       ...state,
                       name: event.target.value,
                     }))
@@ -43,8 +43,8 @@ const RepositoryList: React.FC = () => {
               <Col span={RIGHT_COLUMN}>
                 <Button
                   onClick={() => {
-                    updateRepository(editRepo.id, editRepo);
-                    setEditRepo(initialEditRepoState);
+                    updateProject(editProject.id, editProject);
+                    setEditProject(initialEditProjectState);
                   }}
                   style={BUTTON_STYLE}
                 >
@@ -53,7 +53,7 @@ const RepositoryList: React.FC = () => {
               </Col>
               <Col span={RIGHT_COLUMN}>
                 <Button
-                  onClick={() => setEditRepo(initialEditRepoState)}
+                  onClick={() => setEditProject(initialEditProjectState)}
                   style={BUTTON_STYLE}
                 >
                   Cancel
@@ -63,9 +63,9 @@ const RepositoryList: React.FC = () => {
             </>
           ) : (
             <>
-              <Col span={LEFT_COLUMNS}>{repo.name}</Col>
+              <Col span={LEFT_COLUMNS}>{project.name}</Col>
               <Col span={RIGHT_COLUMN}>
-                <Link href={`/${repo.name}`}>
+                <Link href={`/${project.name}`}>
                   <Button type="primary" style={BUTTON_STYLE} role="button">
                     Open
                   </Button>
@@ -74,7 +74,7 @@ const RepositoryList: React.FC = () => {
               <Col span={RIGHT_COLUMN}>
                 <Button
                   onClick={() => {
-                    setEditRepo({ ...repo });
+                    setEditProject({ ...project });
                   }}
                   style={BUTTON_STYLE}
                 >
@@ -83,11 +83,11 @@ const RepositoryList: React.FC = () => {
               </Col>
               <Col span={RIGHT_COLUMN}>
                 <Popconfirm
-                  title="Delete the repository?"
+                  title="Delete the project?"
                   onConfirm={async () => {
-                    deleteRepository(repo.id);
+                    deleteProject(project.id);
                     for (const store of stores) {
-                      await store.delete(repo.id);
+                      await store.delete(project.id);
                     }
                   }}
                 >
@@ -104,9 +104,9 @@ const RepositoryList: React.FC = () => {
         <Col span={LEFT_COLUMNS}>
           <Input
             placeholder="Name"
-            value={newRepo.name}
+            value={newProject.name}
             onChange={(event) =>
-              setNewRepo((state) => ({
+              setNewProject((state) => ({
                 ...state,
                 name: event.target.value,
               }))
@@ -116,8 +116,8 @@ const RepositoryList: React.FC = () => {
         <Col span={RIGHT_COLUMN}>
           <Button
             onClick={() => {
-              addRepository(newRepo.name);
-              setNewRepo(initialNewRepoState);
+              addProject(newProject.name);
+              setNewProject(initialNewProjectState);
             }}
             style={BUTTON_STYLE}
           >
@@ -129,4 +129,4 @@ const RepositoryList: React.FC = () => {
   );
 };
 
-export default RepositoryList;
+export default ProjectList;
