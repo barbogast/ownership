@@ -37,6 +37,7 @@ const getCase_minimal = (): TestCase => {
 
   const expectedIndex = stableStringify({
     id: "my-query",
+    chartConfig: { chartType: "lineChart" },
     label: "My query",
     databaseFileName: "obsolete - remove this prop",
     databaseSource: { type: "local", id: "my-db" },
