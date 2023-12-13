@@ -4,7 +4,6 @@ import { loadFromGit, getHelpersBrowser, saveToGit } from "./util/gitStorage";
 import useRepositoryStore, {
   useRepositoryFromUrl,
 } from "./repository/repositoryStore";
-import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
 import SyncRepositoryModal from "./SyncRepositoryModal";
 import { reset } from "./modifiedStore";
@@ -15,13 +14,8 @@ import {
 
 const RepositoryControl: React.FC = () => {
   const [, setLocation] = useLocation();
-  const repositoryInfo = useRepoInfo();
   const repository = useRepositoryFromUrl()!;
   const projects = useRepositoryStore().repositories;
-
-  if (!repositoryInfo) {
-    return;
-  }
 
   return (
     <div style={{ marginLeft: 10 }}>
@@ -35,10 +29,10 @@ const RepositoryControl: React.FC = () => {
           <Select
             data-testid="repository-select"
             options={Object.values(projects).map((project) => ({
-              title: `${project.organization}/${project.repository}`,
-              value: `${project.organization}/${project.repository}`,
+              title: project.name,
+              value: project.name,
             }))}
-            value={repositoryInfo.path}
+            value={repository.name}
             style={{ width: "100%" }}
             onSelect={(value) => setLocation("/" + value)}
           />
@@ -49,27 +43,25 @@ const RepositoryControl: React.FC = () => {
         <SyncRepositoryModal
           buttonLabel="Load ..."
           label="Loading repository"
-          callback={async (info, username, password) => {
+          callback={async (url, username, password) => {
             const folder = await loadFromGit(
-              getHelpersBrowser(info, { username, password }),
-              "https://github.com/" + info.path
+              getHelpersBrowser(repository.id, { username, password }),
+              url
             );
             await importStoresFromFolder(repository, folder);
           }}
-          repositoryInfo={repositoryInfo}
         />
         <SyncRepositoryModal
           buttonLabel="Save ..."
           label="Saving repository"
-          callback={async (info, username, password) => {
+          callback={async (url, username, password) => {
             await saveToGit(
-              getHelpersBrowser(info, { username, password }),
-              "https://github.com/" + info.path,
+              getHelpersBrowser(repository.id, { username, password }),
+              url,
               exportStoresToFolder()
             );
             reset();
           }}
-          repositoryInfo={repositoryInfo}
         />
       </Row>
     </div>

@@ -33,13 +33,11 @@ export class RepositoryStorage {
     }
   }
 
-  async addRepository(organization: string, repository: string) {
+  async addRepository(projectName: string) {
     const id = createId();
     const newRepository: Repository = {
       id,
-      name: repository,
-      organization,
-      repository,
+      name: projectName,
     };
     const content = {
       state: { repositories: { [id]: newRepository } },

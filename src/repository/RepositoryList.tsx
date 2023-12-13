@@ -6,23 +6,18 @@ import useRepositoryStore, {
   updateRepository,
 } from "./repositoryStore";
 import { Link } from "wouter";
-import { getHelpersBrowser, loadFromGit } from "../util/gitStorage";
-import { getRepoInfo } from "../util/utils";
-import SyncRepositoryModal from "../SyncRepositoryModal";
 import stores from "../nestedStores/stores";
 
-const LEFT_COLUMNS = 5;
+const LEFT_COLUMNS = 8;
 const RIGHT_COLUMN = 3;
 const BUTTON_STYLE = { width: 75 };
 
 const RepositoryList: React.FC = () => {
   const repositories = useRepositoryStore().repositories;
-  const initialNewRepoState = { organization: "", repository: "", name: "" };
+  const initialNewRepoState = { name: "" };
   const [newRepo, setNewRepo] = useState(initialNewRepoState);
 
   const initialEditRepoState = {
-    organization: "",
-    repository: "",
     id: "",
     name: "",
   };
@@ -34,28 +29,6 @@ const RepositoryList: React.FC = () => {
         <Fragment key={i}>
           {editRepo.id === repo.id ? (
             <>
-              <Col span={LEFT_COLUMNS}>
-                <Input
-                  value={editRepo.organization}
-                  onChange={(event) =>
-                    setEditRepo((state) => ({
-                      ...state,
-                      organization: event.target.value,
-                    }))
-                  }
-                />
-              </Col>
-              <Col span={LEFT_COLUMNS}>
-                <Input
-                  value={editRepo.repository}
-                  onChange={(event) =>
-                    setEditRepo((state) => ({
-                      ...state,
-                      repository: event.target.value,
-                    }))
-                  }
-                />
-              </Col>
               <Col span={LEFT_COLUMNS}>
                 <Input
                   value={editRepo.name}
@@ -90,8 +63,6 @@ const RepositoryList: React.FC = () => {
             </>
           ) : (
             <>
-              <Col span={LEFT_COLUMNS}>{repo.organization}</Col>
-              <Col span={LEFT_COLUMNS}>{repo.repository}</Col>
               <Col span={LEFT_COLUMNS}>{repo.name}</Col>
               <Col span={RIGHT_COLUMN}>
                 <Link href={`/${repo.name}`}>
@@ -132,30 +103,6 @@ const RepositoryList: React.FC = () => {
       <>
         <Col span={LEFT_COLUMNS}>
           <Input
-            placeholder="Organization"
-            value={newRepo.organization}
-            onChange={(event) =>
-              setNewRepo((state) => ({
-                ...state,
-                organization: event.target.value,
-              }))
-            }
-          />
-        </Col>
-        <Col span={LEFT_COLUMNS}>
-          <Input
-            placeholder="Repository"
-            value={newRepo.repository}
-            onChange={(event) =>
-              setNewRepo((state) => ({
-                ...state,
-                repository: event.target.value,
-              }))
-            }
-          />
-        </Col>
-        <Col span={LEFT_COLUMNS}>
-          <Input
             placeholder="Name"
             value={newRepo.name}
             onChange={(event) =>
@@ -169,35 +116,13 @@ const RepositoryList: React.FC = () => {
         <Col span={RIGHT_COLUMN}>
           <Button
             onClick={() => {
-              addRepository(
-                getRepoInfo(newRepo.organization, newRepo.repository),
-                newRepo.name
-              );
+              addRepository(newRepo.name);
               setNewRepo(initialNewRepoState);
             }}
             style={BUTTON_STYLE}
           >
             Create
           </Button>
-        </Col>
-        <Col span={RIGHT_COLUMN}>
-          <SyncRepositoryModal
-            buttonLabel="Import"
-            buttonStyle={BUTTON_STYLE}
-            label="Importing from Github"
-            callback={async (repositoryInfo, username, password) => {
-              await loadFromGit(
-                getHelpersBrowser(repositoryInfo, { username, password }),
-                "https://github.com/" + repositoryInfo.path
-              );
-              addRepository(repositoryInfo, repositoryInfo.repository);
-              setNewRepo(initialNewRepoState);
-            }}
-            repositoryInfo={getRepoInfo(
-              newRepo.organization,
-              newRepo.repository
-            )}
-          />
         </Col>
       </>
     </Row>

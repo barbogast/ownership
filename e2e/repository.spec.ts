@@ -8,18 +8,15 @@ test("create repository", async ({
 }) => {
   await page.goto("/");
 
-  const organization = "Org1";
-  const repository = "Repo1";
-  await repositoryPage.enterOrganization(organization);
-  await repositoryPage.enterRepository(repository);
-  await repositoryPage.enterName(repository);
+  const project = "Project1";
+  await repositoryPage.enterName(project);
   await repositoryPage.clickCreate();
 
   const repos = await repositoryStorage.getRepositories();
   const repo = Object.values(repos)[0];
-  expect(repo).toMatchObject({ organization, repository });
+  expect(repo).toMatchObject({ name: project });
 
   await repositoryPage.clickOpen();
-  await page.waitForURL(`/${repository}`);
-  await mainPage.checkRepositorySelect(repository);
+  await page.waitForURL(`/${project}`);
+  await mainPage.checkRepositorySelect(project);
 });

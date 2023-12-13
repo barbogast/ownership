@@ -2,26 +2,20 @@ import { Alert, Button, Input } from "antd";
 
 import AsyncModal from "./components/AsyncModal";
 import { useState } from "react";
-import { RepositoryInfo } from "./types";
 
 type Props = {
-  repositoryInfo: RepositoryInfo;
-  callback: (
-    repositoryInfo: RepositoryInfo,
-    user: string,
-    password: string
-  ) => Promise<void>;
+  callback: (url: string, user: string, password: string) => Promise<void>;
   label: string;
   buttonLabel: string;
   buttonStyle?: React.CSSProperties;
 };
 const SyncRepositoryButton: React.FC<Props> = ({
-  repositoryInfo,
   label,
   buttonLabel,
   callback,
   buttonStyle,
 }) => {
+  const [url, setUrl] = useState("");
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
@@ -37,7 +31,7 @@ const SyncRepositoryButton: React.FC<Props> = ({
         // User may append the repository after the username, so it's possible to see which entry
         // to pick in the password manager.
         const [username, _] = user.split("/");
-        await callback(repositoryInfo, username!, password);
+        await callback(url!, username!, password);
         // Reset password, so it doesn't remain in the application state longer than necessary.
         setPassword("");
       }}
@@ -53,6 +47,12 @@ const SyncRepositoryButton: React.FC<Props> = ({
         <li>Repository access: Only select repositories</li>
         <li>Permissions: Contents: Read and write</li>
       </ul>
+      <Input
+        placeholder="URL"
+        addonBefore="URL"
+        value={url}
+        onChange={(event) => setUrl(event.target.value)}
+      />
       <Input
         placeholder="Username"
         addonBefore="Username"

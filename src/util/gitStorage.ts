@@ -1,17 +1,16 @@
 import fs from "fs";
 import http from "isomorphic-git/http/web";
 import LightningFS from "@isomorphic-git/lightning-fs";
-import { RepositoryInfo } from "../types";
 import FsHelper, { Folder, flattenFolder, omitEmpty } from "./fsHelper";
 import GitHelper, { Auth } from "./gitHelpers";
 
 // @ts-expect-error https://github.com/isomorphic-git/lightning-fs/commit/76dc7ac318ec79ea7e9c770df78e2ed6ff0306e6
 const fsOptions: LightningFS.Options = { wipe: true };
 
-export const getHelpersBrowser = (info: RepositoryInfo, auth?: Auth) => {
-  const fs = new LightningFS(info.organization, fsOptions);
+export const getHelpersBrowser = (projectId: string, auth?: Auth) => {
+  const fs = new LightningFS(projectId, fsOptions);
   const fsHelper = new FsHelper(fs);
-  const gitHelper = new GitHelper({ fs, http, root: "/" + info.path, auth });
+  const gitHelper = new GitHelper({ fs, http, root: "/" + projectId, auth });
   return { fsHelper, gitHelper };
 };
 

@@ -2,11 +2,10 @@ import * as R from "remeda";
 
 import { test, expect } from "../fixtures";
 
-const organization = "org1";
-const repository = "repo1";
+const projectName = "project1";
 
 test.beforeEach(async ({ repositoryStorage }) => {
-  await repositoryStorage.addRepository(organization, repository);
+  await repositoryStorage.addRepository(projectName);
 });
 
 const fileContent = JSON.stringify([
@@ -26,7 +25,7 @@ test("create database definition", async ({
   tableDisplay,
   editor,
 }) => {
-  await page.goto(`/${repository}`);
+  await page.goto(`/${projectName}`);
 
   await mainMenu.createDatabase();
 

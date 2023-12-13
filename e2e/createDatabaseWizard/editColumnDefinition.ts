@@ -1,10 +1,9 @@
 import { test, expect } from "../fixtures";
 
-const organization = "org1";
-const repository = "repo1";
+const projectName = "project1";
 
 test.beforeEach(async ({ repositoryStorage }) => {
-  await repositoryStorage.addRepository(organization, repository);
+  await repositoryStorage.addRepository(projectName);
 });
 
 const fileContent = `name,age,address,zip
@@ -21,7 +20,7 @@ test("create database definition", async ({
   databaseDefinitionStorage,
   editor,
 }) => {
-  await page.goto(`/${repository}`);
+  await page.goto(`/${projectName}`);
 
   await mainMenu.createDatabase();
 

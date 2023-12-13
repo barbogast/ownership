@@ -2,11 +2,10 @@ import * as R from "remeda";
 
 import { test, expect } from "../fixtures";
 
-const organization = "org1";
-const repository = "repo1";
+const projectName = "project1";
 
 test.beforeEach(async ({ repositoryStorage }) => {
-  await repositoryStorage.addRepository(organization, repository);
+  await repositoryStorage.addRepository(projectName);
 });
 
 const fileContent = ["col1\naaa", "col1\nbbb", "col1\nccc"] as const;
@@ -20,7 +19,7 @@ test("import 3 files and change a filename", async ({
   editor,
   databaseDefinitionStorage,
 }) => {
-  await page.goto(`/${repository}`);
+  await page.goto(`/${projectName}`);
 
   await mainMenu.createDatabase();
 
@@ -70,7 +69,7 @@ test("import 3 files and delete the second one", async ({
   editor,
   databaseDefinitionStorage,
 }) => {
-  await page.goto(`/${repository}`);
+  await page.goto(`/${projectName}`);
 
   await mainMenu.createDatabase();
 

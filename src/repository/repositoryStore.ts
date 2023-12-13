@@ -1,15 +1,12 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { RepositoryInfo } from "../types";
 import { Draft } from "immer";
 import { createId } from "../util/utils";
 import { useLocation } from "wouter";
 
 export type Repository = {
   id: string;
-  organization: string;
-  repository: string;
   name: string;
 };
 
@@ -68,13 +65,11 @@ const getRepoFromDraft = (state: Draft<RepositoryState>, repoId: string) => {
   return repo;
 };
 
-export const addRepository = (info: RepositoryInfo, name: string) => {
+export const addRepository = (name: string) => {
   const id = createId();
   useRepositoryStore.setState((state) => {
     state.repositories[id] = {
       id,
-      organization: info.organization,
-      repository: info.repository,
       name,
     };
   });

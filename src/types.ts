@@ -24,9 +24,3 @@ export type ChartProps = {
   chartConfig: ChartConfig;
   queryId: string;
 };
-
-export type RepositoryInfo = {
-  organization: string;
-  repository: string;
-  path: string;
-};
