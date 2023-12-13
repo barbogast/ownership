@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { Database } from "sql.js";
 import { DbInfo } from "./util/database";
+import { useMemo } from "react";
 
 export type { Database, QueryExecResult } from "sql.js";
 
@@ -38,10 +39,12 @@ export default useDatabaseConnectionStore;
 
 export const useDatabaseConnection = (key: string): DatabaseConnection => {
   const db = useDatabaseConnectionStore((state) => state.databases[key]);
-  if (!db) {
-    return { key, status: "uninitialized" };
-  }
-  return db;
+  return useMemo(() => {
+    if (!db) {
+      return { key, status: "uninitialized" };
+    }
+    return db;
+  }, [key, db]);
 };
 
 export const deleteConnection = (key: string) => {
