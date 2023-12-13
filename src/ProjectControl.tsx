@@ -1,9 +1,7 @@
 import { Button, Col, Row, Select } from "antd";
 
 import { loadFromGit, getHelpersBrowser, saveToGit } from "./util/gitStorage";
-import useProjectStore, {
-  useProjectFromUrl,
-} from "./repository/repositoryStore";
+import useProjectStore, { useProjectFromUrl } from "./project/projectStore";
 import { useLocation } from "wouter";
 import SyncRepositoryModal from "./SyncRepositoryModal";
 import { reset } from "./modifiedStore";

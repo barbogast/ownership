@@ -11,13 +11,13 @@ import useQueryStore, {
 import useReportStore, { addReport } from "./report/reportStore";
 import { sortByLabel } from "./util/utils";
 import useModifiedStore from "./modifiedStore";
-import ProjectControl from "./RepositoryControl";
+import ProjectControl from "./ProjectControl";
 import useDatabaseDefinitionStore from "./databaseDefinition/databaseDefinitionStore";
 import getConfig from "./createDatabaseWizard";
 import WizardModal from "./components/wizard/WizardModal";
 import useLocalSettingsStore, { setDarkMode } from "./localSettingsStore";
 import ResizeHandle from "./components/ResizeHandle";
-import { useProjectFromUrl } from "./repository/repositoryStore";
+import { useProjectFromUrl } from "./project/projectStore";
 
 type Props = {
   children?: ReactElement | ReactElement[] | null;

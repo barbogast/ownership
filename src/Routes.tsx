@@ -5,7 +5,7 @@ import MainMenu from "./MainMenu";
 import Query from "./query/Query";
 import Report from "./report/Report";
 import DatabaseDefinition from "./databaseDefinition/DatabaseDefinition";
-import ProjectList from "./repository/RepositoryList";
+import ProjectList from "./project/ProjectList";
 import NestedRoutes from "./components/NestedRoutes";
 import WithNestedStores from "./nestedStores/WithNestedStores";
 import DevTools from "./DevTools";

@@ -3,7 +3,7 @@ import * as R from "remeda";
 
 import { getIndexedDbContent } from "../utils";
 import { DatabaseDefinition } from "../../src/databaseDefinition/databaseDefinitionStore";
-import { ProjectStorage } from "./RepositoryStorage";
+import { ProjectStorage } from "./ProjectStorage";
 
 export class DatabaseDefinitionStorage {
   readonly #page: Page;

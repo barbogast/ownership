@@ -4,7 +4,7 @@ import useProjectStore, {
   addProject,
   deleteProject,
   updateProject,
-} from "./repositoryStore";
+} from "./projectStore";
 import { Link } from "wouter";
 import stores from "../nestedStores/stores";
 

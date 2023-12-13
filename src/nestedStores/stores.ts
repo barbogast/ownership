@@ -1,7 +1,7 @@
 import { databaseDefinitionStore } from "../databaseDefinition/databaseDefinitionStore";
 import { queryStore } from "../query/queryStore";
 import { reportStore } from "../report/reportStore";
-import { Project } from "../repository/repositoryStore";
+import { Project } from "../project/projectStore";
 import { Folder, mergeFolders } from "../util/fsHelper";
 
 const stores = [queryStore, databaseDefinitionStore, reportStore];

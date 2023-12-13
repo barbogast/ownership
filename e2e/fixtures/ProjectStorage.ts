@@ -3,7 +3,7 @@ import * as R from "remeda";
 
 import { getLocalStorageContent, setLocalStorageContent } from "../utils";
 import { createId } from "../../src/util/utils";
-import { Project } from "../../src/repository/repositoryStore";
+import { Project } from "../../src/project/projectStore";
 
 export class ProjectStorage {
   readonly #context: BrowserContext;

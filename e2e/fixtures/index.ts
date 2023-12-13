@@ -1,6 +1,6 @@
 import { test as base, expect } from "@playwright/test";
-import { ProjectPage } from "./RepositoryPage";
-import { ProjectStorage as ProjectStorage } from "./RepositoryStorage";
+import { ProjectPage } from "./ProjectPage";
+import { ProjectStorage as ProjectStorage } from "./ProjectStorage";
 import { MainPage } from "./MainPage";
 import { CreateDatabaseDefinitionPage } from "./CreateDatabaseDefinitionPage";
 import { MainMenu } from "./MainMenu";

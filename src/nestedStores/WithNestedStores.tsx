@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import Logger from "../util/logger";
 import stores from "./stores";
-import { useProjectByName } from "../repository/repositoryStore";
+import { useProjectByName } from "../project/projectStore";
 
 const logger = new Logger("main");
 type Props = {
