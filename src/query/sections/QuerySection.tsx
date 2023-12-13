@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { Alert, Button, Select, Space, Tabs } from "antd";
 import { editor } from "monaco-editor";
 import { Editor, OnMount } from "@monaco-editor/react";
@@ -134,12 +134,12 @@ const QuerySection: React.FC<Props> = ({
               children: queryResults && (
                 <>
                   {queryResults.data.map((queryResult, i) => (
-                    <>
-                      <TableDisplay transformResult={queryResult} key={i} />
+                    <Fragment key={i}>
+                      <TableDisplay transformResult={queryResult} />
                       <small style={{ textAlign: "right", display: "block" }}>
                         {queryResult.length} rows
                       </small>
-                    </>
+                    </Fragment>
                   ))}
                   <small
                     style={{
