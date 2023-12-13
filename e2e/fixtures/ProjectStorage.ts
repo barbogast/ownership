@@ -3,7 +3,7 @@ import * as R from "remeda";
 
 import { getLocalStorageContent, setLocalStorageContent } from "../utils";
 import { createId } from "../../src/util/utils";
-import { Project } from "../../src/project/projectStore";
+import { Project, ProjectStoreState } from "../../src/project/projectStore";
 
 export class ProjectStorage {
   readonly #context: BrowserContext;
@@ -23,11 +23,9 @@ export class ProjectStorage {
     if (
       R.isObject(projectState) &&
       "state" in projectState &&
-      R.isObject(projectState.state) &&
-      "projects" in projectState.state &&
-      R.isObject(projectState.state.projects)
+      R.isObject(projectState.state)
     ) {
-      return projectState.state.projects as Record<string, Project>;
+      return projectState.state as ProjectStoreState;
     } else {
       throw new Error("Unexpected localStorage content");
     }
@@ -40,7 +38,7 @@ export class ProjectStorage {
       name: projectName,
     };
     const content = {
-      state: { projects: { [id]: newProject } },
+      state: { [id]: newProject },
       version: 0,
     };
     await setLocalStorageContent(this.#page, "projects", content);

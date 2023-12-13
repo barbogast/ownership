@@ -13,7 +13,7 @@ const RIGHT_COLUMN = 3;
 const BUTTON_STYLE = { width: 75 };
 
 const ProjectList: React.FC = () => {
-  const projects = useProjectStore().projects;
+  const projects = useProjectStore();
   const initialNewProjectState = { name: "" };
   const [newProject, setNewProject] = useState(initialNewProjectState);
 

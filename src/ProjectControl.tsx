@@ -13,7 +13,7 @@ import {
 const ProjectControl: React.FC = () => {
   const [, setLocation] = useLocation();
   const project = useProjectFromUrl()!;
-  const projects = useProjectStore().projects;
+  const projects = useProjectStore();
 
   return (
     <div style={{ marginLeft: 10 }}>

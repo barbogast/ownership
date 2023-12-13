@@ -10,13 +10,9 @@ export type Project = {
   name: string;
 };
 
-export type ProjectStoreState = {
-  projects: { [projectId: string]: Project };
-};
+export type ProjectStoreState = Record<string, Project>;
 
-const initialState: ProjectStoreState = {
-  projects: {},
-};
+const initialState: ProjectStoreState = {};
 
 const persistConfig = {
   name: "projects",
@@ -32,12 +28,11 @@ const useProjectStore = create(
 
 export default useProjectStore;
 
-export const useProject = (id: string) =>
-  useProjectStore((state) => state.projects[id]);
+export const useProject = (id: string) => useProjectStore((state) => state[id]);
 
 export const useProjectByName = (name: string) =>
   useProjectStore((state) => {
-    const project = Object.values(state.projects).find(
+    const project = Object.values(state).find(
       (project) => project.name === name
     );
     if (!project) {
@@ -50,7 +45,7 @@ export const useProjectFromUrl = () => {
   const [location] = useLocation();
   const [_, name] = location.split("/");
   return useProjectStore((state) => {
-    const project = Object.values(state.projects).find(
+    const project = Object.values(state).find(
       (project) => project.name === name
     );
     return project;
@@ -61,7 +56,7 @@ const getProjectFromDraft = (
   state: Draft<ProjectStoreState>,
   projectId: string
 ) => {
-  const project = state.projects[projectId];
+  const project = state[projectId];
   if (project === undefined) {
     throw new Error(`No project with id "${projectId}" found`);
   }
@@ -71,7 +66,7 @@ const getProjectFromDraft = (
 export const addProject = (name: string) => {
   const id = createId();
   useProjectStore.setState((state) => {
-    state.projects[id] = {
+    state[id] = {
       id,
       name,
     };
@@ -91,6 +86,6 @@ export const updateProject = (
 
 export const deleteProject = (projectId: string) => {
   useProjectStore.setState((state) => {
-    delete state.projects[projectId];
+    delete state[projectId];
   });
 };
