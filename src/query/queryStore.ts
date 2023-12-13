@@ -37,7 +37,7 @@ export type Query = {
   databaseSource: DatabaseSource;
   sqlStatement: string;
   transformCode: string;
-  chartConfig?: ChartConfig;
+  chartConfig: ChartConfig;
   transformType: TransformType;
   transformConfig: TransformConfig;
 };
@@ -59,6 +59,7 @@ export const getDefaults = (dataSourceId: string) => ({
   databaseFileName: "",
   sqlStatement: "",
   transformCode: "",
+  chartConfig: { chartType: "lineChart" as const },
 });
 
 const initialState: QueryState = {};
@@ -98,7 +99,7 @@ export const importFromFolder = (root: Folder): QueryState =>
       sqlStatement: getFile(folder, "sqlStatement.sql", ""),
       transformCode: getFile(folder, "transformCode.ts", ""),
     } as Query;
-    if (query.chartConfig?.chartType === "vegaChart") {
+    if (query.chartConfig.chartType === "vegaChart") {
       query.chartConfig.vegaSpec = getFile(folder, "vegaSpec.json");
     }
     return query;
@@ -231,7 +232,7 @@ export const updateChartConfig = (
 ) => {
   useQueryStore.setState((state) => {
     const query = getQueryFromDraft(state, queryId);
-    Object.assign(query.chartConfig ?? {}, newState);
+    Object.assign(query.chartConfig, newState);
   });
   add(queryId);
 };

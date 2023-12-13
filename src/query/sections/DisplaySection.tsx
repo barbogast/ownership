@@ -24,7 +24,7 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
   return (
     <>
       <Select
-        value={query.chartConfig?.chartType}
+        value={query.chartConfig.chartType}
         onChange={(chartType) => updateChartConfig(query.id, { chartType })}
         options={[
           { value: "barChart", label: "Bar chart" },
@@ -39,7 +39,7 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
         style={{ width: 200 }}
       />
       <br />
-      {query.chartConfig?.chartType !== "vegaChart" && (
+      {query.chartConfig.chartType !== "vegaChart" && (
         <>
           Columns to display:
           <Checkbox.Group
@@ -55,8 +55,7 @@ const DisplaySection: React.FC<Props> = ({ query, transformResult }) => {
         </>
       )}
       <br />
-      {query.chartConfig &&
-        SINGLE_DATASET_CHART_TYPES.includes(query.chartConfig.chartType) &&
+      {SINGLE_DATASET_CHART_TYPES.includes(query.chartConfig.chartType) &&
         transformResult.length > 1 && (
           <>
             <br />

@@ -49,7 +49,7 @@ const EditRawMenu = ({ query }: Props) => {
       onSubmit={(newContent) => updateQuery(id, { transformCode: newContent })}
     />,
 
-    query.chartConfig?.chartType === "vegaChart" ? (
+    query.chartConfig.chartType === "vegaChart" ? (
       <RawJsonEditor
         button="chartConfig.vegaSpec"
         content={query.chartConfig.vegaSpec}

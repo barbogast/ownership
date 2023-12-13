@@ -32,6 +32,7 @@ const getCase_minimal = (): TestCase => {
       labelColumn: "col1",
       dataRowIndex: 0,
     },
+    chartConfig: { chartType: "lineChart" },
   };
 
   const expectedIndex = stableStringify({

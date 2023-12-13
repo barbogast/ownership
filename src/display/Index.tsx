@@ -116,12 +116,6 @@ const renderChart = (
 };
 
 const ChartDisplay: React.FC<Props> = ({ query, transformResult }) => {
-  if (!query.chartConfig) {
-    return null;
-  }
-
-  const chartConfig = query.chartConfig;
-
   const transformResult2 = SINGLE_DATASET_CHART_TYPES.includes(
     query.chartConfig.chartType
   )
@@ -140,7 +134,7 @@ const ChartDisplay: React.FC<Props> = ({ query, transformResult }) => {
   return (
     <div style={{ width: "100%", height: 500 }}>
       {renderChart(
-        chartConfig,
+        query.chartConfig,
         transformResult2,
         query.transformConfig,
         query.id
