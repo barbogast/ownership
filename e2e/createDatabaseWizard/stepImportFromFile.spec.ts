@@ -20,7 +20,7 @@ test("import 3 files and change a filename", async ({
   editor,
   databaseDefinitionStorage,
 }) => {
-  await page.goto(`/${organization}/${repository}`);
+  await page.goto(`/${repository}`);
 
   await mainMenu.createDatabase();
 
@@ -70,7 +70,7 @@ test("import 3 files and delete the second one", async ({
   editor,
   databaseDefinitionStorage,
 }) => {
-  await page.goto(`/${organization}/${repository}`);
+  await page.goto(`/${repository}`);
 
   await mainMenu.createDatabase();
 

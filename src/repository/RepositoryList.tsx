@@ -11,19 +11,20 @@ import { getRepoInfo } from "../util/utils";
 import SyncRepositoryModal from "../SyncRepositoryModal";
 import stores from "../nestedStores/stores";
 
-const LEFT_COLUMNS = 6;
+const LEFT_COLUMNS = 5;
 const RIGHT_COLUMN = 3;
 const BUTTON_STYLE = { width: 75 };
 
 const RepositoryList: React.FC = () => {
   const repositories = useRepositoryStore().repositories;
-  const initialNewRepoState = { organization: "", repository: "" };
+  const initialNewRepoState = { organization: "", repository: "", name: "" };
   const [newRepo, setNewRepo] = useState(initialNewRepoState);
 
   const initialEditRepoState = {
     organization: "",
     repository: "",
     id: "",
+    name: "",
   };
   const [editRepo, setEditRepo] = useState(initialEditRepoState);
 
@@ -55,6 +56,17 @@ const RepositoryList: React.FC = () => {
                   }
                 />
               </Col>
+              <Col span={LEFT_COLUMNS}>
+                <Input
+                  value={editRepo.name}
+                  onChange={(event) =>
+                    setEditRepo((state) => ({
+                      ...state,
+                      name: event.target.value,
+                    }))
+                  }
+                />
+              </Col>
               <Col span={RIGHT_COLUMN}>
                 <Button
                   onClick={() => {
@@ -80,8 +92,9 @@ const RepositoryList: React.FC = () => {
             <>
               <Col span={LEFT_COLUMNS}>{repo.organization}</Col>
               <Col span={LEFT_COLUMNS}>{repo.repository}</Col>
+              <Col span={LEFT_COLUMNS}>{repo.name}</Col>
               <Col span={RIGHT_COLUMN}>
-                <Link href={`/${repo.organization}/${repo.repository}`}>
+                <Link href={`/${repo.name}`}>
                   <Button type="primary" style={BUTTON_STYLE} role="button">
                     Open
                   </Button>
@@ -90,11 +103,7 @@ const RepositoryList: React.FC = () => {
               <Col span={RIGHT_COLUMN}>
                 <Button
                   onClick={() => {
-                    setEditRepo({
-                      id: repo.id,
-                      organization: repo.organization,
-                      repository: repo.repository,
-                    });
+                    setEditRepo({ ...repo });
                   }}
                   style={BUTTON_STYLE}
                 >
@@ -106,12 +115,8 @@ const RepositoryList: React.FC = () => {
                   title="Delete the repository?"
                   onConfirm={async () => {
                     deleteRepository(repo.id);
-                    const info = getRepoInfo(
-                      repo.organization,
-                      repo.repository
-                    );
                     for (const store of stores) {
-                      await store.delete(info);
+                      await store.delete(repo.id);
                     }
                   }}
                 >
@@ -149,11 +154,24 @@ const RepositoryList: React.FC = () => {
             }
           />
         </Col>
+        <Col span={LEFT_COLUMNS}>
+          <Input
+            placeholder="Name"
+            value={newRepo.name}
+            onChange={(event) =>
+              setNewRepo((state) => ({
+                ...state,
+                name: event.target.value,
+              }))
+            }
+          />
+        </Col>
         <Col span={RIGHT_COLUMN}>
           <Button
             onClick={() => {
               addRepository(
-                getRepoInfo(newRepo.organization, newRepo.repository)
+                getRepoInfo(newRepo.organization, newRepo.repository),
+                newRepo.name
               );
               setNewRepo(initialNewRepoState);
             }}
@@ -172,7 +190,7 @@ const RepositoryList: React.FC = () => {
                 getHelpersBrowser(repositoryInfo, { username, password }),
                 "https://github.com/" + repositoryInfo.path
               );
-              addRepository(repositoryInfo);
+              addRepository(repositoryInfo, repositoryInfo.repository);
               setNewRepo(initialNewRepoState);
             }}
             repositoryInfo={getRepoInfo(

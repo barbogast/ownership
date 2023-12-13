@@ -1,7 +1,9 @@
 import { Button, Col, Row, Select } from "antd";
 
 import { loadFromGit, getHelpersBrowser, saveToGit } from "./util/gitStorage";
-import useRepositoryStore from "./repository/repositoryStore";
+import useRepositoryStore, {
+  useRepositoryFromUrl,
+} from "./repository/repositoryStore";
 import { useRepoInfo } from "./util/utils";
 import { useLocation } from "wouter";
 import SyncRepositoryModal from "./SyncRepositoryModal";
@@ -14,6 +16,7 @@ import {
 const RepositoryControl: React.FC = () => {
   const [, setLocation] = useLocation();
   const repositoryInfo = useRepoInfo();
+  const repository = useRepositoryFromUrl()!;
   const projects = useRepositoryStore().repositories;
 
   if (!repositoryInfo) {
@@ -51,7 +54,7 @@ const RepositoryControl: React.FC = () => {
               getHelpersBrowser(info, { username, password }),
               "https://github.com/" + info.path
             );
-            await importStoresFromFolder(info, folder);
+            await importStoresFromFolder(repository, folder);
           }}
           repositoryInfo={repositoryInfo}
         />

@@ -9,7 +9,6 @@ import {
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import * as idb from "idb-keyval";
-import { RepositoryInfo } from "../types";
 import Logger from "../util/logger";
 
 const logger = new Logger("nestedStore");
@@ -69,7 +68,7 @@ class NestedStore<
     >
   >;
   config: StoreConfig<Entity, State>;
-  info: RepositoryInfo | undefined;
+  storeId: string | undefined;
 
   constructor(config: StoreConfig<Entity, State>) {
     const storage: PersistStorage<State> = {
@@ -107,18 +106,19 @@ class NestedStore<
     );
   }
 
-  #getStoragePath = (info: RepositoryInfo) =>
-    `${info.path}/${this.config.name}`;
+  #getStoragePath = (storeId: string) => `${storeId}/${this.config.name}`;
 
-  hydrate = (info: RepositoryInfo) => {
-    this.info = info;
-    this.store.persist.setOptions({ name: this.#getStoragePath(this.info) });
+  hydrate = (storeId: string) => {
+    this.storeId = storeId;
+    this.store.persist.setOptions({
+      name: this.#getStoragePath(storeId),
+    });
     void this.store.persist.rehydrate();
   };
 
-  import = async (info: RepositoryInfo, folder: Folder) => {
-    this.info = info;
-    await idb.set(this.#getStoragePath(info), {
+  import = async (storeId: string, folder: Folder) => {
+    this.storeId = storeId;
+    await idb.set(this.#getStoragePath(storeId), {
       state: this.config.importFromFolder(folder),
       version: this.config.version,
     });
@@ -128,8 +128,8 @@ class NestedStore<
     return this.config.exportToFolder(this.store.getState());
   };
 
-  delete = async (info: RepositoryInfo) => {
-    await idb.del(this.#getStoragePath(info));
+  delete = async (storeId: string) => {
+    await idb.del(this.#getStoragePath(storeId));
   };
 }
 

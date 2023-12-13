@@ -1,26 +1,27 @@
 import { ReactElement, useEffect, useState } from "react";
-import { useRepoInfo } from "../util/utils";
 import Logger from "../util/logger";
 import stores from "./stores";
+import { useRepositoryByName } from "../repository/repositoryStore";
 
 const logger = new Logger("main");
 type Props = {
+  repositoryName: string;
   children: ReactElement[] | ReactElement;
 };
-const WithNestedStores: React.FC<Props> = ({ children }) => {
+const WithNestedStores: React.FC<Props> = ({ children, repositoryName }) => {
   const [isInitialized, setIsInitialized] = useState(false);
+  const respoitory = useRepositoryByName(repositoryName);
 
-  const info = useRepoInfo();
   useEffect(() => {
-    if (info) {
-      logger.log("rehydrate stores", info);
+    if (respoitory) {
+      logger.log("rehydrate stores", respoitory);
 
       for (const store of stores) {
-        store.hydrate(info);
+        store.hydrate(respoitory.id);
       }
       setIsInitialized(true);
     }
-  }, [info]);
+  }, [respoitory]);
   return isInitialized ? children : null;
 };
 

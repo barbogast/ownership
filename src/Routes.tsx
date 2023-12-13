@@ -21,38 +21,36 @@ import { Button } from "antd";
 const Routes = () => {
   return (
     <Router>
+      <Route
+        path="/"
+        component={() => (
+          <>
+            <WizardModal
+              initialResult={{}}
+              initialStepName="stepOverview"
+              title="Tour"
+              config={getConfig()}
+              renderTrigger={(openModal) => (
+                <Button onClick={openModal}>Tour</Button>
+              )}
+              width="50%"
+              navigationAllowed
+              hideStepNumbers
+            />
+            <br />
+            <br />
+            <br />
+            <RepositoryList />{" "}
+          </>
+        )}
+      ></Route>
       <MainMenu>
-        <Route
-          path="/"
-          component={() => (
-            <>
-              <WizardModal
-                initialResult={{}}
-                initialStepName="stepOverview"
-                title="Tour"
-                config={getConfig()}
-                renderTrigger={(openModal) => (
-                  <Button onClick={openModal}>Tour</Button>
-                )}
-                width="50%"
-                navigationAllowed
-                hideStepNumbers
-              />
-              <br />
-              <br />
-              <br />
-              <RepositoryList />{" "}
-            </>
-          )}
-        ></Route>
         <Route path="/ownership" component={Ownership} />
         <Route
-          path="/:organization/:repository/:rest*"
+          path="/:repository/:rest*"
           component={({ params }) => (
-            <WithNestedStores>
-              <NestedRoutes
-                base={`/${params.organization}/${params.repository}`}
-              >
+            <WithNestedStores repositoryName={params.repository}>
+              <NestedRoutes base={`/${params.repository}`}>
                 <Route
                   path="/db/:databaseDefinitionId"
                   component={(props) => (

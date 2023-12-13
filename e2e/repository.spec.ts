@@ -12,6 +12,7 @@ test("create repository", async ({
   const repository = "Repo1";
   await repositoryPage.enterOrganization(organization);
   await repositoryPage.enterRepository(repository);
+  await repositoryPage.enterName(repository);
   await repositoryPage.clickCreate();
 
   const repos = await repositoryStorage.getRepositories();
@@ -19,6 +20,6 @@ test("create repository", async ({
   expect(repo).toMatchObject({ organization, repository });
 
   await repositoryPage.clickOpen();
-  await page.waitForURL(`/${organization}/${repository}`);
-  await mainPage.checkRepositorySelect(organization, repository);
+  await page.waitForURL(`/${repository}`);
+  await mainPage.checkRepositorySelect(repository);
 });

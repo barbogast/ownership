@@ -50,8 +50,8 @@ export const test = base.extend<MyFixtures>({
     const repositoryStorage = new RepositoryStorage(page, context);
     await use(repositoryStorage);
   },
-  databaseDefinitionStorage: async ({ page }, use) => {
-    const f = new DatabaseDefinitionStorage(page);
+  databaseDefinitionStorage: async ({ page, context }, use) => {
+    const f = new DatabaseDefinitionStorage(page, context);
     await use(f);
   },
   mainPage: async ({ page }, use) => {

@@ -34,19 +34,19 @@ export const getRepoInfo = (
 export const useRepoInfo = (): RepositoryInfo | undefined => {
   const [location] = useLocation();
 
-  const [_, organization, repository] = location.split("/");
+  const [_, repository] = location.split("/");
 
   const info = useMemo(() => {
-    if (!organization || !repository) {
+    if (!repository) {
       return;
     }
 
     return {
-      organization,
       repository,
-      path: `${organization}/${repository}`,
+      organization: "TODO",
+      path: `${repository}`,
     };
-  }, [organization, repository]);
+  }, [repository]);
 
   return info;
 };

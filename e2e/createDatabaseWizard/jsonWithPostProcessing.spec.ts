@@ -26,7 +26,7 @@ test("create database definition", async ({
   tableDisplay,
   editor,
 }) => {
-  await page.goto(`/${organization}/${repository}`);
+  await page.goto(`/${repository}`);
 
   await mainMenu.createDatabase();
 

@@ -37,6 +37,7 @@ export class RepositoryStorage {
     const id = createId();
     const newRepository: Repository = {
       id,
+      name: repository,
       organization,
       repository,
     };

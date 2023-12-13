@@ -23,7 +23,7 @@ test("create database definition", async ({
   databaseDefinitionStorage,
   editor,
 }) => {
-  await page.goto(`/${organization}/${repository}`);
+  await page.goto(`/${repository}`);
 
   await mainMenu.createDatabase();
 

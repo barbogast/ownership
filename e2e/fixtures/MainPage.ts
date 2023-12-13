@@ -7,9 +7,7 @@ export class MainPage {
     this.#repositorySelect = page.getByTestId("repository-select");
   }
 
-  async checkRepositorySelect(organization: string, repository: string) {
-    await expect(this.#repositorySelect).toContainText(
-      `${organization}/${repository}`
-    );
+  async checkRepositorySelect(repository: string) {
+    await expect(this.#repositorySelect).toContainText(`${repository}`);
   }
 }

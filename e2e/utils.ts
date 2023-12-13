@@ -48,14 +48,17 @@ export const setLocalStorageContent = async (
   name: string,
   content: unknown
 ) => {
-  await page.addInitScript((value) => {
-    const isInIframe = window.self !== window.top;
+  await page.addInitScript(
+    ({ name, value }) => {
+      const isInIframe = window.self !== window.top;
 
-    // Avoid to touch localStorage in iframes.
-    // page.addInitScript is executed in iframes as well, and the code-execution iframe
-    // doesn't have access to the localStorage.
-    if (!isInIframe) {
-      window.localStorage.setItem(name, value);
-    }
-  }, JSON.stringify(content));
+      // Avoid to touch localStorage in iframes.
+      // page.addInitScript is executed in iframes as well, and the code-execution iframe
+      // doesn't have access to the localStorage.
+      if (!isInIframe) {
+        window.localStorage.setItem(name, value);
+      }
+    },
+    { name, value: JSON.stringify(content) }
+  );
 };

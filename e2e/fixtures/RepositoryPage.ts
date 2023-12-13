@@ -3,12 +3,14 @@ import { Locator, Page } from "@playwright/test";
 export class RepositoryPage {
   readonly #inputOrganization: Locator;
   readonly #inputRepository: Locator;
+  readonly #inputName: Locator;
   readonly #buttonCreate: Locator;
   readonly #buttonOpen: Locator;
 
   constructor(page: Page) {
     this.#inputOrganization = page.getByPlaceholder("Organization");
     this.#inputRepository = page.getByPlaceholder("Repository");
+    this.#inputName = page.getByPlaceholder("Name");
     this.#buttonCreate = page.getByRole("button", { name: "Create" });
     this.#buttonOpen = page.getByRole("button", { name: "Open" });
   }
@@ -19,6 +21,10 @@ export class RepositoryPage {
 
   async enterRepository(repository: string) {
     await this.#inputRepository.fill(repository);
+  }
+
+  async enterName(name: string) {
+    await this.#inputName.fill(name);
   }
 
   async clickCreate() {
