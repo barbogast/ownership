@@ -60,7 +60,7 @@ const SyncRepositoryButton: React.FC<Props> = ({
         onChange={(event) => setUser(event.target.value)}
       />
       <Input
-        placeholder="Passwort"
+        placeholder="Password"
         type="password"
         addonBefore="Password"
         value={password}
