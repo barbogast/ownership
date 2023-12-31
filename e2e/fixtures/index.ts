@@ -7,6 +7,7 @@ import { MainMenu } from "./MainMenu";
 import { DatabaseDefinitionStorage } from "./DatabaseDefinitionStorage";
 import { TableDisplay } from "./TableDisplay";
 import { Editor } from "./Editor";
+import { GitModal } from "./GitModal";
 
 type MyFixtures = {
   projectPage: ProjectPage;
@@ -18,6 +19,7 @@ type MyFixtures = {
   tableDisplay: TableDisplay;
   checkConsole: void;
   editor: Editor;
+  gitModal: GitModal;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -73,6 +75,10 @@ export const test = base.extend<MyFixtures>({
   editor: async ({ page }, use) => {
     const editor = new Editor(page);
     await use(editor);
+  },
+  gitModal: async ({ page }, use) => {
+    const gitModal = new GitModal(page);
+    await use(gitModal);
   },
 });
 

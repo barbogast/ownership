@@ -1,8 +1,23 @@
 import * as R from "remeda";
 
 import { test, expect } from "../fixtures";
+import { setup, tearDown } from "../../test-git/utils";
+import Logger from "../../src/util/logger";
+
+Logger.enable("fs", "git", "gitTest", "sh");
 
 const projectName = "project1";
+
+let originalDirectory: string;
+
+test.beforeAll(async () => {
+  originalDirectory = process.cwd();
+  await setup();
+});
+
+test.afterAll(async () => {
+  await tearDown(originalDirectory);
+});
 
 test.beforeEach(async ({ projectStorage }) => {
   await projectStorage.addProject(projectName);
@@ -21,6 +36,8 @@ test("create database definition", async ({
   mainMenu,
   databaseDefinitionStorage,
   editor,
+  mainPage,
+  gitModal,
 }) => {
   await page.goto(`/${projectName}`);
 
@@ -72,4 +89,15 @@ test("create database definition", async ({
     label,
     tableName,
   });
+
+  await mainPage.clickSave();
+  await gitModal.fillForm(
+    "http://localhost:8888/create-database-definition",
+    "",
+    ""
+  );
+  await gitModal.clickSave();
+  await gitModal.waitForSuccess();
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
 });

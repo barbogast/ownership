@@ -43,7 +43,9 @@ export default class GitHelper {
       http: this.http,
       dir: this.root,
       url,
-      corsProxy: this.disableCorsProxy
+      corsProxy: url.startsWith("http://localhost")
+        ? undefined
+        : this.disableCorsProxy
         ? undefined
         : "https://cors.isomorphic-git.org", // TODO: we probably can't keep using this
       onAuth: this.auth ? () => this.auth : undefined,
