@@ -218,6 +218,7 @@ const MainMenu: React.FC<Props> = ({ children }) => {
         style={{
           height: "100%",
           overflow: "auto",
+          margin: 10,
         }}
       >
         {children}
