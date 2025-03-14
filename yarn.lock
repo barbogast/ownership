@@ -2958,6 +2958,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"but-unzip@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "but-unzip@npm:0.1.4"
+  checksum: 37e9f484c50d738de4cdafcc52e8cbc31a55e62b83e66858e020e29421f0cb6ce5b052434954f7775a9e9d461c4041ca517b77f54185fe13be6db7c56082e38b
+  languageName: node
+  linkType: hard
+
 "cac@npm:^6.7.14":
   version: 6.7.14
   resolution: "cac@npm:6.7.14"
@@ -6259,6 +6266,7 @@ __metadata:
     "@vitejs/plugin-react-swc": ^3.5.0
     antd: ^5.11.2
     buffer: ^6.0.3
+    but-unzip: ^0.1.4
     csv-parse: ^5.5.2
     csv-stringify: ^6.4.4
     dayjs: ^1.11.10

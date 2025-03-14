@@ -30,6 +30,7 @@
     "@types/uuid": "^9.0.7",
     "antd": "^5.11.2",
     "buffer": "^6.0.3",
+    "but-unzip": "^0.1.4",
     "csv-parse": "^5.5.2",
     "csv-stringify": "^6.4.4",
     "dayjs": "^1.11.10",

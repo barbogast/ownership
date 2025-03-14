@@ -1,6 +1,10 @@
 import { Button, Col, Row, Select } from "antd";
 
-import { loadFromGit, getHelpersBrowser, saveToGit } from "./util/gitStorage";
+import {
+  loadFromGit as loadViaGit,
+  getHelpersBrowser,
+  saveToGit,
+} from "./util/gitStorage";
 import useProjectStore, { useProjectFromUrl } from "./project/projectStore";
 import { useLocation } from "wouter";
 import SyncRepositoryModal from "./SyncRepositoryModal";
@@ -9,6 +13,7 @@ import {
   exportStoresToFolder,
   importStoresFromFolder,
 } from "./nestedStores/stores";
+import { loadViaHttp } from "./util/github";
 
 const ProjectControl: React.FC = () => {
   const [, setLocation] = useLocation();
@@ -41,18 +46,22 @@ const ProjectControl: React.FC = () => {
         <SyncRepositoryModal
           buttonLabel="Load ..."
           label="Import from repository"
-          callback={async (url, username, password) => {
-            const folder = await loadFromGit(
-              getHelpersBrowser(project.id, { username, password }),
-              url
-            );
+          isLoading
+          callback={async (method, url, username, password) => {
+            const folder = await (method === "git"
+              ? loadViaGit(
+                  getHelpersBrowser(project.id, { username, password }),
+                  url
+                )
+              : loadViaHttp(url));
+
             await importStoresFromFolder(project, folder);
           }}
         />
         <SyncRepositoryModal
           buttonLabel="Save ..."
           label="Export to repository"
-          callback={async (url, username, password) => {
+          callback={async (_, url, username, password) => {
             await saveToGit(
               getHelpersBrowser(project.id, { username, password }),
               url,

@@ -149,3 +149,22 @@ export const mergeFolders = (folder1: Folder, folder2: Folder): Folder => {
   const folders = { ...folder1.folders, ...folder2.folders };
   return { files, folders };
 };
+
+export const insertIntoFolder = (
+  folder: Folder,
+  path: string,
+  contents: string
+): void => {
+  const [head, ...tail] = path.split("/");
+  if (tail.length === 0) {
+    folder.files[head!] = contents;
+    return;
+  }
+
+  let subFolder = folder.folders[head!];
+  if (!subFolder) {
+    subFolder = { files: {}, folders: {} };
+    folder.folders[head!] = subFolder;
+  }
+  insertIntoFolder(subFolder, tail.join("/"), contents);
+};
